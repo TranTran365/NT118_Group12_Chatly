@@ -9,7 +9,7 @@ import com.group12.chatly.MainActivity;
 import com.group12.chatly.R;
 
 public class SplashActivity extends AppCompatActivity {
-    private static final long SPLASH_DELAY_MS = 3000;
+    private static final long SPLASH_DELAY_MS = 2500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
