@@ -1,12 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Chatly" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/chatly_lime</item>
+        <item name="colorOnPrimary">@color/chatly_blue</item>
+        <item name="colorSecondary">@color/chatly_gold</item>
+        <item name="android:windowBackground">@color/chatly_navy</item>
+        <item name="android:statusBarColor">@color/chatly_navy</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.Chatly" parent="Base.Theme.Chatly" />
-    <style name="Theme.Chatly.Splash" parent="Theme.Chatly">
-        <item name="android:windowBackground">@color/chatly_navy</item>
-    </style>
+
+    <style name="Theme.Chatly.Splash" parent="Theme.Chatly" />
 </resources>

@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="chatly_navy">#000053</color>
     <color name="chatly_gold">#D4A917</color>
+    <color name="chatly_lime">#E8E995</color>
+    <color name="chatly_blue">#0A30AB</color>
+    <color name="chatly_white">#FFEFC7</color>
 </resources>
