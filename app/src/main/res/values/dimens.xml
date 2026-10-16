@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="corner_field">24dp</dimen>
-    <dimen name="field_height">48dp</dimen>
+    <dimen name="corner_field">16dp</dimen>
+    <dimen name="field_height">56dp</dimen>
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="screen_padding">24dp</dimen>
 </resources>

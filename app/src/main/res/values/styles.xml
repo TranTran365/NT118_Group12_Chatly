@@ -1,23 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Widget.Chatly.TextInput" parent="Widget.Material3.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">@color/chatly_lime</item>
-        <item name="boxStrokeWidth">0dp</item>
-        <item name="boxStrokeWidthFocused">0dp</item>
+
+    <style name="Widget.Chatly.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/accent</item>
+        <item name="cornerRadius">@dimen/corner_field</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:textColor">@color/on_accent</item>
+        <item name="android:textAppearance">@style/TextAppearance.Chatly.Button</item>
+    </style>
+
+    <style name="Widget.Chatly.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/outline</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cornerRadius">@dimen/corner_field</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:textColor">@color/on_background</item>
+        <item name="android:textAppearance">@style/TextAppearance.Chatly.Button</item>
+    </style>
+
+    <style name="Widget.Chatly.TextInput" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/field_fill</item>
+        <item name="boxStrokeColor">@color/stroke_field</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxStrokeErrorColor">@color/error</item>
+        <item name="errorTextColor">@color/error</item>
+        <item name="errorIconTint">@color/error</item>
         <item name="boxCornerRadiusTopStart">@dimen/corner_field</item>
         <item name="boxCornerRadiusTopEnd">@dimen/corner_field</item>
         <item name="boxCornerRadiusBottomStart">@dimen/corner_field</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/corner_field</item>
-        <item name="endIconTint">@color/chatly_blue</item>
+        <item name="startIconTint">@color/on_background_muted</item>
+        <item name="endIconTint">@color/on_background_muted</item>
+        <item name="hintTextColor">@color/on_background_muted</item>
     </style>
 
-    <style name="Widget.Chatly.TextInput.White">
-        <item name="boxBackgroundColor">@color/chatly_white</item>
+    <style name="Widget.Chatly.EditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">
+        <item name="android:textColor">@color/on_background</item>
+        <item name="android:textColorHint">@color/on_background_muted</item>
+        <item name="android:textAppearance">@style/TextAppearance.Chatly.Input</item>
     </style>
 
-    <style name="Widget.Chatly.Button" parent="Widget.Material3.Button">
-        <item name="backgroundTint">@color/chatly_lime</item>
-        <item name="cornerRadius">@dimen/corner_field</item>
-        <item name="android:textAppearance">@style/TextAppearance.Chatly.Button</item>
+    <style name="TextAppearance.Chatly.Tag" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/nunito_bold</item>
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:letterSpacing">0.04</item>
+        <item name="android:textColor">@color/accent</item>
     </style>
 </resources>
