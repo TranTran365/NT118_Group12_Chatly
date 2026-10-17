@@ -1,157 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:background="@color/register_sheet"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    tools:context=".ui.auth.RegisterActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/img_logo"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="24dp"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_chatly_logo" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:text="@string/register_title"
-            android:textAppearance="@style/TextAppearance.Chatly.Title" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_name"
-            android:textAppearance="@style/TextAppearance.Chatly.Label" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_name"
-            style="@style/Widget.Chatly.TextInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            app:hintEnabled="false">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                style="@style/Widget.Chatly.EditText" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_email"
-            android:textAppearance="@style/TextAppearance.Chatly.Label" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_email"
-            style="@style/Widget.Chatly.TextInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            app:hintEnabled="false"
-            app:startIconDrawable="@drawable/ic_mail">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                style="@style/Widget.Chatly.EditText" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_password"
-            android:textAppearance="@style/TextAppearance.Chatly.Label" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_password"
-            style="@style/Widget.Chatly.TextInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            app:endIconMode="password_toggle"
-            app:hintEnabled="false">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                style="@style/Widget.Chatly.EditText" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_confirm_password"
-            android:textAppearance="@style/TextAppearance.Chatly.Label" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_confirm_password"
-            style="@style/Widget.Chatly.TextInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:endIconMode="password_toggle"
-            app:hintEnabled="false">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_confirm_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                style="@style/Widget.Chatly.EditText" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_sign_up"
-            style="@style/Widget.Chatly.Button"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="32dp"
-            android:text="@string/btn_sign_up" />
-
+        <!-- Header (blue) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:background="@color/background"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_padding"
+            android:paddingTop="4dp"
+            android:paddingEnd="@dimen/screen_padding"
+            android:paddingBottom="@dimen/register_header_padding_bottom">
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="start|center_vertical"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/register_back"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_reg_back"
+                    app:tint="@color/white" />
+
+                <ImageView
+                    android:id="@+id/imgLogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/register_logo_description"
+                    android:src="@drawable/ic_chatly_logo" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="48dp"
+                android:text="@string/register_title"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.Headline" />
+
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/register_subtitle"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.Subtitle" />
+        </LinearLayout>
+
+        <!-- Form (white sheet) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/register_sheet"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_padding"
+            android:paddingTop="24dp"
+            android:paddingEnd="@dimen/screen_padding"
+            android:paddingBottom="24dp">
+
+            <!-- Full name -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/have_account"
-                android:textAppearance="@style/TextAppearance.Chatly.Body" />
+                android:text="@string/register_label_full_name"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilFullName"
+                style="@style/Widget.Chatly.Register.TextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/register_label_to_field"
+                app:startIconDrawable="@drawable/ic_reg_person">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFullName"
+                    style="@style/Widget.Chatly.Register.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/register_field_height"
+                    android:autofillHints="name"
+                    android:hint="@string/register_hint_full_name"
+                    android:inputType="textPersonName|textCapWords"
+                    android:maxLines="1"
+                    tools:text="Alex Morgan" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Email -->
             <TextView
-                android:id="@+id/tv_login_link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="4dp"
-                android:text="@string/log_in"
-                android:textAppearance="@style/TextAppearance.Chatly.Body"
-                android:textColor="@color/chatly_lime" />
+                android:layout_marginTop="@dimen/register_field_to_label"
+                android:text="@string/register_label_email"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilEmail"
+                style="@style/Widget.Chatly.Register.TextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/register_label_to_field"
+                app:startIconDrawable="@drawable/ic_reg_mail">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmail"
+                    style="@style/Widget.Chatly.Register.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/register_field_height"
+                    android:autofillHints="emailAddress"
+                    android:hint="@string/register_hint_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    tools:text="alex.morgan@gmail.com" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Password -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/register_field_to_label"
+                android:text="@string/register_label_password"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPassword"
+                style="@style/Widget.Chatly.Register.TextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/register_label_to_field"
+                app:endIconDrawable="@drawable/ic_reg_password_toggle"
+                app:endIconMode="password_toggle"
+                app:startIconDrawable="@drawable/ic_reg_lock">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    style="@style/Widget.Chatly.Register.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/register_field_height"
+                    android:autofillHints="newPassword"
+                    android:hint="@string/register_hint_password"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    tools:text="password1234" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Password rule -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:importantForAccessibility="no"
+                    app:srcCompat="@drawable/ic_reg_check_circle"
+                    app:tint="@color/register_success" />
+
+                <TextView
+                    android:id="@+id/tvPasswordRule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/register_password_rule"
+                    android:textAppearance="@style/TextAppearance.Chatly.Register.Muted" />
+            </LinearLayout>
+
+            <!-- Terms -->
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbTerms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:paddingStart="8dp"
+                android:text="@string/register_terms"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.Terms"
+                app:buttonTint="@color/register_checkbox_tint"
+                tools:checked="true" />
+
+            <!-- Create account -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCreateAccount"
+                style="@style/Widget.Chatly.Register.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/register_button_height"
+                android:layout_marginTop="20dp"
+                android:gravity="start|center_vertical"
+                android:text="@string/register_create_account"
+                android:textAlignment="viewStart"
+                app:icon="@drawable/ic_reg_arrow_forward"
+                app:iconGravity="end"
+                app:iconSize="20dp" />
+
+            <!-- Divider -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/register_divider" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:text="@string/register_or_continue_with"
+                    android:textAppearance="@style/TextAppearance.Chatly.Register.Muted" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/register_divider" />
+            </LinearLayout>
+
+            <!-- Google -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGoogle"
+                style="@style/Widget.Chatly.Register.Button.Google"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/register_button_height"
+                android:layout_marginTop="16dp"
+                android:text="@string/register_continue_google"
+                app:icon="@drawable/ic_reg_google"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:iconSize="20dp" />
+
+            <!-- Footer -->
+            <TextView
+                android:id="@+id/tvSignIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/register_have_account"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.Footer" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

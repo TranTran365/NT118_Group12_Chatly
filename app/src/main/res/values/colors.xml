@@ -17,4 +17,8 @@
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
+
+    <color name="chatly_blue">#2455EF</color>
+    <color name="chatly_lime">#FFE36B</color>
+    <color name="chatly_white">#FFFFFFFF</color>
 </resources>
