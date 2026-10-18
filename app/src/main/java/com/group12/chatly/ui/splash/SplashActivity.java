@@ -1,4 +1,5 @@
 package com.group12.chatly.ui.splash;
+import com.group12.chatly.ui.welcome.WelcomeActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -19,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            startActivity(new Intent(this, RegisterActivity.class));
+            startActivity(new Intent(this, WelcomeActivity.class));
             finish();
         }, SPLASH_DELAY_MS);
     }

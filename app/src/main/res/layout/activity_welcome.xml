@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    tools:context=".ui.welcome.WelcomeActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header: logo + badge -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/screen_padding"
+            android:paddingTop="16dp"
+            android:paddingEnd="@dimen/screen_padding"
+            android:paddingBottom="8dp">
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_chatly_logo" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tvTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_welcome_tag"
+                android:paddingStart="12dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="5dp"
+                android:text="@string/welcome_tag"
+                android:textAppearance="@style/TextAppearance.Chatly.Welcome.Tag" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/heroContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/welcome_hero_bg"
+            android:minHeight="240dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <!-- "hey, you! -->
+                <ImageView
+                    android:id="@+id/imgHero"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/welcome_hero_description"
+                    android:src="@drawable/img_welcome_hero"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvLabelHey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_welcome_pill_white"
+                    android:paddingStart="14dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="8dp"
+                    android:rotation="-6"
+                    android:text="@string/welcome_label_hey"
+                    android:textAppearance="@style/TextAppearance.Chatly.Welcome.Pill"
+                    android:textColor="@color/background"
+                    app:layout_constraintBottom_toBottomOf="@id/imgHero"
+                    app:layout_constraintEnd_toEndOf="@id/imgHero"
+                    app:layout_constraintHorizontal_bias="0.12"
+                    app:layout_constraintStart_toStartOf="@id/imgHero"
+                    app:layout_constraintTop_toTopOf="@id/imgHero"
+                    app:layout_constraintVertical_bias="0.05" />
+
+                <!-- "let's yap." -->
+                <TextView
+                    android:id="@+id/tvLabelYap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_welcome_pill_yellow"
+                    android:paddingStart="14dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="8dp"
+                    android:rotation="7"
+                    android:text="@string/welcome_label_yap"
+                    android:textAppearance="@style/TextAppearance.Chatly.Welcome.Pill"
+                    android:textColor="@color/on_accent"
+                    app:layout_constraintBottom_toBottomOf="@id/imgHero"
+                    app:layout_constraintEnd_toEndOf="@id/imgHero"
+                    app:layout_constraintHorizontal_bias="0.80"
+                    app:layout_constraintStart_toStartOf="@id/imgHero"
+                    app:layout_constraintTop_toTopOf="@id/imgHero"
+                    app:layout_constraintVertical_bias="0.925" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
+
+        <!-- content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_padding"
+            android:paddingTop="20dp"
+            android:paddingEnd="@dimen/screen_padding"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvHeadline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_headline"
+                android:textAppearance="@style/TextAppearance.Chatly.Welcome.Headline"
+                />
+
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/welcome_subtitle"
+                android:textAppearance="@style/TextAppearance.Chatly.Welcome.Subtitle"
+                 />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCreateAccount"
+                style="@style/Widget.Chatly.Welcome.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="24dp"
+                android:gravity="start|center_vertical"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/welcome_create_account"
+                android:textAlignment="viewStart"
+                app:icon="@drawable/ic_reg_arrow_forward"
+                app:iconGravity="end"
+                app:iconSize="20dp"
+                app:iconTint="@color/on_accent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnHaveAccount"
+                style="@style/Widget.Chatly.Welcome.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/welcome_have_account"
+                android:textColor="@color/on_background" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:importantForAccessibility="no"
+                    app:srcCompat="@drawable/ic_reg_lock"
+                    app:tint="@color/on_background_muted" />
+
+                <TextView
+                    android:id="@+id/tvPrivacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/welcome_privacy"
+                    android:textAppearance="@style/TextAppearance.Chatly.Welcome.Caption"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
