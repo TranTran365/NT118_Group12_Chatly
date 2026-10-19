@@ -1,5 +1,6 @@
 package com.group12.chatly.ui.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
@@ -50,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (tvSignIn != null) {
             tvSignIn.setOnClickListener(v -> {
-                // TODO: chuyển sang LoginActivity khi có màn đăng nhập
+                startActivity(new Intent(this, LoginActivity.class));
                 finish();
             });
         }
