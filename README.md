@@ -134,11 +134,11 @@ NT118_Group12_Chatly/
 
 ## 7. Phân công trách nhiệm (Nhóm 12)
 
-| Thành viên | Vai trò | Trách nhiệm chính |
-| :--- | :--- | :--- |
-| **Thành viên 1** | **Backend & Data Lead** | Cấu hình Firebase (Auth, Firestore, Storage), thiết kế Data Schema, triển khai Repositories, xử lý logic Realtime & Cloud Messaging. |
-| **Thành viên 2** | **UI/UX & Chat Lead** | Thiết kế Layouts XML, quản lý Activities/Fragments, xử lý RecyclerView chat, tối ưu trải nghiệm người dùng & tính năng bảo mật. |
-| **Thành viên 3** | **Multimedia Lead** | Xử lý Runtime Permissions, tích hợp CameraX, MediaRecorder/Player, FusedLocation, tích hợp Third-party Audio/Video Call SDK. |
+| Thành viên | Vai trò | Trách nhiệm chính | Kế hoạch chi tiết |
+| :--- | :--- | :--- | :---: |
+| **Thành viên 1** | **Backend & Data Lead** | Cấu hình Firebase (Auth, Firestore, Storage), thiết kế Data Schema, triển khai Repositories, xử lý logic Realtime & Cloud Messaging. | [Chi tiết](docs/Project_Plan.md) |
+| **Thành viên 2** | **UI/UX & Chat Lead** | Thiết kế Layouts XML, quản lý Activities/Fragments, xử lý RecyclerView chat, tối ưu trải nghiệm người dùng & tính năng bảo mật. | [Chi tiết](docs/Project_Plan.md) |
+| **Thành viên 3** | **Multimedia Lead** | Xử lý Runtime Permissions, tích hợp CameraX/Photo Picker, Voice Record/Player, Google Maps & ZegoCloud Call SDK. | [Xem Plan TV3](docs/Member3_Plan.md) |
 
 ---
 
