@@ -34,6 +34,16 @@
             android:windowSoftInputMode="adjustResize"
             tools:ignore="DuplicateActivity"/>
 
+        <activity
+            android:name=".ui.welcome.WelcomeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly.Register"
+            android:windowSoftInputMode="adjustResize" />
+
 
 
     </application>
