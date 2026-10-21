@@ -34,6 +34,10 @@
             android:windowSoftInputMode="adjustResize"
             tools:ignore="DuplicateActivity"/>
 
+        <activity
+            android:name=".ui.welcome.WelcomeActivity"
+            android:exported="false" />
+
 
 
     </application>
