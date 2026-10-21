@@ -7,6 +7,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
+import com.group12.chatly.ui.auth.LoginActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -21,19 +22,16 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        // Chữ "chat." màu vàng
         TextView tvHeadline = findViewById(R.id.tvHeadline);
         highlight(tvHeadline, ContextCompat.getColor(this, R.color.accent));
 
         findViewById(R.id.btnCreateAccount).setOnClickListener(v ->
                 startActivity(new Intent(this, RegisterActivity.class)));
 
-        findViewById(R.id.btnHaveAccount).setOnClickListener(v -> {
-            // TODO: chuyển sang LoginActivity khi có màn đăng nhập
-        });
+        findViewById(R.id.btnHaveAccount).setOnClickListener(v ->
+                startActivity(new Intent(this, LoginActivity.class)));
     }
 
-    /** Đoạn nằm trong thẻ <b> của string được đổi thành màu, không in đậm thêm. */
     private void highlight(TextView tv, int color) {
         SpannableString s = new SpannableString(tv.getText());
         for (StyleSpan span : s.getSpans(0, s.length(), StyleSpan.class)) {
