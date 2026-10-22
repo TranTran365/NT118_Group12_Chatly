@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/register_sheet"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    tools:context=".ui.profile.ProfileFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header (blue) -->
+        <LinearLayout
+            android:id="@+id/header_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/profile_padding"
+            android:paddingTop="12dp"
+            android:paddingEnd="@dimen/profile_padding"
+            android:paddingBottom="32dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="32dp">
+
+                <TextView
+                    android:id="@+id/tv_eyebrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="@string/profile_eyebrow"
+                    android:textAppearance="@style/TextAppearance.Chatly.Profile.Eyebrow" />
+
+                <ImageView
+                    android:id="@+id/img_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_chatly_logo"
+                    />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:clipChildren="false">
+
+                <!-- Avatar + nhãn "that's you." -->
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <FrameLayout
+                        android:layout_width="@dimen/profile_avatar_size"
+                        android:layout_height="@dimen/profile_avatar_size"
+                        android:layout_marginTop="17dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/img_avatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_profile_avatar"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Chatly.Circle" />
+
+                        <TextView
+                            android:id="@+id/tv_initials"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textAppearance="@style/TextAppearance.Chatly.Profile.Initials"
+                            tools:text="AM" />
+
+                        <FrameLayout
+                            android:id="@+id/btn_change_photo"
+                            android:layout_width="@dimen/profile_badge_size"
+                            android:layout_height="@dimen/profile_badge_size"
+                            android:layout_gravity="bottom|end"
+                            android:background="@drawable/bg_profile_badge"
+                            android:contentDescription="@string/profile_change_photo"
+                            android:focusable="true"
+                            android:clickable="true">
+
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:layout_gravity="center"
+                                android:importantForAccessibility="no"
+                                app:srcCompat="@drawable/ic_prof_camera"
+                                app:tint="@color/on_accent" />
+                        </FrameLayout>
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tv_sticker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:background="@drawable/bg_welcome_pill_yellow"
+                        android:paddingStart="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="3dp"
+                        android:rotation="-8"
+                        android:text="@string/profile_sticker"
+                        android:textAppearance="@style/TextAppearance.Chatly.Profile.Sticker"
+                        android:clipChildren="false"/>
+                </FrameLayout>
+
+                <!-- Tên, bio, trạng thái -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="17dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_display_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAppearance="@style/TextAppearance.Chatly.Profile.Name"
+                        tools:text="Alex Morgan" />
+
+                    <TextView
+                        android:id="@+id/tv_bio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAppearance="@style/TextAppearance.Chatly.Register.Subtitle"
+                        android:textSize="12sp"
+                        tools:text="Here for good conversations." />
+
+                    <LinearLayout
+                        android:id="@+id/pill_online"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_welcome_pill_white"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="10dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="3dp">
+
+                        <View
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
+                            android:background="@drawable/bg_profile_online_dot" />
+
+                        <TextView
+                            android:id="@+id/tv_online"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="@string/profile_online"
+                            android:textAppearance="@style/TextAppearance.Chatly.Profile.Pill"
+                            android:clipChildren="false"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Body (white sheet) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/register_sheet"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/profile_padding"
+            android:paddingTop="16dp"
+            android:paddingEnd="@dimen/profile_padding"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_section_account"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel"
+                android:textSize="12sp" />
+
+            <!-- Account card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Chatly.Profile.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/row_edit_profile"
+                        style="@style/Widget.Chatly.Profile.Row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:importantForAccessibility="no"
+                            app:srcCompat="@drawable/ic_prof_edit"
+                            app:tint="@color/register_blue" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="@string/profile_edit_profile"
+                            android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:importantForAccessibility="no"
+                            app:srcCompat="@drawable/ic_prof_chevron"
+                            app:tint="@color/register_icon_muted" />
+                    </LinearLayout>
+
+                    <View
+                        style="@style/Widget.Chatly.Profile.Divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <LinearLayout
+                        android:id="@+id/row_email"
+                        style="@style/Widget.Chatly.Profile.Row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:importantForAccessibility="no"
+                            app:srcCompat="@drawable/ic_prof_mail"
+                            app:tint="@color/register_blue" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="@string/profile_email"
+                            android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:importantForAccessibility="no"
+                            app:srcCompat="@drawable/ic_prof_chevron"
+                            app:tint="@color/register_icon_muted" />
+                    </LinearLayout>
+
+                    <View
+                        style="@style/Widget.Chatly.Profile.Divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <LinearLayout
+                        android:id="@+id/row_phone"
+                        style="@style/Widget.Chatly.Profile.Row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:importantForAccessibility="no"
+                            app:srcCompat="@drawable/ic_prof_phone"
+                            app:tint="@color/register_blue" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="@string/profile_phone"
+                            android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:importantForAccessibility="no"
+                            app:srcCompat="@drawable/ic_prof_chevron"
+                            app:tint="@color/register_icon_muted" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Privacy card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Chatly.Profile.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:id="@+id/row_privacy"
+                    style="@style/Widget.Chatly.Profile.Row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        app:srcCompat="@drawable/ic_prof_shield"
+                        app:tint="@color/register_blue" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="@string/profile_privacy"
+                        android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        app:srcCompat="@drawable/ic_prof_chevron"
+                        app:tint="@color/register_icon_muted" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/profile_section_preferences"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel"
+                android:textSize="12sp" />
+
+            <!-- Preferences card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Chatly.Profile.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/row_notifications"
+                        style="@style/Widget.Chatly.Profile.Row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:importantForAccessibility="no"
+                            app:srcCompat="@drawable/ic_prof_bell"
+                            app:tint="@color/register_blue" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="@string/profile_notifications"
+                            android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/sw_notifications"
+                            style="@style/Widget.Chatly.Profile.Switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+                    </LinearLayout>
+
+                    <View
+                        style="@style/Widget.Chatly.Profile.Divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <LinearLayout
+                        android:id="@+id/row_dark_mode"
+                        style="@style/Widget.Chatly.Profile.Row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:importantForAccessibility="no"
+                            app:srcCompat="@drawable/ic_prof_moon"
+                            app:tint="@color/register_blue" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="@string/profile_dark_mode"
+                            android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/sw_dark_mode"
+                            style="@style/Widget.Chatly.Profile.Switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Log out -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Chatly.Profile.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:id="@+id/row_logout"
+                    style="@style/Widget.Chatly.Profile.Row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/profile_logout"
+                        android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel"
+                        android:textColor="@color/register_error" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        app:srcCompat="@drawable/ic_prof_logout"
+                        app:tint="@color/register_error" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
