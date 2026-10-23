@@ -21,6 +21,7 @@ public class SplashActivity extends AppCompatActivity {
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             startActivity(new Intent(this, WelcomeActivity.class));
+//            startActivity(new Intent(this, com.group12.chatly.MainActivity.class));
             finish();
         }, SPLASH_DELAY_MS);
     }

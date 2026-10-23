@@ -44,6 +44,8 @@
         <item name="android:textColor">@color/register_text_primary</item>
     </style>
 
+    <style name="Widget.Chatly.Profile" parent="" />
+
     <style name="Widget.Chatly.Profile.Card" parent="Widget.Material3.CardView.Outlined">
         <item name="cardBackgroundColor">@color/white</item>
         <item name="strokeColor">@color/register_field_border</item>
@@ -52,7 +54,7 @@
         <item name="cardElevation">0dp</item>
     </style>
 
-    <style name="Widget.Chatly.Profile.Row">
+    <style name="Widget.Chatly.Profile.Row" parent="">
         <item name="android:orientation">horizontal</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:minHeight">42dp</item>
@@ -63,7 +65,7 @@
         <item name="android:focusable">true</item>
     </style>
 
-    <style name="Widget.Chatly.Profile.Divider">
+    <style name="Widget.Chatly.Profile.Divider" parent="">
         <item name="android:background">@color/register_divider</item>
     </style>
 
