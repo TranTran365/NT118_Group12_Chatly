@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Chatly</string>
+    <string name="label_name">Name</string>
+    <string name="label_email">Email Address</string>
+    <string name="label_password">Password</string>
+    <string name="label_confirm_password">Confirm Password</string>
+    <string name="btn_sign_up">SIGN UP</string>
+    <string name="have_account">Have an account already?</string>
+    <string name="log_in">Log in</string>
+</resources>
