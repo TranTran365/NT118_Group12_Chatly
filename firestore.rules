@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Quy tắc cho collection 'users'
+    match /users/{userId} {
+      // Bất kỳ người dùng nào đã đăng nhập đều có thể đọc thông tin hồ sơ (để tìm kiếm, hiển thị danh bạ)
+      allow read: if request.auth != null;
+
+      // Người dùng chỉ có quyền tạo hoặc chỉnh sửa hồ sơ của chính mình (UID khớp với Document ID)
+      allow create, update: if request.auth != null && request.auth.uid == userId;
+
+      // Không cho phép xóa document người dùng từ client
+      allow delete: if false;
+    }
+
+  }
+}
+

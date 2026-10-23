@@ -10,6 +10,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.group12.chatly.data.model.User;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Repository responsible for user authentication and user profile management in Firebase.
  */
@@ -67,24 +69,33 @@ public class AuthRepository {
     /**
      * Registers a new user with email, password, and display name.
      * Updates Firebase Auth profile and creates a document in Firestore 'users'.
+     *
+     * In case of Firestore write failure, onFailure is invoked to ensure the UI
+     * does not falsely report complete success.
      */
     public void registerWithEmail(@NonNull String fullName,
                                   @NonNull String email,
                                   @NonNull String password,
                                   @NonNull AuthCallback<User> callback) {
+        final AtomicBoolean callbackDispatched = new AtomicBoolean(false);
+
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful() || task.getResult() == null) {
-                        String errorMsg = task.getException() != null
+                        String errorMsg = task.getException() != null && task.getException().getMessage() != null
                                 ? task.getException().getMessage()
                                 : "Registration failed.";
-                        callback.onFailure(errorMsg);
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onFailure(errorMsg);
+                        }
                         return;
                     }
 
                     FirebaseUser firebaseUser = task.getResult().getUser();
                     if (firebaseUser == null) {
-                        callback.onFailure("Failed to retrieve user after registration.");
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onFailure("Failed to retrieve user after registration.");
+                        }
                         return;
                     }
 
@@ -98,10 +109,18 @@ public class AuthRepository {
                         firestore.collection(COLLECTION_USERS)
                                 .document(newUser.getUserId())
                                 .set(newUser)
-                                .addOnSuccessListener(aVoid -> callback.onSuccess(newUser))
+                                .addOnSuccessListener(aVoid -> {
+                                    if (callbackDispatched.compareAndSet(false, true)) {
+                                        callback.onSuccess(newUser);
+                                    }
+                                })
                                 .addOnFailureListener(e -> {
-                                    // Even if Firestore write encounters an error, account is created in Auth
-                                    callback.onSuccess(newUser);
+                                    String errorMsg = e != null && e.getMessage() != null
+                                            ? "Account created, but failed to save user profile: " + e.getMessage()
+                                            : "Account created, but failed to save user profile in Firestore.";
+                                    if (callbackDispatched.compareAndSet(false, true)) {
+                                        callback.onFailure(errorMsg);
+                                    }
                                 });
                     });
                 });
@@ -113,23 +132,43 @@ public class AuthRepository {
     public void loginWithEmail(@NonNull String email,
                                @NonNull String password,
                                @NonNull AuthCallback<User> callback) {
+        final AtomicBoolean callbackDispatched = new AtomicBoolean(false);
+
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful() || task.getResult() == null) {
-                        String errorMsg = task.getException() != null
+                        String errorMsg = task.getException() != null && task.getException().getMessage() != null
                                 ? task.getException().getMessage()
                                 : "Sign in failed.";
-                        callback.onFailure(errorMsg);
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onFailure(errorMsg);
+                        }
                         return;
                     }
 
                     FirebaseUser firebaseUser = task.getResult().getUser();
                     if (firebaseUser == null) {
-                        callback.onFailure("User profile not found.");
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onFailure("User profile not found.");
+                        }
                         return;
                     }
 
-                    getCurrentUserProfile(callback);
+                    getCurrentUserProfile(new AuthCallback<User>() {
+                        @Override
+                        public void onSuccess(User result) {
+                            if (callbackDispatched.compareAndSet(false, true)) {
+                                callback.onSuccess(result);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            if (callbackDispatched.compareAndSet(false, true)) {
+                                callback.onFailure(errorMessage);
+                            }
+                        }
+                    });
                 });
     }
 
@@ -137,6 +176,8 @@ public class AuthRepository {
      * Fetches the current user profile from Firestore.
      */
     public void getCurrentUserProfile(@NonNull AuthCallback<User> callback) {
+        final AtomicBoolean callbackDispatched = new AtomicBoolean(false);
+
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser == null) {
             callback.onFailure("No user is currently authenticated.");
@@ -152,7 +193,9 @@ public class AuthRepository {
                         if (snapshot != null && snapshot.exists()) {
                             User user = snapshot.toObject(User.class);
                             if (user != null) {
-                                callback.onSuccess(user);
+                                if (callbackDispatched.compareAndSet(false, true)) {
+                                    callback.onSuccess(user);
+                                }
                                 return;
                             }
                         }
@@ -163,12 +206,16 @@ public class AuthRepository {
                         if (firebaseUser.getPhotoUrl() != null) {
                             fallbackUser.setAvatarUrl(firebaseUser.getPhotoUrl().toString());
                         }
-                        callback.onSuccess(fallbackUser);
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onSuccess(fallbackUser);
+                        }
                     } else {
-                        String errorMsg = task.getException() != null
+                        String errorMsg = task.getException() != null && task.getException().getMessage() != null
                                 ? task.getException().getMessage()
                                 : "Failed to load user profile.";
-                        callback.onFailure(errorMsg);
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onFailure(errorMsg);
+                        }
                     }
                 });
     }

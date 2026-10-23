@@ -3,6 +3,7 @@ package com.group12.chatly.data.repository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.group12.chatly.data.model.User;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,5 +71,24 @@ public class AuthRepositoryUnitTest {
 
         verify(mockAuth).signOut();
     }
-}
 
+    @Test
+    public void testGetCurrentUserProfile_whenNoUser_callsOnFailure() {
+        when(mockAuth.getCurrentUser()).thenReturn(null);
+
+        final boolean[] failureCalled = {false};
+        authRepository.getCurrentUserProfile(new AuthCallback<User>() {
+            @Override
+            public void onSuccess(User result) {
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                failureCalled[0] = true;
+                assertEquals("No user is currently authenticated.", errorMessage);
+            }
+        });
+
+        assertTrue(failureCalled[0]);
+    }
+}
