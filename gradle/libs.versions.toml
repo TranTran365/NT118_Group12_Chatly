@@ -7,6 +7,12 @@ appcompat = "1.8.0"
 material = "1.14.0"
 activityKtx = "1.13.0"
 constraintlayout = "2.2.2"
+playServicesLocation = "21.2.0"
+playServicesMaps = "18.2.0"
+glide = "4.16.0"
+photoview = "2.3.0"
+zegoCall = "3.6.0"
+emoji2 = "1.5.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -16,6 +22,13 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+emoji2 = { group = "androidx.emoji2", name = "emoji2", version.ref = "emoji2" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+photoview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "photoview" }
+zego-call = { group = "im.zego", name = "zego_uikit_prebuilt_call_android", version.ref = "zegoCall" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

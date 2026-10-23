@@ -38,6 +38,16 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)
     implementation(libs.material)
+
+    // Multimedia: vị trí, bản đồ, ảnh, gọi Zego, emoji
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
+    implementation(libs.photoview)
+    implementation(libs.zego.call)
+    implementation(libs.emoji2)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
