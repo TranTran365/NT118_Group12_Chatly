@@ -1,8 +1,0 @@
-<resources>
-    <string name="login_title">Good to have\nyou back.</string>
-    <string name="login_subtitle">Your next great conversation is waiting.</string>
-    <string name="login_forgot_password">Forgot password?</string>
-    <string name="login_sign_in">Sign in</string>
-    <string name="login_new_here">New to chatly? <b>Create an account</b></string>
-    <string name="login_error_password">Please enter your password</string>
-</resources>
