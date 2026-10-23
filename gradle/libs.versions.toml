@@ -13,6 +13,10 @@ glide = "4.16.0"
 photoview = "2.3.0"
 zegoCall = "3.6.0"
 emoji2 = "1.5.0"
+firebaseBom = "33.7.0"
+lifecycle = "2.8.7"
+googleServicesPlugin = "4.4.2"
+mockito = "5.11.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -28,7 +32,13 @@ play-services-maps = { group = "com.google.android.gms", name = "play-services-m
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 photoview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "photoview" }
 zego-call = { group = "im.zego", name = "zego_uikit_prebuilt_call_android", version = "+" }
+lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycle" }
+lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata", version.ref = "lifecycle" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesPlugin" }
