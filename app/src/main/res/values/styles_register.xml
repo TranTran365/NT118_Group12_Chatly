@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Chatly.Register" parent="Theme.Chatly">
+        <item name="android:windowBackground">@color/register_sheet</item>
+        <item name="android:navigationBarColor">@color/register_sheet</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="colorPrimary">@color/register_blue</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/register_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.Chatly.Register.Headline" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/nunito_extrabold</item>
+        <item name="android:fontFamily">@font/nunito_extrabold</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">36sp</item>
+        <item name="lineHeight">36sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextAppearance.Chatly.Register.Subtitle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/nunito_regular</item>
+        <item name="android:fontFamily">@font/nunito_regular</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/register_subtitle</item>
+    </style>
+    <style name="TextAppearance.Chatly.Register.FieldLabel" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/nunito_bold</item>
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/register_text_primary</item>
+    </style>
+    <style name="TextAppearance.Chatly.Register.Input" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/nunito_regular</item>
+        <item name="android:fontFamily">@font/nunito_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/register_text_primary</item>
+    </style>
+    <style name="TextAppearance.Chatly.Register.Muted" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/nunito_regular</item>
+        <item name="android:fontFamily">@font/nunito_regular</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/register_text_muted</item>
+    </style>
+    <style name="TextAppearance.Chatly.Register.Terms" parent="TextAppearance.Chatly.Register.Muted">
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="TextAppearance.Chatly.Register.Footer" parent="TextAppearance.Chatly.Register.Muted">
+        <item name="android:textSize">13sp</item>
+    </style>
+    <style name="TextAppearance.Chatly.Register.Button" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/nunito_bold</item>
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+    <style name="TextAppearance.Chatly.Register.GoogleButton" parent="TextAppearance.Chatly.Register.Button">
+        <item name="fontFamily">@font/nunito_semibold</item>
+        <item name="android:fontFamily">@font/nunito_semibold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Widget.Chatly.Register.TextInput" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="hintEnabled">false</item>
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeColor">@color/register_field_stroke</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1.5dp</item>
+        <item name="boxStrokeErrorColor">@color/register_error</item>
+        <item name="errorTextColor">@color/register_error</item>
+        <item name="boxCornerRadiusTopStart">@dimen/register_corner</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/register_corner</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/register_corner</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/register_corner</item>
+        <item name="startIconTint">@color/register_blue</item>
+        <item name="endIconTint">@color/register_icon_muted</item>
+    </style>
+    <style name="Widget.Chatly.Register.EditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">
+        <item name="android:textAppearance">@style/TextAppearance.Chatly.Register.Input</item>
+        <item name="android:textColor">@color/register_text_primary</item>
+        <item name="android:textColorHint">@color/register_text_muted</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="Widget.Chatly.Register.Button.Primary" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/register_blue</item>
+        <item name="cornerRadius">@dimen/register_corner</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">@style/TextAppearance.Chatly.Register.Button</item>
+        <item name="iconTint">@color/white</item>
+    </style>
+    <style name="Widget.Chatly.Register.Button.Google" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@color/white</item>
+        <item name="strokeColor">@color/register_field_border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cornerRadius">@dimen/register_corner</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textColor">@color/register_text_primary</item>
+        <item name="android:textAppearance">@style/TextAppearance.Chatly.Register.GoogleButton</item>
+        <item name="iconTint">@null</item>
+    </style>
+</resources>
