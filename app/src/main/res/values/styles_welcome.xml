@@ -6,7 +6,6 @@
         <item name="fontFamily">@font/nunito_extrabold</item>
         <item name="android:fontFamily">@font/nunito_extrabold</item>
         <item name="android:textSize">40sp</item>
-        <item name="android:lineHeight">44sp</item>
         <item name="lineHeight">44sp</item>
         <item name="android:textColor">@color/on_background</item>
     </style>

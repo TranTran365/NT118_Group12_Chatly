@@ -8,10 +8,15 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.group12.chatly.MainActivity;
 import com.group12.chatly.R;
+import com.group12.chatly.viewmodel.AuthViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final int MIN_PASSWORD_LENGTH = 8;
@@ -19,11 +24,16 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputLayout tilFullName, tilEmail, tilPassword;
     private TextInputEditText etFullName, etEmail, etPassword;
     private CheckBox cbTerms;
+    private Button btnCreateAccount;
+
+    private AuthViewModel authViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         tilFullName = findViewById(R.id.tilFullName);
         tilEmail = findViewById(R.id.tilEmail);
@@ -33,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         cbTerms = findViewById(R.id.cbTerms);
 
-        Button btnCreateAccount = findViewById(R.id.btnCreateAccount);
+        btnCreateAccount = findViewById(R.id.btnCreateAccount);
         TextView tvSignIn = findViewById(R.id.tvSignIn);
         ImageButton btnBack = findViewById(R.id.btnBack);
 
@@ -44,7 +54,10 @@ public class RegisterActivity extends AppCompatActivity {
         if (btnCreateAccount != null) {
             btnCreateAccount.setOnClickListener(v -> {
                 if (validateInput()) {
-                    // TODO: gọi AuthRepository đăng ký bằng Firebase
+                    String name = String.valueOf(etFullName.getText()).trim();
+                    String email = String.valueOf(etEmail.getText()).trim();
+                    String password = String.valueOf(etPassword.getText());
+                    authViewModel.register(name, email, password);
                 }
             });
         }
@@ -55,6 +68,31 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             });
         }
+
+        setupObservers();
+    }
+
+    private void setupObservers() {
+        authViewModel.getRegisterState().observe(this, state -> {
+            if (state == null || btnCreateAccount == null) return;
+
+            if (state.isLoading()) {
+                btnCreateAccount.setEnabled(false);
+                btnCreateAccount.setText(R.string.register_creating_account);
+            } else if (state.isSuccess()) {
+                btnCreateAccount.setEnabled(true);
+                btnCreateAccount.setText(R.string.register_create_account);
+                Toast.makeText(this, R.string.register_success, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else if (state.isError()) {
+                btnCreateAccount.setEnabled(true);
+                btnCreateAccount.setText(R.string.register_create_account);
+                Toast.makeText(this, state.getErrorMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private boolean validateInput() {

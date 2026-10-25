@@ -56,6 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal"
+                android:baselineAligned="false"
                 android:clipChildren="false">
 
                 <!-- Avatar + nhãn "that's you." -->

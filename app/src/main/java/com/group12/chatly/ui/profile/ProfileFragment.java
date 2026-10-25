@@ -5,18 +5,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.group12.chatly.R;
+import com.group12.chatly.data.model.User;
 import com.group12.chatly.ui.welcome.WelcomeActivity;
+import com.group12.chatly.viewmodel.ProfileViewModel;
 
 import java.util.Locale;
 
@@ -26,7 +31,10 @@ public class ProfileFragment extends Fragment {
     private static final String KEY_NOTIFICATIONS = "notifications_enabled";
 
     private TextView tvInitials, tvDisplayName, tvBio;
+    private ImageView imgAvatar;
     private SwitchCompat swNotifications, swDarkMode;
+
+    private ProfileViewModel profileViewModel;
 
     public ProfileFragment() {
         super(R.layout.fragment_profile);
@@ -36,16 +44,21 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
         tvInitials = view.findViewById(R.id.tv_initials);
         tvDisplayName = view.findViewById(R.id.tv_display_name);
         tvBio = view.findViewById(R.id.tv_bio);
+        imgAvatar = view.findViewById(R.id.img_avatar);
         swNotifications = view.findViewById(R.id.sw_notifications);
         swDarkMode = view.findViewById(R.id.sw_dark_mode);
 
         setupInsets(view);
-        bindUser();
+        setupUserObserver();
         setupPreferences(view);
         setupRows(view);
+
+        profileViewModel.loadUserProfile();
     }
 
     private void setupInsets(View root) {
@@ -61,17 +74,39 @@ public class ProfileFragment extends Fragment {
         ViewCompat.requestApplyInsets(header);
     }
 
-    private void bindUser() {
-        // TODO: thay bằng dữ liệu thật từ Firebase khi có AuthRepository.
-        //   FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-        //   name = u.getDisplayName(); email = u.getEmail(); photo = u.getPhotoUrl();
-        String name = "Alex Morgan";
-        String bio = "Here for good conversations.";
+    private void setupUserObserver() {
+        profileViewModel.getUserProfileState().observe(getViewLifecycleOwner(), state -> {
+            if (state == null) return;
 
-        tvDisplayName.setText(name);
-        tvBio.setText(bio);
-        tvInitials.setText(initialsOf(name));
-        // TODO: có ảnh đại diện thì load vào img_avatar (Glide) và ẩn tv_initials.
+            if (state.isSuccess() && state.getData() != null) {
+                User user = state.getData();
+                String name = (user.getDisplayName() != null && !user.getDisplayName().trim().isEmpty())
+                        ? user.getDisplayName()
+                        : (user.getEmail() != null ? user.getEmail() : "Chatly User");
+                String bio = (user.getBio() != null && !user.getBio().trim().isEmpty())
+                        ? user.getBio()
+                        : "Here for good conversations.";
+
+                tvDisplayName.setText(name);
+                tvBio.setText(bio);
+                tvInitials.setText(initialsOf(name));
+
+                if (user.getAvatarUrl() != null && !user.getAvatarUrl().trim().isEmpty() && getContext() != null) {
+                    Glide.with(this)
+                            .load(user.getAvatarUrl())
+                            .circleCrop()
+                            .into(imgAvatar);
+                    tvInitials.setVisibility(View.GONE);
+                } else {
+                    tvInitials.setVisibility(View.VISIBLE);
+                }
+            } else if (state.isError()) {
+                // Fallback display if not logged in or offline
+                tvDisplayName.setText(R.string.app_name);
+                tvBio.setText(state.getErrorMessage());
+                tvInitials.setText("?");
+            }
+        });
     }
 
     private void setupPreferences(View root) {
@@ -83,10 +118,7 @@ public class ProfileFragment extends Fragment {
         swNotifications.setOnCheckedChangeListener((button, checked) ->
                 prefs.edit().putBoolean(KEY_NOTIFICATIONS, checked).apply());
 
-        // TODO: Dark mode mới là UI, chưa nối logic. App đang khóa theme Light,
-        // chưa có bảng màu tối nên bật lên sẽ vỡ giao diện.
-
-        // Bấm cả dòng cũng gạt được switch
+        // Dark mode: UI placeholder
         root.findViewById(R.id.row_notifications).setOnClickListener(v -> swNotifications.toggle());
         root.findViewById(R.id.row_dark_mode).setOnClickListener(v -> swDarkMode.toggle());
     }
@@ -111,7 +143,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void logout() {
-        // TODO: FirebaseAuth.getInstance().signOut();
+        profileViewModel.logout();
 
         // Xóa hết back stack để bấm Back không quay lại màn đã đăng nhập
         Intent intent = new Intent(requireContext(), WelcomeActivity.class);
