@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/profile_dialog_padding">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:importantForAccessibility="no"
+        app:srcCompat="@drawable/ic_prof_logout"
+        app:tint="@color/register_blue" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/logout_dialog_title"
+        android:textAppearance="@style/TextAppearance.Chatly.Title"
+        android:textColor="@color/register_text_primary"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/logout_dialog_message"
+        android:textAppearance="@style/TextAppearance.Chatly.Body"
+        android:textColor="@color/register_text_muted"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_logout_stay"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/profile_dialog_button_height"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/logout_dialog_stay"
+            android:textAppearance="@style/TextAppearance.Chatly.Register.Button"
+            android:textColor="@color/register_text_primary"
+            app:cornerRadius="@dimen/profile_dialog_button_radius"
+            app:strokeColor="@color/register_field_border" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_logout_confirm"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/profile_dialog_button_height"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/logout_dialog_confirm"
+            android:textAppearance="@style/TextAppearance.Chatly.Register.Button"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/register_blue"
+            app:cornerRadius="@dimen/profile_dialog_button_radius"
+            app:icon="@drawable/ic_reg_arrow_forward"
+            app:iconGravity="end"
+            app:iconTint="@color/white" />
+    </LinearLayout>
+</LinearLayout>

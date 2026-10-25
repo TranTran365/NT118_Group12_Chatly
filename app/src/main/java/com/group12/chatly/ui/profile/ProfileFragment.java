@@ -24,6 +24,10 @@ import com.group12.chatly.ui.welcome.WelcomeActivity;
 import com.group12.chatly.viewmodel.ProfileViewModel;
 
 import java.util.Locale;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
+import android.view.LayoutInflater;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class ProfileFragment extends Fragment {
 
@@ -139,7 +143,27 @@ public class ProfileFragment extends Fragment {
         root.findViewById(R.id.row_privacy).setOnClickListener(v -> {
             // TODO: mở màn Privacy & security
         });
-        root.findViewById(R.id.row_logout).setOnClickListener(v -> logout());
+        root.findViewById(R.id.row_logout).setOnClickListener(v -> showLogoutDialog());
+    }
+
+    private void showLogoutDialog() {
+        View content = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_logout, null, false);
+        int inset = getResources().getDimensionPixelSize(R.dimen.profile_padding);
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setView(content)
+                .setBackground(AppCompatResources.getDrawable(requireContext(), R.drawable.bg_profile_dialog))
+                .setBackgroundInsetStart(inset)
+                .setBackgroundInsetEnd(inset)
+                .create();
+
+        content.findViewById(R.id.btn_logout_stay).setOnClickListener(v -> dialog.dismiss());
+        content.findViewById(R.id.btn_logout_confirm).setOnClickListener(v -> {
+            dialog.dismiss();
+            logout();
+        });
+        dialog.show();
     }
 
     private void logout() {

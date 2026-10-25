@@ -2,4 +2,10 @@
     <dimen name="profile_padding">20dp</dimen>
     <dimen name="profile_avatar_size">72dp</dimen>
     <dimen name="profile_badge_size">24dp</dimen>
+
+    // logout
+    <dimen name="profile_dialog_radius">20dp</dimen>
+    <dimen name="profile_dialog_padding">20dp</dimen>
+    <dimen name="profile_dialog_button_height">48dp</dimen>
+    <dimen name="profile_dialog_button_radius">12dp</dimen>
 </resources>
