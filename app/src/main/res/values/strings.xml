@@ -31,6 +31,7 @@
     <string name="start_voice_call">Start Voice Call</string>
     <string name="start_video_call">Start Video Call</string>
     <string name="current_location_marker">Current Location</string>
+    <string name="default_coordinates">Lat: 0.0, Lng: 0.0</string>
     <string name="gps_disabled_prompt">GPS is disabled. Please enable location services in settings.</string>
 
 </resources>
