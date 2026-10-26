@@ -199,6 +199,7 @@
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:text="@string/register_terms"
                 android:textAppearance="@style/TextAppearance.Chatly.Register.Terms"
                 app:buttonTint="@color/register_checkbox_tint"
