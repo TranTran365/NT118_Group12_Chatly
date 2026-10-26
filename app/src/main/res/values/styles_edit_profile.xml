@@ -1,0 +1,13 @@
+<resources>
+    <style name="TextAppearance.Chatly.EditProfile.Link" parent="TextAppearance.Chatly.Register.FieldLabel">
+        <item name="android:textColor">@color/register_blue</item>
+    </style>
+    <style name="TextAppearance.Chatly.EditProfile.SheetRow" parent="TextAppearance.Chatly.Register.FieldLabel">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Widget.Chatly.EditProfile.TextInput.ReadOnly" parent="Widget.Chatly.Register.TextInput">
+        <item name="boxBackgroundColor">@color/edit_field_readonly_bg</item>
+        <item name="boxStrokeColor">@color/register_field_border</item>
+        <item name="startIconTint">@color/register_icon_muted</item>
+    </style>
+</resources>

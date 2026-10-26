@@ -127,9 +127,10 @@ public class ProfileFragment extends Fragment {
         root.findViewById(R.id.btn_change_photo).setOnClickListener(v -> {
             // TODO: mở image picker, upload ảnh đại diện
         });
-        root.findViewById(R.id.row_edit_profile).setOnClickListener(v -> {
-            // TODO: mở EditProfileActivity khi có màn này
-        });
+
+        root.findViewById(R.id.row_edit_profile).setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), EditProfileActivity.class)));
+
         root.findViewById(R.id.row_email).setOnClickListener(v -> {
             // TODO: đổi email
         });

@@ -101,6 +101,12 @@
             android:exported="false"
             android:theme="@style/Theme.Chatly" />
 
+        <activity
+            android:name=".ui.profile.EditProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly.Register"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- FileProvider for secure photo capture and media sharing -->
         <provider
             android:name="androidx.core.content.FileProvider"

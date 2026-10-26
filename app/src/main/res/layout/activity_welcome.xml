@@ -54,21 +54,20 @@
         <FrameLayout
             android:id="@+id/heroContainer"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@color/welcome_hero_bg"
             android:minHeight="240dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                >
 
-                <!-- "hey, you! -->
+<!--                 "hey, you!-->
                 <ImageView
                     android:id="@+id/imgHero"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="410dp"
+                    android:layout_height="348dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/welcome_hero_description"
                     android:src="@drawable/img_welcome_hero"
@@ -76,6 +75,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
 
                 <TextView
                     android:id="@+id/tvLabelHey"
@@ -130,13 +130,12 @@
             android:paddingEnd="@dimen/screen_padding"
             android:paddingBottom="16dp">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvHeadline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/welcome_headline"
-                android:textAppearance="@style/TextAppearance.Chatly.Welcome.Headline"
-                />
+                android:textAppearance="@style/TextAppearance.Chatly.Welcome.Headline" />
 
             <TextView
                 android:id="@+id/tvSubtitle"

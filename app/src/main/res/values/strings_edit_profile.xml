@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_title">Make it yours.</string>
+    <string name="edit_subtitle">A little you, in every conversation.</string>
+    <string name="edit_change_photo">Change photo</string>
+    <string name="edit_change_photo_hint">Let your friends put a face to the chat.</string>
+    <string name="edit_label_full_name">Full name</string>
+    <string name="edit_label_bio">Bio</string>
+    <string name="edit_label_email">Email · read-only</string>
+    <string name="edit_label_phone">Phone</string>
+    <string name="edit_bio_counter">%1$d/%2$d</string>
+    <string name="edit_save">Save changes</string>
+    <string name="edit_error_name">Please enter your name</string>
+    <string name="edit_error_phone">Please enter a valid phone number</string>
+    <string name="edit_close">Close</string>
+
+    <string name="sheet_title">Change photo</string>
+    <string name="sheet_take_photo">Take a photo</string>
+    <string name="sheet_choose_gallery">Choose from gallery</string>
+    <string name="sheet_remove_photo">Remove photo</string>
+</resources>
