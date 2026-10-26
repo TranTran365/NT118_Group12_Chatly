@@ -10,6 +10,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.group12.chatly.data.model.User;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -226,4 +228,45 @@ public class AuthRepository {
     public void logout() {
         firebaseAuth.signOut();
     }
-}
+    /**
+     * Updates the avatar URL for the current user in Firestore and Firebase Auth profile.
+     * Called after a successful Storage upload.
+     *
+     * @param avatarUrl Public download URL from Firebase Storage
+     * @param callback  Success delivers the updated URL; Failure delivers the error message
+     */
+    public void updateAvatarUrl(@NonNull String avatarUrl, @NonNull AuthCallback<String> callback) {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser == null) {
+            callback.onFailure("No authenticated user.");
+            return;
+        }
+
+        final String userId = firebaseUser.getUid();
+        final AtomicBoolean callbackDispatched = new AtomicBoolean(false);
+
+        // 1. Update Firestore users/{userId}.avatarUrl
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("avatarUrl", avatarUrl);
+
+        firestore.collection(COLLECTION_USERS)
+                .document(userId)
+                .update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    // 2. Also update Firebase Auth profile photo so getPhotoUrl() is consistent
+                    UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(android.net.Uri.parse(avatarUrl))
+                            .build();
+                    firebaseUser.updateProfile(request).addOnCompleteListener(task -> {
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onSuccess(avatarUrl);
+                        }
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    String msg = e.getMessage() != null ? e.getMessage() : "Failed to update avatar URL.";
+                    if (callbackDispatched.compareAndSet(false, true)) {
+                        callback.onFailure(msg);
+                    }
+                });
+    }}

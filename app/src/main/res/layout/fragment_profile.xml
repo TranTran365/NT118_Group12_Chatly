@@ -85,6 +85,15 @@
                             android:textAppearance="@style/TextAppearance.Chatly.Profile.Initials"
                             tools:text="AM" />
 
+                        <ProgressBar
+                            android:id="@+id/pb_avatar_loading"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:indeterminate="true"
+                            android:indeterminateTint="@color/register_blue"
+                            android:visibility="gone" />
+
                         <FrameLayout
                             android:id="@+id/btn_change_photo"
                             android:layout_width="@dimen/profile_badge_size"

@@ -39,6 +39,7 @@ lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata"
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 
 [plugins]

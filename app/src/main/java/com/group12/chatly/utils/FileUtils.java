@@ -149,7 +149,7 @@ public final class FileUtils {
             mimeType = context.getContentResolver().getType(uri);
         } else {
             String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
-            if (!TextUtils.isEmpty(fileExtension)) {
+            if (fileExtension != null && !fileExtension.trim().isEmpty()) {
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.toLowerCase(Locale.ROOT));
             }
         }
@@ -235,7 +235,7 @@ public final class FileUtils {
      * Deletes a specific temporary file after uploading to remote storage.
      */
     public static boolean deleteFile(String filePath) {
-        if (TextUtils.isEmpty(filePath)) return false;
+        if (filePath == null || filePath.trim().isEmpty()) return false;
         try {
             File file = new File(filePath);
             return file.exists() && file.delete();
