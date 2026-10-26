@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_edit_sheet"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/screen_padding"
+    android:paddingTop="8dp"
+    android:paddingEnd="@dimen/screen_padding"
+    android:paddingBottom="16dp">
+
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_edit_sheet_handle" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/sheet_title"
+            android:textAppearance="@style/TextAppearance.Chatly.Title"
+            android:textColor="@color/register_text_primary"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/btn_sheet_close"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/edit_close"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_edit_close"
+            app:tint="@color/register_icon_muted" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row_take_photo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_sheet_row_height"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:importantForAccessibility="no"
+            app:srcCompat="@drawable/ic_prof_camera"
+            app:tint="@color/register_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:text="@string/sheet_take_photo"
+            android:textAppearance="@style/TextAppearance.Chatly.EditProfile.SheetRow" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row_choose_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_sheet_row_height"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:importantForAccessibility="no"
+            app:srcCompat="@drawable/ic_edit_gallery"
+            app:tint="@color/register_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:text="@string/sheet_choose_gallery"
+            android:textAppearance="@style/TextAppearance.Chatly.EditProfile.SheetRow" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row_remove_photo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_sheet_row_height"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:importantForAccessibility="no"
+            app:srcCompat="@drawable/ic_edit_trash"
+            app:tint="@color/register_error" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:text="@string/sheet_remove_photo"
+            android:textAppearance="@style/TextAppearance.Chatly.EditProfile.SheetRow"
+            android:textColor="@color/register_error" />
+    </LinearLayout>
+</LinearLayout>

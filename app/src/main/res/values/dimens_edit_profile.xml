@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="edit_sheet_radius">24dp</dimen>
+    <dimen name="edit_sheet_row_height">48dp</dimen>
+    <dimen name="edit_avatar_size">60dp</dimen>
+    <dimen name="edit_badge_size">24dp</dimen>
+    <dimen name="edit_badge_overhang">8dp</dimen>
+</resources>
