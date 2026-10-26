@@ -1,11 +1,9 @@
 package com.group12.chatly.multimedia;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
-import android.provider.MediaStore;
 
-import androidx.activity.ComponentActivity;
+import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -36,11 +34,12 @@ public class MediaPickerHelper {
 
     /**
      * Registers a launcher for picking a single image (e.g. Avatar).
+     * Works with both ComponentActivity and Fragment (implements ActivityResultCaller).
      */
     public static ActivityResultLauncher<PickVisualMediaRequest> registerSingleImagePicker(
-            @NonNull ComponentActivity activity,
+            @NonNull ActivityResultCaller caller,
             @NonNull SingleMediaCallback callback) {
-        return activity.registerForActivityResult(
+        return caller.registerForActivityResult(
                 new ActivityResultContracts.PickVisualMedia(),
                 uri -> {
                     if (uri != null) {
@@ -61,12 +60,13 @@ public class MediaPickerHelper {
 
     /**
      * Registers a launcher for picking multiple images/videos (Media sharing).
+     * Works with both ComponentActivity and Fragment (implements ActivityResultCaller).
      */
     public static ActivityResultLauncher<PickVisualMediaRequest> registerMultipleMediaPicker(
-            @NonNull ComponentActivity activity,
+            @NonNull ActivityResultCaller caller,
             int maxItems,
             @NonNull MultipleMediaCallback callback) {
-        return activity.registerForActivityResult(
+        return caller.registerForActivityResult(
                 new ActivityResultContracts.PickMultipleVisualMedia(maxItems),
                 uris -> {
                     if (uris != null && !uris.isEmpty()) {
@@ -102,4 +102,3 @@ public class MediaPickerHelper {
         );
     }
 }
-
