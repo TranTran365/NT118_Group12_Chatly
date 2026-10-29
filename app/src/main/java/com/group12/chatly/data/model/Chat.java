@@ -2,7 +2,7 @@ package com.group12.chatly.data.model;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.ServerTimestamp;
-
+import java.util.Map;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +25,40 @@ public class Chat implements Serializable {
     private LastMessage lastMessage;
     @ServerTimestamp
     private Timestamp updatedAt;
+    private Map<String, Long> unreadCount;
+
+    private Map<String, Timestamp> lastReadAt;
+    private Map<String, Timestamp> typingAt;
+
+    public Map<String, Timestamp> getTypingAt() { return typingAt; }
+    public void setTypingAt(Map<String, Timestamp> typingAt) { this.typingAt = typingAt; }
+
+    /** Mốc (ms) lần gõ gần nhất của một user; 0 nếu không đang gõ. */
+    public long typingAtMillisOf(String uid) {
+        if (typingAt == null) return 0;
+        Timestamp t = typingAt.get(uid);
+        return t == null ? 0 : t.toDate().getTime();
+    }
+
+    public Map<String, Timestamp> getLastReadAt() { return lastReadAt; }
+    public void setLastReadAt(Map<String, Timestamp> lastReadAt) { this.lastReadAt = lastReadAt; }
+
+    /** Thời điểm (ms) một user đã đọc chat lần cuối; 0 nếu chưa có. */
+    public long readAtMillisOf(String uid) {
+        if (lastReadAt == null) return 0;
+        Timestamp t = lastReadAt.get(uid);
+        return t == null ? 0 : t.toDate().getTime();
+    }
+
+    public Map<String, Long> getUnreadCount() { return unreadCount; }
+    public void setUnreadCount(Map<String, Long> unreadCount) { this.unreadCount = unreadCount; }
+
+    /** Số tin chưa đọc của một user trong chat này. */
+    public long unreadFor(String uid) {
+        if (unreadCount == null) return 0;
+        Long n = unreadCount.get(uid);
+        return n == null ? 0 : n;
+    }
 
     /** Required default public constructor for Firestore deserialization. */
     public Chat() {
@@ -110,5 +144,7 @@ public class Chat implements Serializable {
 
         public List<String> getReadBy() { return readBy; }
         public void setReadBy(List<String> readBy) { this.readBy = readBy; }
+
+
     }
 }

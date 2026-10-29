@@ -7,7 +7,7 @@
     android:background="@color/background"
     android:orientation="vertical">
 
-    <!-- Header Section -->
+    <!-- Header Section (Màu Xanh Blue) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,11 +30,10 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/nunito_extrabold"
                 android:letterSpacing="0.05"
-                android:text="@string/chats_empty_tagline"
+                android:text="@string/chats_tagline"
                 android:textColor="@color/on_background_muted"
                 android:textSize="11sp" />
 
-            <!-- Logo đã có sẵn trong project -->
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
@@ -55,115 +54,265 @@
 
     </LinearLayout>
 
-    <!-- Content Sheet -->
-    <androidx.core.widget.NestedScrollView
+    <!-- Content Sheet (Màu Trắng Bo Góc) -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@drawable/bg_chats_sheet"
-        android:fillViewport="true"
-        android:overScrollMode="never">
+        android:orientation="vertical">
 
+        <!-- Search Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_search_bar"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="Search"
+                android:src="@drawable/ic_search"
+                app:tint="@color/surface_deep" />
+
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="12dp"
+                android:background="@null"
+                android:fontFamily="@font/nunito_bold"
+                android:hint="@string/chats_empty_search_hint"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:textColor="@color/surface_deep"
+                android:textColorHint="#94A3B8"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <!-- Filter Bar (all chats / unread / groups) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingStart="24dp"
-            android:paddingTop="20dp"
+            android:paddingTop="6dp"
             android:paddingEnd="24dp"
-            android:paddingBottom="24dp">
+            android:paddingBottom="10dp">
 
-            <!-- Search Bar -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_search_bar"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="Search"
-                    android:src="@drawable/ic_search"
-                    app:tint="@color/surface_deep" />
-
-                <EditText
-                    android:id="@+id/etSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="12dp"
-                    android:background="@null"
-                    android:fontFamily="@font/nunito_bold"
-                    android:hint="@string/chats_empty_search_hint"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:textColor="@color/surface_deep"
-                    android:textColorHint="#94A3B8"
-                    android:textSize="15sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <!-- Yellow Tag Badge -->
             <TextView
+                android:id="@+id/tvFilterAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chats_badge"
+                android:background="@drawable/bg_filter_active"
                 android:fontFamily="@font/nunito_bold"
                 android:paddingStart="14dp"
                 android:paddingTop="6dp"
                 android:paddingEnd="14dp"
                 android:paddingBottom="6dp"
-                android:text="@string/chats_empty_badge"
+                android:text="@string/chats_filter_all"
                 android:textColor="@color/surface_deep"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
 
-            <!-- Headline -->
             <TextView
+                android:id="@+id/tvFilterUnread"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nunito_extrabold"
-                android:gravity="center"
-                android:lineSpacingExtra="2dp"
-                android:text="@string/chats_empty_title"
-                android:textColor="@color/surface_deep"
-                android:textSize="26sp" />
-
-            <!-- Subtitle -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
                 android:fontFamily="@font/nunito_bold"
-                android:gravity="center"
-                android:lineSpacingExtra="4dp"
-                android:text="@string/chats_empty_subtitle"
-                android:textColor="#475569"
-                android:textSize="14sp" />
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:text="@string/chats_filter_unread"
+                android:textColor="@color/surface_deep"
+                android:textSize="13sp" />
 
-            <View
+            <TextView
+                android:id="@+id/tvFilterGroups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/nunito_bold"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:text="@string/chats_filter_groups"
+                android:textColor="@color/surface_deep"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- Danh sách chat (khi đã có trò chuyện) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_chats"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingBottom="80dp"
+                android:visibility="gone" />
 
-            <!-- Action Button 1: say your first hey -->
+            <!-- Màn rỗng (khi chưa có trò chuyện) -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/sv_chats_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:overScrollMode="never"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingStart="24dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="24dp"
+                    android:paddingBottom="24dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <!-- Yellow Tag Badge -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chats_badge"
+                        android:fontFamily="@font/nunito_bold"
+                        android:paddingStart="14dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="14dp"
+                        android:paddingBottom="6dp"
+                        android:text="@string/chats_empty_badge"
+                        android:textColor="@color/surface_deep"
+                        android:textSize="12sp" />
+
+                    <!-- Headline -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/nunito_extrabold"
+                        android:gravity="center"
+                        android:lineSpacingExtra="2dp"
+                        android:text="@string/chats_empty_title"
+                        android:textColor="@color/surface_deep"
+                        android:textSize="26sp" />
+
+                    <!-- Subtitle -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/nunito_bold"
+                        android:gravity="center"
+                        android:lineSpacingExtra="4dp"
+                        android:text="@string/chats_empty_subtitle"
+                        android:textColor="#475569"
+                        android:textSize="14sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <!-- Action Button 1: say your first hey -->
+                    <RelativeLayout
+                        android:id="@+id/btnSayHey"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="24dp"
+                        android:background="@drawable/bg_btn_yellow"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/nunito_extrabold"
+                            android:text="@string/chats_empty_btn_say_hey"
+                            android:textColor="@color/surface_deep"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:contentDescription="Say Hey"
+                            android:src="@drawable/ic_say_hey"
+                            app:tint="@color/surface_deep" />
+                    </RelativeLayout>
+
+                    <!-- Action Button 2: create a group -->
+                    <RelativeLayout
+                        android:id="@+id/btnCreateGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_btn_outlined"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/nunito_extrabold"
+                            android:text="@string/chats_empty_btn_create_group"
+                            android:textColor="@color/surface_deep"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:contentDescription="Create Group"
+                            android:src="@drawable/ic_create_group"
+                            app:tint="@color/surface_deep" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <!-- Nút Vàng "let's yap." ở góc dưới (Figma Design) -->
             <RelativeLayout
-                android:id="@+id/btnSayHey"
+                android:id="@+id/btnLetsYap"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_btn_yellow"
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                android:paddingEnd="20dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -171,54 +320,21 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:fontFamily="@font/nunito_extrabold"
-                    android:text="@string/chats_empty_btn_say_hey"
+                    android:text="@string/chats_btn_lets_yap"
                     android:textColor="@color/surface_deep"
-                    android:textSize="15sp" />
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:contentDescription="Say Hey"
+                    android:contentDescription="New Chat"
                     android:src="@drawable/ic_say_hey"
                     app:tint="@color/surface_deep" />
             </RelativeLayout>
 
-            <!-- Action Button 2: create a group -->
-            <RelativeLayout
-                android:id="@+id/btnCreateGroup"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_btn_outlined"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:fontFamily="@font/nunito_extrabold"
-                    android:text="@string/chats_empty_btn_create_group"
-                    android:textColor="@color/surface_deep"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:contentDescription="Create Group"
-                    android:src="@drawable/ic_create_group"
-                    app:tint="@color/surface_deep" />
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+        </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

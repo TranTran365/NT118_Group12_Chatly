@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chats_avatar_bg">#E8EDFA</color>
+    <color name="msg_tick_sent">#DBEAFE</color>
+</resources>

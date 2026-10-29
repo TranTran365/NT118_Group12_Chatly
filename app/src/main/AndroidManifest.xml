@@ -118,6 +118,16 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <activity
+            android:name=".ui.chat.ChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.chat.NewChatActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly" />
+
     </application>
 
 </manifest>

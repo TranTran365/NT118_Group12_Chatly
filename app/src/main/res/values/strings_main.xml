@@ -15,4 +15,10 @@
     <string name="chats_empty_subtitle">Your people are one hello away.\nStart a chat or get the gang together.</string>
     <string name="chats_empty_btn_say_hey">say your first hey</string>
     <string name="chats_empty_btn_create_group">create a group</string>
+
+    <string name="chats_tagline">YOUR DAILY DOSE OF PEOPLE</string>
+    <string name="chats_filter_all">all chats</string>
+    <string name="chats_filter_unread">unread</string>
+    <string name="chats_filter_groups">groups</string>
+    <string name="chats_btn_lets_yap">let\'s yap.</string>
 </resources>

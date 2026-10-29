@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chats_unread_overflow">99+</string>
+    <string name="chats_unknown_user">User</string>
+    <string name="chats_preview_you">You: </string>
+    <string name="chat_status_online">Online</string>
+    <string name="chat_status_typing">typing…</string>
+    <string name="chats_typing">typing…</string>
+</resources>
