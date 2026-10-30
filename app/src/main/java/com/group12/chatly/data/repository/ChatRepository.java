@@ -103,7 +103,7 @@ public class ChatRepository {
                     if (value != null) {
                         List<Message> messages = new ArrayList<>();
                         for (DocumentSnapshot doc : value.getDocuments()) {
-                            Message msg = doc.toObject(Message.class);
+                            Message msg = doc.toObject(Message.class, DocumentSnapshot.ServerTimestampBehavior.ESTIMATE);
                             if (msg != null) {
                                 msg.setMessageId(doc.getId());
                                 messages.add(msg);

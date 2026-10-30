@@ -3,6 +3,7 @@ package com.group12.chatly.ui.chat;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.ColorStateList;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import com.group12.chatly.data.model.Message;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,14 +31,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_SENT = 1;
     private static final int VIEW_TYPE_RECEIVED = 2;
     private static final int VIEW_TYPE_TYPING = 3;
+    private static final int VIEW_TYPE_DATE_HEADER = 4;
 
     private final String currentUserId;
-    private final List<Message> messageList = new ArrayList<>();
+    private final List<DisplayItem> displayList = new ArrayList<>();
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd/MM", Locale.getDefault());
 
-    // Thời điểm (ms) người kia đọc chat lần cuối; 0 nếu chưa đọc
     private long otherReadAtMillis = 0;
-    // Người kia đang gõ -> thêm một dòng bong bóng ba chấm ở cuối danh sách
     private boolean showTyping = false;
 
     public MessageAdapter(String currentUserId) {
@@ -43,49 +46,62 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void setMessages(List<Message> newMessages) {
-        this.messageList.clear();
-        if (newMessages != null) {
-            this.messageList.addAll(newMessages);
+        this.displayList.clear();
+        if (newMessages != null && !newMessages.isEmpty()) {
+            Calendar prevCal = null;
+
+            for (Message msg : newMessages) {
+                if (msg.getCreatedAt() != null) {
+                    Date msgDate = msg.getCreatedAt().toDate();
+                    Calendar msgCal = Calendar.getInstance();
+                    msgCal.setTime(msgDate);
+
+                    if (prevCal == null || !isSameDay(prevCal, msgCal)) {
+                        String headerText = formatDateHeader(msgDate);
+                        displayList.add(new DisplayItem(VIEW_TYPE_DATE_HEADER, null, headerText));
+                        prevCal = msgCal;
+                    }
+                }
+
+                boolean isSent = msg.getSenderId() != null && msg.getSenderId().equals(currentUserId);
+                int type = isSent ? VIEW_TYPE_SENT : VIEW_TYPE_RECEIVED;
+                displayList.add(new DisplayItem(type, msg, null));
+            }
         }
         notifyDataSetChanged();
     }
 
-    /** Cập nhật mốc người kia đã đọc, vẽ lại dấu tích. */
     public void setOtherReadAtMillis(long millis) {
         if (this.otherReadAtMillis == millis) return;
         this.otherReadAtMillis = millis;
         notifyDataSetChanged();
     }
 
-    /** Bật/tắt bong bóng "đang nhập" ở cuối danh sách. */
     public void setTyping(boolean typing) {
         if (this.showTyping == typing) return;
         this.showTyping = typing;
         if (typing) {
-            notifyItemInserted(messageList.size());
+            notifyItemInserted(displayList.size());
         } else {
-            notifyItemRemoved(messageList.size());
+            notifyItemRemoved(displayList.size());
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == messageList.size()) {
-            return VIEW_TYPE_TYPING; // chỉ xảy ra khi showTyping = true
+        if (position == displayList.size()) {
+            return VIEW_TYPE_TYPING;
         }
-        Message msg = messageList.get(position);
-        if (msg.getSenderId() != null && msg.getSenderId().equals(currentUserId)) {
-            return VIEW_TYPE_SENT;
-        } else {
-            return VIEW_TYPE_RECEIVED;
-        }
+        return displayList.get(position).type;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        if (viewType == VIEW_TYPE_SENT) {
+        if (viewType == VIEW_TYPE_DATE_HEADER) {
+            return new DateHeaderViewHolder(inflater.inflate(R.layout.item_date_header, parent, false));
+        } else if (viewType == VIEW_TYPE_SENT) {
             return new SentViewHolder(inflater.inflate(R.layout.item_message_sent, parent, false));
         } else if (viewType == VIEW_TYPE_TYPING) {
             return new TypingViewHolder(inflater.inflate(R.layout.item_typing_indicator, parent, false));
@@ -96,23 +112,25 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof TypingViewHolder) return; // không có dữ liệu để gán
+        if (holder instanceof TypingViewHolder) return;
 
-        Message msg = messageList.get(position);
-        String timeStr = formatTimestamp(msg.getCreatedAt());
+        DisplayItem item = displayList.get(position);
 
-        if (holder instanceof SentViewHolder) {
+        if (holder instanceof DateHeaderViewHolder) {
+            ((DateHeaderViewHolder) holder).tvDateHeader.setText(item.dateText);
+        } else if (holder instanceof SentViewHolder) {
+            Message msg = item.message;
             SentViewHolder sent = (SentViewHolder) holder;
             sent.tvContent.setText(msg.getContent());
-            sent.tvTime.setText(timeStr);
+            sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindStatus(sent.imgStatus, msg);
         } else if (holder instanceof ReceivedViewHolder) {
+            Message msg = item.message;
             ((ReceivedViewHolder) holder).tvContent.setText(msg.getContent());
-            ((ReceivedViewHolder) holder).tvTime.setText(timeStr);
+            ((ReceivedViewHolder) holder).tvTime.setText(formatTimestamp(msg.getCreatedAt()));
         }
     }
 
-    // Chỉ chạy animation khi dòng đang hiện trên màn hình
     @Override
     public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
@@ -129,10 +147,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    /**
-     * ✓ : đã gửi (hoặc server chưa xác nhận giờ) / ✓✓ vàng: người kia đã đọc đến lúc này.
-     * Chỉ đúng cho chat 1-1.
-     */
     private void bindStatus(ImageView imgStatus, Message msg) {
         long createdMillis = msg.getCreatedAt() == null ? 0 : msg.getCreatedAt().toDate().getTime();
         boolean seen = createdMillis > 0 && createdMillis <= otherReadAtMillis;
@@ -145,12 +159,58 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return messageList.size() + (showTyping ? 1 : 0);
+        return displayList.size() + (showTyping ? 1 : 0);
     }
 
     private String formatTimestamp(Timestamp timestamp) {
         if (timestamp == null) return "";
         return timeFormat.format(timestamp.toDate());
+    }
+
+    private String formatDateHeader(Date date) {
+        if (DateUtils.isToday(date.getTime())) {
+            return "TODAY - " + timeFormat.format(date);
+        } else if (isYesterday(date)) {
+            return "YESTERDAY";
+        } else {
+            return dateFormat.format(date).toUpperCase(Locale.getDefault());
+        }
+    }
+
+    private boolean isSameDay(Calendar cal1, Calendar cal2) {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+    private boolean isYesterday(Date date) {
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DAY_OF_YEAR, -1);
+
+        Calendar msgCal = Calendar.getInstance();
+        msgCal.setTime(date);
+
+        return isSameDay(yesterday, msgCal);
+    }
+
+    public static class DisplayItem {
+        public final int type;
+        public final Message message;
+        public final String dateText;
+
+        public DisplayItem(int type, Message message, String dateText) {
+            this.type = type;
+            this.message = message;
+            this.dateText = dateText;
+        }
+    }
+
+    static class DateHeaderViewHolder extends RecyclerView.ViewHolder {
+        TextView tvDateHeader;
+
+        DateHeaderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvDateHeader = itemView.findViewById(R.id.tvDateHeader);
+        }
     }
 
     static class SentViewHolder extends RecyclerView.ViewHolder {
@@ -175,7 +235,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    /** Bong bóng ba chấm: ba chấm nhảy lần lượt, lệch nhau 150ms. */
     static class TypingViewHolder extends RecyclerView.ViewHolder {
         private final View[] dots;
         private final List<ObjectAnimator> animators = new ArrayList<>();

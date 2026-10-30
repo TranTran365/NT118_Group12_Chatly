@@ -147,7 +147,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:fontFamily="@font/bevietnampro_regular"
-                    android:hint="Type a message..."
+                    android:hint="say something..."
                     android:imeOptions="actionSend"
                     android:inputType="textMultiLine|textCapSentences"
                     android:maxLines="4"
@@ -162,16 +162,36 @@
                     android:contentDescription="Attachment"
                     android:src="@drawable/ic_attachment"
                     app:tint="@color/surface_deep" />
+
+                <ImageView
+                    android:id="@+id/btnCamera"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="10dp"
+                    android:contentDescription="Camera"
+                    android:src="@drawable/ic_camera"
+                    app:tint="@color/surface_deep" />
             </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnMic"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="6dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Voice Note"
+                android:src="@drawable/ic_mic"
+                app:tint="@color/surface_deep" />
 
             <ImageButton
                 android:id="@+id/btnSend"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="6dp"
                 android:background="@drawable/bg_btn_send"
                 android:contentDescription="Send"
                 android:src="@drawable/ic_send"
+                android:visibility="gone"
                 app:tint="@color/surface_deep" />
         </LinearLayout>
     </RelativeLayout>

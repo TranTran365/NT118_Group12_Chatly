@@ -7,12 +7,15 @@ import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,7 +45,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView rcvMessages;
     private EditText etMessage;
-    private ImageButton btnSend, btnBack;
+    private ImageButton btnSend, btnBack, btnMic;
+    private ImageView btnCamera;
     private TextView tvUserName, tvUserStatus;
 
     private MessageAdapter messageAdapter;
@@ -92,6 +96,8 @@ public class ChatActivity extends AppCompatActivity {
         etMessage = findViewById(R.id.etMessage);
         btnSend = findViewById(R.id.btnSend);
         btnBack = findViewById(R.id.btnBack);
+        btnMic = findViewById(R.id.btnMic);
+        btnCamera = findViewById(R.id.btnCamera);
         tvUserName = findViewById(R.id.tvUserName);
         tvUserStatus = findViewById(R.id.tvUserStatus);
 
@@ -117,7 +123,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        // Gõ chữ -> báo "đang gõ"; xóa hết hoặc gửi xong (ô trống) -> tắt
+        // Gõ chữ -> báo "đang gõ" + hiện nút Send, giấu Camera & Mic; xóa hết/ô trống -> hiện Camera & Mic, giấu Send
         etMessage.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -125,7 +131,12 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
+                boolean hasText = s.toString().trim().length() > 0;
+                btnSend.setVisibility(hasText ? View.VISIBLE : View.GONE);
+                if (btnMic != null) btnMic.setVisibility(hasText ? View.GONE : View.VISIBLE);
+                if (btnCamera != null) btnCamera.setVisibility(hasText ? View.GONE : View.VISIBLE);
+
+                if (hasText) {
                     onUserTyping();
                 } else {
                     stopTyping();
@@ -151,6 +162,8 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onFailure(String errorMessage) {
                 Toast.makeText(ChatActivity.this, "Failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                etMessage.setText(text);
+                etMessage.setSelection(text.length());
             }
         });
     }
@@ -161,12 +174,14 @@ public class ChatActivity extends AppCompatActivity {
             public void onMessagesUpdated(List<Message> messages) {
                 messageAdapter.setMessages(messages);
                 if (!messages.isEmpty()) {
-                    rcvMessages.smoothScrollToPosition(messages.size() - 1);
+                    rcvMessages.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
 
-                    // Tin cuối là của người kia: coi như đã đọc, và họ đã gửi xong nên bỏ "typing…"
+                    // Tin cuối là của người kia: coi như đã đọc nếu màn hình đang hiển thị
                     Message last = messages.get(messages.size() - 1);
                     if (!currentUserId.equals(last.getSenderId())) {
-                        chatRepository.markAsRead(chatId, currentUserId);
+                        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                            chatRepository.markAsRead(chatId, currentUserId);
+                        }
                         handler.removeCallbacks(hideTypingRunnable);
                         showTypingStatus(false);
                     }
