@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,8 +29,7 @@ import com.group12.chatly.data.repository.AuthRepository;
 import com.group12.chatly.data.repository.ChatRepository;
 
 import java.util.List;
-
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements AttachmentBottomSheet.Listener {
 
     public static final String EXTRA_TARGET_USER_ID = "extra_target_user_id";
     public static final String EXTRA_TARGET_USER_NAME = "extra_target_user_name";
@@ -48,6 +48,7 @@ public class ChatActivity extends AppCompatActivity {
     private ImageButton btnSend, btnBack, btnMic;
     private ImageView btnCamera;
     private TextView tvUserName, tvUserStatus;
+    private View btnScrollBottom;
 
     private MessageAdapter messageAdapter;
     private ChatRepository chatRepository;
@@ -65,6 +66,8 @@ public class ChatActivity extends AppCompatActivity {
     // Trạng thái gõ của người kia
     private boolean typingBaselineSet = false;
     private long lastOtherTypingMillis = 0;
+
+    private ImageView btnAttachment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +103,33 @@ public class ChatActivity extends AppCompatActivity {
         btnCamera = findViewById(R.id.btnCamera);
         tvUserName = findViewById(R.id.tvUserName);
         tvUserStatus = findViewById(R.id.tvUserStatus);
+        btnAttachment = findViewById(R.id.btnAttachment);
+        btnScrollBottom = findViewById(R.id.btnScrollBottom);
 
         tvUserName.setText(targetUserName != null ? targetUserName : "User");
         tvUserStatus.setText(R.string.chat_status_online);
+
+        ImageView imgAvatar = findViewById(R.id.imgAvatar);
+        chatRepository.getUserById(targetUserId, new AuthCallback<com.group12.chatly.data.model.User>() {
+            @Override
+            public void onSuccess(com.group12.chatly.data.model.User user) {
+                if (user != null && !isFinishing() && !isDestroyed()) {
+                    if (!TextUtils.isEmpty(user.getDisplayName())) {
+                        tvUserName.setText(user.getDisplayName());
+                    }
+                    if (!TextUtils.isEmpty(user.getAvatarUrl()) && imgAvatar != null) {
+                        com.bumptech.glide.Glide.with(ChatActivity.this)
+                                .load(user.getAvatarUrl())
+                                .circleCrop()
+                                .into(imgAvatar);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -111,6 +138,32 @@ public class ChatActivity extends AppCompatActivity {
         layoutManager.setStackFromEnd(true);
         rcvMessages.setLayoutManager(layoutManager);
         rcvMessages.setAdapter(messageAdapter);
+
+        if (btnScrollBottom != null) {
+            btnScrollBottom.setOnClickListener(v -> {
+                rcvMessages.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
+                btnScrollBottom.setVisibility(View.GONE);
+                if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                    chatRepository.markAsRead(chatId, currentUserId);
+                }
+            });
+        }
+
+        rcvMessages.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (btnScrollBottom != null && !recyclerView.canScrollVertically(1)) {
+                    // Chỉ gọi markAsRead nếu nút "New message" đang hiện
+                    if (btnScrollBottom.getVisibility() == View.VISIBLE) {
+                        btnScrollBottom.setVisibility(View.GONE);
+                        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                            chatRepository.markAsRead(chatId, currentUserId);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void setupListeners() {
@@ -122,6 +175,9 @@ public class ChatActivity extends AppCompatActivity {
                 sendMessageText(text);
             }
         });
+
+        btnAttachment.setOnClickListener(v ->
+                new AttachmentBottomSheet().show(getSupportFragmentManager(), AttachmentBottomSheet.TAG));
 
         // Gõ chữ -> báo "đang gõ" + hiện nút Send, giấu Camera & Mic; xóa hết/ô trống -> hiện Camera & Mic, giấu Send
         etMessage.addTextChangedListener(new TextWatcher() {
@@ -172,14 +228,28 @@ public class ChatActivity extends AppCompatActivity {
         messageListenerRegistration = chatRepository.listenForMessages(chatId, new ChatRepository.MessagesListener() {
             @Override
             public void onMessagesUpdated(List<Message> messages) {
-                messageAdapter.setMessages(messages);
-                if (!messages.isEmpty()) {
-                    rcvMessages.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
+                boolean atBottom = !rcvMessages.canScrollVertically(1);
+                boolean isFirstLoad = messageAdapter.getItemCount() == 0;
 
-                    // Tin cuối là của người kia: coi như đã đọc nếu màn hình đang hiển thị
+                messageAdapter.setMessages(messages);
+
+                if (!messages.isEmpty()) {
                     Message last = messages.get(messages.size() - 1);
-                    if (!currentUserId.equals(last.getSenderId())) {
-                        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                    boolean isMyMessage = currentUserId.equals(last.getSenderId());
+
+                    if (isFirstLoad) {
+                        rcvMessages.scrollToPosition(messageAdapter.getItemCount() - 1);
+                    } else if (atBottom || isMyMessage) {
+                        rcvMessages.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
+                        if (btnScrollBottom != null) btnScrollBottom.setVisibility(View.GONE);
+                    } else {
+                        // Đang đọc tin cũ mà có tin mới tới -> hiện nút "New message ↓"
+                        if (btnScrollBottom != null) btnScrollBottom.setVisibility(View.VISIBLE);
+                    }
+
+                    // Tin cuối là của người kia: coi như đã đọc nếu màn hình đang hiển thị VÀ đang ở đáy
+                    if (!isMyMessage) {
+                        if ((atBottom || isFirstLoad) && getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                             chatRepository.markAsRead(chatId, currentUserId);
                         }
                         handler.removeCallbacks(hideTypingRunnable);
@@ -291,5 +361,11 @@ public class ChatActivity extends AppCompatActivity {
         if (chatListenerRegistration != null) {
             chatListenerRegistration.remove();
         }
+    }
+
+    @Override
+    public void onAttachmentOption(AttachmentBottomSheet.Option option) {
+        // TODO: nối với MediaPickerHelper / ghi âm / vị trí
+        Toast.makeText(this, option.name(), Toast.LENGTH_SHORT).show();
     }
 }

@@ -75,11 +75,15 @@ public class ChatRepository {
         unread.put(receiverId, FieldValue.increment(1));
         unread.put(senderId, 0);
 
+        Map<String, Object> lastReadAt = new HashMap<>();
+        lastReadAt.put(senderId, FieldValue.serverTimestamp());
+
         Map<String, Object> chatData = new HashMap<>();
         chatData.put("type", Chat.TYPE_DIRECT);
         chatData.put("members", members);
         chatData.put("lastMessage", lastMessage);
         chatData.put("unreadCount", unread);
+        chatData.put("lastReadAt", lastReadAt);
         chatData.put("updatedAt", FieldValue.serverTimestamp());
 
         WriteBatch batch = firestore.batch();

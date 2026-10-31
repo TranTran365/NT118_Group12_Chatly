@@ -132,13 +132,17 @@ public class ChatAdapter extends ListAdapter<ChatItem, ChatAdapter.ChatViewHolde
         /** Lấy tối đa 2 chữ cái đầu: "Minh Anh" -> "MA", "Linh" -> "L". */
         private static String initialsOf(String name) {
             if (TextUtils.isEmpty(name)) return "?";
-            String[] parts = name.trim().split("\\s+");
+            String trimmed = name.trim();
+            if (trimmed.isEmpty()) return "?";
+            String[] parts = trimmed.split("\\s+");
             StringBuilder sb = new StringBuilder();
-            sb.append(Character.toUpperCase(parts[0].charAt(0)));
-            if (parts.length > 1) {
+            if (parts[0].length() > 0) {
+                sb.append(Character.toUpperCase(parts[0].charAt(0)));
+            }
+            if (parts.length > 1 && parts[parts.length - 1].length() > 0) {
                 sb.append(Character.toUpperCase(parts[parts.length - 1].charAt(0)));
             }
-            return sb.toString();
+            return sb.length() > 0 ? sb.toString() : "?";
         }
     }
 }

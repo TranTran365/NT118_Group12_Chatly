@@ -6,4 +6,5 @@
     <string name="chat_status_online">Online</string>
     <string name="chat_status_typing">typing…</string>
     <string name="chats_typing">typing…</string>
+    <string name="chat_notice_new_message">New message</string>
 </resources>
