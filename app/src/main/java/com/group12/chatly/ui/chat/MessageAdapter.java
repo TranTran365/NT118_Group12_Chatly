@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.Timestamp;
 import com.group12.chatly.R;
 import com.group12.chatly.data.model.Message;
@@ -32,6 +33,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_RECEIVED = 2;
     private static final int VIEW_TYPE_TYPING = 3;
     private static final int VIEW_TYPE_DATE_HEADER = 4;
+    private static final int VIEW_TYPE_SENT_IMAGE = 5;
+    private static final int VIEW_TYPE_RECEIVED_IMAGE = 6;
+    private static final int VIEW_TYPE_SENT_VIDEO = 7;
+    private static final int VIEW_TYPE_RECEIVED_VIDEO = 8;
 
     private final String currentUserId;
     private final List<DisplayItem> displayList = new ArrayList<>();
@@ -74,7 +79,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
 
                 boolean isSent = msg.getSenderId() != null && msg.getSenderId().equals(currentUserId);
-                int type = isSent ? VIEW_TYPE_SENT : VIEW_TYPE_RECEIVED;
+                String msgType = msg.getType() != null ? msg.getType() : Message.TYPE_TEXT;
+                int type;
+                if (Message.TYPE_IMAGE.equals(msgType)) {
+                    type = isSent ? VIEW_TYPE_SENT_IMAGE : VIEW_TYPE_RECEIVED_IMAGE;
+                } else if (Message.TYPE_VIDEO.equals(msgType)) {
+                    type = isSent ? VIEW_TYPE_SENT_VIDEO : VIEW_TYPE_RECEIVED_VIDEO;
+                } else {
+                    type = isSent ? VIEW_TYPE_SENT : VIEW_TYPE_RECEIVED;
+                }
                 displayList.add(new DisplayItem(type, msg, null));
             }
         }
@@ -111,6 +124,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == VIEW_TYPE_DATE_HEADER) {
             return new DateHeaderViewHolder(inflater.inflate(R.layout.item_date_header, parent, false));
+        } else if (viewType == VIEW_TYPE_SENT_IMAGE) {
+            return new SentImageViewHolder(inflater.inflate(R.layout.item_message_sent_image, parent, false));
+        } else if (viewType == VIEW_TYPE_RECEIVED_IMAGE) {
+            return new ReceivedImageViewHolder(inflater.inflate(R.layout.item_message_received_image, parent, false));
+        } else if (viewType == VIEW_TYPE_SENT_VIDEO) {
+            return new SentVideoViewHolder(inflater.inflate(R.layout.item_message_sent_video, parent, false));
+        } else if (viewType == VIEW_TYPE_RECEIVED_VIDEO) {
+            return new ReceivedVideoViewHolder(inflater.inflate(R.layout.item_message_received_video, parent, false));
         } else if (viewType == VIEW_TYPE_SENT) {
             return new SentViewHolder(inflater.inflate(R.layout.item_message_sent, parent, false));
         } else if (viewType == VIEW_TYPE_TYPING) {
@@ -128,6 +149,40 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if (holder instanceof DateHeaderViewHolder) {
             ((DateHeaderViewHolder) holder).tvDateHeader.setText(item.dateText);
+        } else if (holder instanceof SentImageViewHolder) {
+            Message msg = item.message;
+            SentImageViewHolder sent = (SentImageViewHolder) holder;
+            bindMediaContent(sent.tvContent, msg);
+            sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindStatus(sent.imgStatus, msg);
+            bindReactions(sent.tvReaction, msg);
+            loadMediaImage(sent.ivMessageImage, msg);
+            setupLongClick(sent.llBubble, msg);
+        } else if (holder instanceof ReceivedImageViewHolder) {
+            Message msg = item.message;
+            ReceivedImageViewHolder recv = (ReceivedImageViewHolder) holder;
+            bindMediaContent(recv.tvContent, msg);
+            recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindReactions(recv.tvReaction, msg);
+            loadMediaImage(recv.ivMessageImage, msg);
+            setupLongClick(recv.llBubble, msg);
+        } else if (holder instanceof SentVideoViewHolder) {
+            Message msg = item.message;
+            SentVideoViewHolder sent = (SentVideoViewHolder) holder;
+            bindMediaContent(sent.tvContent, msg);
+            sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindStatus(sent.imgStatus, msg);
+            bindReactions(sent.tvReaction, msg);
+            loadMediaImage(sent.ivVideoThumbnail, msg);
+            setupLongClick(sent.llBubble, msg);
+        } else if (holder instanceof ReceivedVideoViewHolder) {
+            Message msg = item.message;
+            ReceivedVideoViewHolder recv = (ReceivedVideoViewHolder) holder;
+            bindMediaContent(recv.tvContent, msg);
+            recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindReactions(recv.tvReaction, msg);
+            loadMediaImage(recv.ivVideoThumbnail, msg);
+            setupLongClick(recv.llBubble, msg);
         } else if (holder instanceof SentViewHolder) {
             Message msg = item.message;
             SentViewHolder sent = (SentViewHolder) holder;
@@ -136,15 +191,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindStatus(sent.imgStatus, msg);
             bindReactions(sent.tvReaction, msg);
-
-            View clickTarget = sent.llBubble != null ? sent.llBubble : sent.itemView;
-            clickTarget.setOnLongClickListener(v -> {
-                if (listener != null && !msg.isDeleted()) {
-                    listener.onMessageLongClick(msg);
-                    return true;
-                }
-                return false;
-            });
+            setupLongClick(sent.llBubble != null ? sent.llBubble : sent.itemView, msg);
         } else if (holder instanceof ReceivedViewHolder) {
             Message msg = item.message;
             ReceivedViewHolder recv = (ReceivedViewHolder) holder;
@@ -152,16 +199,38 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             recv.tvContent.setAlpha(msg.isDeleted() ? 0.6f : 1.0f);
             recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindReactions(recv.tvReaction, msg);
-
-            View clickTarget = recv.llBubble != null ? recv.llBubble : recv.itemView;
-            clickTarget.setOnLongClickListener(v -> {
-                if (listener != null && !msg.isDeleted()) {
-                    listener.onMessageLongClick(msg);
-                    return true;
-                }
-                return false;
-            });
+            setupLongClick(recv.llBubble != null ? recv.llBubble : recv.itemView, msg);
         }
+    }
+
+    private void bindMediaContent(TextView tvContent, Message msg) {
+        if (tvContent == null) return;
+        if (msg.getContent() != null && !msg.getContent().trim().isEmpty()) {
+            tvContent.setText(msg.getContent());
+            tvContent.setVisibility(View.VISIBLE);
+        } else {
+            tvContent.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadMediaImage(ImageView imageView, Message msg) {
+        if (imageView == null || msg == null) return;
+        if (msg.getSenderAvatar() != null && !msg.getSenderAvatar().trim().isEmpty()) {
+            Glide.with(imageView.getContext())
+                    .load(msg.getSenderAvatar())
+                    .into(imageView);
+        }
+    }
+
+    private void setupLongClick(View targetView, Message msg) {
+        if (targetView == null) return;
+        targetView.setOnLongClickListener(v -> {
+            if (listener != null && !msg.isDeleted()) {
+                listener.onMessageLongClick(msg);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -290,6 +359,70 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ReceivedViewHolder(@NonNull View itemView) {
             super(itemView);
             llBubble = itemView.findViewById(R.id.ll_bubble);
+            tvContent = itemView.findViewById(R.id.tvMessageContent);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+        }
+    }
+
+    static class SentImageViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivMessageImage, imgStatus;
+        TextView tvContent, tvTime, tvReaction;
+
+        SentImageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivMessageImage = itemView.findViewById(R.id.ivMessageImage);
+            tvContent = itemView.findViewById(R.id.tvMessageContent);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+            imgStatus = itemView.findViewById(R.id.imgStatus);
+        }
+    }
+
+    static class ReceivedImageViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivMessageImage;
+        TextView tvContent, tvTime, tvReaction;
+
+        ReceivedImageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivMessageImage = itemView.findViewById(R.id.ivMessageImage);
+            tvContent = itemView.findViewById(R.id.tvMessageContent);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+        }
+    }
+
+    static class SentVideoViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivVideoThumbnail, ivPlayButton, imgStatus;
+        TextView tvContent, tvTime, tvReaction;
+
+        SentVideoViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivVideoThumbnail = itemView.findViewById(R.id.ivVideoThumbnail);
+            ivPlayButton = itemView.findViewById(R.id.ivPlayButton);
+            tvContent = itemView.findViewById(R.id.tvMessageContent);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+            imgStatus = itemView.findViewById(R.id.imgStatus);
+        }
+    }
+
+    static class ReceivedVideoViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivVideoThumbnail, ivPlayButton;
+        TextView tvContent, tvTime, tvReaction;
+
+        ReceivedVideoViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivVideoThumbnail = itemView.findViewById(R.id.ivVideoThumbnail);
+            ivPlayButton = itemView.findViewById(R.id.ivPlayButton);
             tvContent = itemView.findViewById(R.id.tvMessageContent);
             tvTime = itemView.findViewById(R.id.tvMessageTime);
             tvReaction = itemView.findViewById(R.id.tvReaction);

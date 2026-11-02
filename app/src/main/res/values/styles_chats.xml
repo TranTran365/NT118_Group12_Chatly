@@ -29,4 +29,8 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/on_accent</item>
     </style>
+
+    <style name="ShapeAppearance.Chatly.MediaCorner" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerSize">16dp</item>
+    </style>
 </resources>

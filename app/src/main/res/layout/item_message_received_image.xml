@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="start"
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="48dp"
+    android:paddingBottom="4dp">
+
+    <LinearLayout
+        android:id="@+id/ll_bubble"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_msg_media_received"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- Khung ảnh đính kèm -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivMessageImage"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Chatly.MediaCorner"
+            tools:src="@drawable/bg_media_placeholder" />
+
+        <!-- Caption chú thích ảnh -->
+        <TextView
+            android:id="@+id/tvMessageContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/bevietnampro_regular"
+            android:textColor="@color/surface_deep"
+            android:textSize="14sp"
+            tools:text="góc nào cũng xinh!" />
+
+        <TextView
+            android:id="@+id/tvMessageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/nunito_semibold"
+            android:textColor="#94A3B8"
+            android:textSize="11sp"
+            tools:text="9:30" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvReaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="-6dp"
+        android:background="@drawable/bg_date_badge"
+        android:paddingStart="6dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/surface_deep"
+        android:textSize="14sp"
+        android:visibility="gone" />
+</LinearLayout>
