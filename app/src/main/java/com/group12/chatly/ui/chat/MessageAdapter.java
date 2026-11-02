@@ -41,8 +41,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private long otherReadAtMillis = 0;
     private boolean showTyping = false;
 
+    public interface OnMessageClickListener {
+        void onMessageLongClick(Message message);
+    }
+
+    private OnMessageClickListener listener;
+
     public MessageAdapter(String currentUserId) {
         this.currentUserId = currentUserId;
+    }
+
+    public void setOnMessageClickListener(OnMessageClickListener listener) {
+        this.listener = listener;
     }
 
     public void setMessages(List<Message> newMessages) {
@@ -121,13 +131,36 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (holder instanceof SentViewHolder) {
             Message msg = item.message;
             SentViewHolder sent = (SentViewHolder) holder;
-            sent.tvContent.setText(msg.getContent());
+            sent.tvContent.setText(msg.isDeleted() ? "This message was deleted" : msg.getContent());
+            sent.tvContent.setAlpha(msg.isDeleted() ? 0.6f : 1.0f);
             sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindStatus(sent.imgStatus, msg);
+            bindReactions(sent.tvReaction, msg);
+
+            View clickTarget = sent.llBubble != null ? sent.llBubble : sent.itemView;
+            clickTarget.setOnLongClickListener(v -> {
+                if (listener != null && !msg.isDeleted()) {
+                    listener.onMessageLongClick(msg);
+                    return true;
+                }
+                return false;
+            });
         } else if (holder instanceof ReceivedViewHolder) {
             Message msg = item.message;
-            ((ReceivedViewHolder) holder).tvContent.setText(msg.getContent());
-            ((ReceivedViewHolder) holder).tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            ReceivedViewHolder recv = (ReceivedViewHolder) holder;
+            recv.tvContent.setText(msg.isDeleted() ? "This message was deleted" : msg.getContent());
+            recv.tvContent.setAlpha(msg.isDeleted() ? 0.6f : 1.0f);
+            recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindReactions(recv.tvReaction, msg);
+
+            View clickTarget = recv.llBubble != null ? recv.llBubble : recv.itemView;
+            clickTarget.setOnLongClickListener(v -> {
+                if (listener != null && !msg.isDeleted()) {
+                    listener.onMessageLongClick(msg);
+                    return true;
+                }
+                return false;
+            });
         }
     }
 
@@ -155,6 +188,28 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int colorRes = seen ? R.color.accent : R.color.msg_tick_sent;
         ImageViewCompat.setImageTintList(imgStatus,
                 ColorStateList.valueOf(ContextCompat.getColor(imgStatus.getContext(), colorRes)));
+    }
+
+    private void bindReactions(TextView tvReaction, Message msg) {
+        if (tvReaction == null) return;
+        if (msg == null || msg.isDeleted()) {
+            tvReaction.setVisibility(View.GONE);
+            return;
+        }
+        java.util.Map<String, String> reactions = msg.getReactions();
+        if (reactions != null && !reactions.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            java.util.Set<String> unique = new java.util.LinkedHashSet<>(reactions.values());
+            for (String emoji : unique) {
+                if (emoji != null) sb.append(emoji);
+            }
+            if (sb.length() > 0) {
+                tvReaction.setText(sb.toString());
+                tvReaction.setVisibility(View.VISIBLE);
+                return;
+            }
+        }
+        tvReaction.setVisibility(View.GONE);
     }
 
     @Override
@@ -214,24 +269,30 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     static class SentViewHolder extends RecyclerView.ViewHolder {
-        TextView tvContent, tvTime;
+        View llBubble;
+        TextView tvContent, tvTime, tvReaction;
         ImageView imgStatus;
 
         SentViewHolder(@NonNull View itemView) {
             super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
             tvContent = itemView.findViewById(R.id.tvMessageContent);
             tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
             imgStatus = itemView.findViewById(R.id.imgStatus);
         }
     }
 
     static class ReceivedViewHolder extends RecyclerView.ViewHolder {
-        TextView tvContent, tvTime;
+        View llBubble;
+        TextView tvContent, tvTime, tvReaction;
 
         ReceivedViewHolder(@NonNull View itemView) {
             super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
             tvContent = itemView.findViewById(R.id.tvMessageContent);
             tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
         }
     }
 

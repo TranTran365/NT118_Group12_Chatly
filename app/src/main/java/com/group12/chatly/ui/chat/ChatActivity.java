@@ -134,6 +134,10 @@ public class ChatActivity extends AppCompatActivity implements AttachmentBottomS
 
     private void setupRecyclerView() {
         messageAdapter = new MessageAdapter(currentUserId);
+        messageAdapter.setOnMessageClickListener(message ->
+                MessageActionsDialogFragment.newInstance(chatId, message, currentUserId)
+                        .show(getSupportFragmentManager(), MessageActionsDialogFragment.TAG));
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         rcvMessages.setLayoutManager(layoutManager);

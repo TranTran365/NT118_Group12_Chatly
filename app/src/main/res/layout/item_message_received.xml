@@ -11,6 +11,7 @@
     android:paddingBottom="4dp">
 
     <LinearLayout
+        android:id="@+id/ll_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_msg_received"
@@ -39,4 +40,19 @@
             android:textColor="#94A3B8"
             android:textSize="11sp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvReaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="-6dp"
+        android:background="@drawable/bg_date_badge"
+        android:paddingStart="6dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/surface_deep"
+        android:textSize="14sp"
+        android:visibility="gone" />
 </LinearLayout>

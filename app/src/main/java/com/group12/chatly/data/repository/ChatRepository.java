@@ -211,6 +211,29 @@ public class ChatRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    /** Thu hồi/xóa mềm tin nhắn. */
+    public void deleteMessage(String chatId, String messageId, AuthCallback<Void> callback) {
+        firestore.collection(COLLECTION_CHATS)
+                .document(chatId)
+                .collection(SUB_COLLECTION_MESSAGES)
+                .document(messageId)
+                .update("deleted", true, "content", "")
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    /** Thả/đổi reaction cho tin nhắn; truyền emoji = null để gỡ reaction của mình. */
+    public void setReaction(String chatId, String messageId, String userId, String emoji, AuthCallback<Void> callback) {
+        Object value = emoji == null ? FieldValue.delete() : emoji;
+        firestore.collection(COLLECTION_CHATS)
+                .document(chatId)
+                .collection(SUB_COLLECTION_MESSAGES)
+                .document(messageId)
+                .update("reactions." + userId, value)
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
     private String previewOf(Message message) {
         if (Message.TYPE_TEXT.equals(message.getType())) {
             return message.getContent();

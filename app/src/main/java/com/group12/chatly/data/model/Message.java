@@ -31,6 +31,7 @@ public class Message implements Serializable {
     private Timestamp createdAt;
     // Lưu trên Firestore với tên field "deleted" (do getter isDeleted()).
     private boolean deleted;
+    private java.util.Map<String, String> reactions; // userId -> emoji
 
     /** Required default public constructor for Firestore deserialization. */
     public Message() {
@@ -76,4 +77,7 @@ public class Message implements Serializable {
 
     public boolean isDeleted() { return deleted; }
     public void setDeleted(boolean deleted) { this.deleted = deleted; }
+
+    public java.util.Map<String, String> getReactions() { return reactions; }
+    public void setReactions(java.util.Map<String, String> reactions) { this.reactions = reactions; }
 }
