@@ -321,6 +321,36 @@ public class AuthRepository {
     }
 
     /**
+     * Updates user profile attributes in Firestore.
+     */
+    public void updateUserProfile(@Nullable String displayName,
+                                  @Nullable String bio,
+                                  @Nullable String avatarUrl,
+                                  @NonNull AuthCallback<Void> callback) {
+        String uid = getCurrentUserId();
+        if (uid == null) {
+            callback.onFailure("User is not authenticated.");
+            return;
+        }
+
+        java.util.Map<String, Object> updates = new java.util.HashMap<>();
+        if (displayName != null) updates.put("displayName", displayName);
+        if (bio != null) updates.put("bio", bio);
+        if (avatarUrl != null) updates.put("avatarUrl", avatarUrl);
+
+        if (updates.isEmpty()) {
+            callback.onSuccess(null);
+            return;
+        }
+
+        firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(updates)
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage() != null ? e.getMessage() : "Failed to update profile."));
+    }
+
+    /**
      * Signs out the current user.
      */
     public void logout() {
