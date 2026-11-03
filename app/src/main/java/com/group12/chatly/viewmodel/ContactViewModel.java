@@ -251,3 +251,4 @@ public class ContactViewModel extends ViewModel {
         stopListening();
     }
 }
+

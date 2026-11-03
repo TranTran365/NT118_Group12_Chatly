@@ -37,3 +37,4 @@ public class ChatUnitTest {
         assertEquals(1, group.getAdminIds().size());
     }
 }
+

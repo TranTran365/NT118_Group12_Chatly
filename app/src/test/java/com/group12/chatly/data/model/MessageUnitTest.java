@@ -34,3 +34,4 @@ public class MessageUnitTest {
         assertTrue(msg.isDeleted());
     }
 }
+

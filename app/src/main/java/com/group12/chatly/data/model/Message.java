@@ -147,3 +147,4 @@ public class Message implements Serializable {
         this.createdAt = createdAt;
     }
 }
+

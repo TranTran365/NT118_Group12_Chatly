@@ -114,4 +114,24 @@ public class AuthRepositoryUnitTest {
 
         assertTrue(failureCalled[0]);
     }
+
+    @Test
+    public void testUpdateFcmToken_whenNotLoggedIn_callsOnFailure() {
+        when(mockAuth.getCurrentUser()).thenReturn(null);
+
+        final boolean[] failureCalled = {false};
+        authRepository.updateFcmToken("sample_token", new AuthCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                failureCalled[0] = true;
+                assertEquals("User is not authenticated.", errorMessage);
+            }
+        });
+
+        assertTrue(failureCalled[0]);
+    }
 }

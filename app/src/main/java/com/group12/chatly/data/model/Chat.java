@@ -113,3 +113,4 @@ public class Chat implements Serializable {
         this.updatedAt = updatedAt;
     }
 }
+

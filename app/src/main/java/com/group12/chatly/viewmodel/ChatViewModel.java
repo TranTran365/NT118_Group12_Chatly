@@ -318,3 +318,4 @@ public class ChatViewModel extends ViewModel {
         stopRecentChatsListener();
     }
 }
+

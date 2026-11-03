@@ -38,3 +38,4 @@ public class ContactRepositoryUnitTest {
         assertEquals("alice_bob", id2);
     }
 }
+

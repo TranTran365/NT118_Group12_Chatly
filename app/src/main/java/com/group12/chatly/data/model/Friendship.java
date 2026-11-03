@@ -83,3 +83,4 @@ public class Friendship implements Serializable {
         this.updatedAt = updatedAt;
     }
 }
+

@@ -351,9 +351,70 @@ public class AuthRepository {
     }
 
     /**
+     * Updates the user's online status and lastSeen timestamp.
+     */
+    public void updateOnlineStatus(boolean isOnline) {
+        String uid = getCurrentUserId();
+        if (uid == null) return;
+
+        java.util.Map<String, Object> updates = new java.util.HashMap<>();
+        updates.put("isOnline", isOnline);
+        updates.put("lastSeen", com.google.firebase.Timestamp.now());
+
+        try {
+            firestore.collection(COLLECTION_USERS)
+                    .document(uid)
+                    .update(updates);
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * Updates the FCM device token in the user's Firestore document.
+     */
+    public void updateFcmToken(@NonNull String token, @Nullable AuthCallback<Void> callback) {
+        String uid = getCurrentUserId();
+        if (uid == null) {
+            if (callback != null) callback.onFailure("User is not authenticated.");
+            return;
+        }
+
+        firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update("fcmToken", token)
+                .addOnSuccessListener(aVoid -> {
+                    if (callback != null) callback.onSuccess(null);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onFailure(e != null ? e.getMessage() : "Failed to update FCM token.");
+                });
+    }
+
+    /**
+     * Retrieves the current FCM token from FirebaseMessaging and syncs it to Firestore.
+     */
+    public void syncCurrentFcmToken() {
+        String uid = getCurrentUserId();
+        if (uid == null) return;
+
+        try {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            String token = task.getResult();
+                            updateFcmToken(token, null);
+                        }
+                    });
+        } catch (Exception ignored) {
+            // FirebaseApp might not be initialized in Unit tests
+        }
+    }
+
+    /**
      * Signs out the current user.
      */
     public void logout() {
+        updateOnlineStatus(false);
         firebaseAuth.signOut();
     }
 }

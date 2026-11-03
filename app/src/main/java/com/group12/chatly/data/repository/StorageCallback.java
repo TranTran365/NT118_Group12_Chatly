@@ -10,3 +10,4 @@ public interface StorageCallback<T> {
     void onSuccess(T result);
     void onFailure(String errorMessage);
 }
+

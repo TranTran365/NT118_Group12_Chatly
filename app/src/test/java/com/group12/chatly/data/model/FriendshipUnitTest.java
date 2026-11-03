@@ -33,3 +33,4 @@ public class FriendshipUnitTest {
         assertEquals(Friendship.STATUS_ACCEPTED, f.getStatus());
     }
 }
+

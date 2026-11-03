@@ -34,3 +34,4 @@ public class ChatRepositoryUnitTest {
         assertEquals("direct_userA_userB", id2);
     }
 }
+

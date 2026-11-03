@@ -39,3 +39,4 @@ public class StorageRepositoryUnitTest {
         assertNotNull(storageRepository.getFirebaseStorage());
     }
 }
+
