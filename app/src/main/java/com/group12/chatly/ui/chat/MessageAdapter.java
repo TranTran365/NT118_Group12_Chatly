@@ -94,7 +94,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 boolean isSent = msg.getSenderId() != null && msg.getSenderId().equals(currentUserId);
                 String msgType = msg.getType() != null ? msg.getType() : Message.TYPE_TEXT;
                 int type;
-                if (Message.TYPE_IMAGE.equals(msgType)) {
+                if (msg.isDeleted()) {
+                    type = isSent ? VIEW_TYPE_SENT : VIEW_TYPE_RECEIVED;
+                } else if (Message.TYPE_IMAGE.equals(msgType)) {
                     type = isSent ? VIEW_TYPE_SENT_IMAGE : VIEW_TYPE_RECEIVED_IMAGE;
                 } else if (Message.TYPE_VIDEO.equals(msgType)) {
                     type = isSent ? VIEW_TYPE_SENT_VIDEO : VIEW_TYPE_RECEIVED_VIDEO;
@@ -217,11 +219,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (holder instanceof SentVoiceViewHolder) {
             Message msg = item.message;
             SentVoiceViewHolder sent = (SentVoiceViewHolder) holder;
-            if (msg.getFileMetaData() != null && msg.getFileMetaData().get("duration") != null) {
-                sent.tvDuration.setText(String.valueOf(msg.getFileMetaData().get("duration")));
-            } else {
-                sent.tvDuration.setText("0:18");
-            }
+            bindVoiceInfo(sent.tvDuration, msg);
             sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindStatus(sent.imgStatus, msg);
             bindReactions(sent.tvReaction, msg);
@@ -229,23 +227,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (holder instanceof ReceivedVoiceViewHolder) {
             Message msg = item.message;
             ReceivedVoiceViewHolder recv = (ReceivedVoiceViewHolder) holder;
-            if (msg.getFileMetaData() != null && msg.getFileMetaData().get("duration") != null) {
-                recv.tvDuration.setText(String.valueOf(msg.getFileMetaData().get("duration")));
-            } else {
-                recv.tvDuration.setText("0:18");
-            }
+            bindVoiceInfo(recv.tvDuration, msg);
             recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindReactions(recv.tvReaction, msg);
             setupLongClick(recv.llBubble, msg);
         } else if (holder instanceof SentFileViewHolder) {
             Message msg = item.message;
             SentFileViewHolder sent = (SentFileViewHolder) holder;
-            sent.tvFileName.setText(msg.getCaption() != null ? msg.getCaption() : "weekend_plan.pdf");
-            if (msg.getFileMetaData() != null && msg.getFileMetaData().get("fileSize") != null) {
-                sent.tvSubDetails.setText("FILE · " + msg.getFileMetaData().get("fileSize"));
-            } else {
-                sent.tvSubDetails.setText("PDF · 2.4 MB");
-            }
+            bindFileInfo(sent.tvFileName, sent.tvSubDetails, msg);
             sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindStatus(sent.imgStatus, msg);
             bindReactions(sent.tvReaction, msg);
@@ -253,12 +242,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (holder instanceof ReceivedFileViewHolder) {
             Message msg = item.message;
             ReceivedFileViewHolder recv = (ReceivedFileViewHolder) holder;
-            recv.tvFileName.setText(msg.getCaption() != null ? msg.getCaption() : "weekend_plan.pdf");
-            if (msg.getFileMetaData() != null && msg.getFileMetaData().get("fileSize") != null) {
-                recv.tvSubDetails.setText("FILE · " + msg.getFileMetaData().get("fileSize"));
-            } else {
-                recv.tvSubDetails.setText("PDF · 2.4 MB");
-            }
+            bindFileInfo(recv.tvFileName, recv.tvSubDetails, msg);
             recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindReactions(recv.tvReaction, msg);
             setupLongClick(recv.llBubble, msg);
@@ -280,6 +264,38 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             bindReactions(recv.tvReaction, msg);
             setupLongClick(recv.llBubble != null ? recv.llBubble : recv.itemView, msg);
         }
+    }
+
+    private static String formatDuration(Object seconds) {
+        if (!(seconds instanceof Number)) return "0:00";
+        long total = ((Number) seconds).longValue();
+        return String.format(Locale.getDefault(), "%d:%02d", total / 60, total % 60);
+    }
+
+    private static String formatFileSize(Object bytes) {
+        if (!(bytes instanceof Number)) return "";
+        double b = ((Number) bytes).doubleValue();
+        if (b < 1024) return ((long) b) + " B";
+        if (b < 1024 * 1024) return String.format(Locale.getDefault(), "%.0f KB", b / 1024);
+        return String.format(Locale.getDefault(), "%.1f MB", b / (1024 * 1024));
+    }
+
+    private void bindVoiceInfo(TextView tvDuration, Message msg) {
+        java.util.Map<String, Object> meta = msg.getFileMetaData();
+        tvDuration.setText(formatDuration(meta != null ? meta.get("duration") : null));
+    }
+
+    private void bindFileInfo(TextView tvFileName, TextView tvSubDetails, Message msg) {
+        java.util.Map<String, Object> meta = msg.getFileMetaData();
+        String name = (meta != null && meta.get("fileName") != null)
+                ? String.valueOf(meta.get("fileName")) : "File";
+        tvFileName.setText(name);
+
+        int dot = name.lastIndexOf('.');
+        String ext = (dot >= 0 && dot < name.length() - 1)
+                ? name.substring(dot + 1).toUpperCase(Locale.ROOT) : "";
+        String size = formatFileSize(meta != null ? meta.get("fileSize") : null);
+        tvSubDetails.setText(ext.isEmpty() ? size : (size.isEmpty() ? ext : ext + " · " + size));
     }
 
     private void bindMediaContent(TextView tvContent, Message msg) {

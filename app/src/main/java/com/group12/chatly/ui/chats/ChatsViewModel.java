@@ -27,9 +27,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import android.os.Handler;
-import android.os.Looper;
-
 public class ChatsViewModel extends AndroidViewModel {
 
     public enum Filter { ALL, UNREAD, GROUPS }

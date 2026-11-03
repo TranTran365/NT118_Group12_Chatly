@@ -131,7 +131,8 @@ public class NewChatActivity extends AppCompatActivity {
     private static String stripAccents(String s) {
         if (s == null) return "";
         String normalized = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
-        return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "").toLowerCase(Locale.getDefault());
+        String plain = normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        return plain.replace('đ', 'd').replace('Đ', 'D').toLowerCase(Locale.getDefault());
     }
 
     private void openChat(ChatItem item) {
