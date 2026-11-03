@@ -10,7 +10,7 @@ import com.group12.chatly.data.repository.AuthCallback;
 import com.group12.chatly.data.repository.AuthRepository;
 
 /**
- * ViewModel managing user authentication flows (Registration, Login, Session status).
+ * ViewModel managing user authentication flows (Registration, Login, Google Sign-in, Password Reset).
  */
 public class AuthViewModel extends ViewModel {
 
@@ -18,6 +18,7 @@ public class AuthViewModel extends ViewModel {
 
     private final MutableLiveData<AuthState<User>> registerState = new MutableLiveData<>(AuthState.idle());
     private final MutableLiveData<AuthState<User>> loginState = new MutableLiveData<>(AuthState.idle());
+    private final MutableLiveData<AuthState<Void>> passwordResetState = new MutableLiveData<>(AuthState.idle());
 
     public AuthViewModel() {
         this(AuthRepository.getInstance());
@@ -33,6 +34,10 @@ public class AuthViewModel extends ViewModel {
 
     public LiveData<AuthState<User>> getLoginState() {
         return loginState;
+    }
+
+    public LiveData<AuthState<Void>> getPasswordResetState() {
+        return passwordResetState;
     }
 
     public boolean isUserLoggedIn() {
@@ -75,8 +80,45 @@ public class AuthViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Executes login with Google ID Token.
+     */
+    public void loginWithGoogleIdToken(@NonNull String idToken) {
+        loginState.setValue(AuthState.loading());
+        authRepository.signInWithGoogleIdToken(idToken, new AuthCallback<User>() {
+            @Override
+            public void onSuccess(User result) {
+                loginState.setValue(AuthState.success(result));
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                loginState.setValue(AuthState.error(errorMessage));
+            }
+        });
+    }
+
+    /**
+     * Sends password reset email.
+     */
+    public void sendPasswordResetEmail(@NonNull String email) {
+        passwordResetState.setValue(AuthState.loading());
+        authRepository.sendPasswordResetEmail(email, new AuthCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                passwordResetState.setValue(AuthState.success(null));
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                passwordResetState.setValue(AuthState.error(errorMessage));
+            }
+        });
+    }
+
     public void resetStates() {
         registerState.setValue(AuthState.idle());
         loginState.setValue(AuthState.idle());
+        passwordResetState.setValue(AuthState.idle());
     }
 }
