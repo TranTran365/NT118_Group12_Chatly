@@ -37,6 +37,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_RECEIVED_IMAGE = 6;
     private static final int VIEW_TYPE_SENT_VIDEO = 7;
     private static final int VIEW_TYPE_RECEIVED_VIDEO = 8;
+    private static final int VIEW_TYPE_SENT_VOICE = 9;
+    private static final int VIEW_TYPE_RECEIVED_VOICE = 10;
+    private static final int VIEW_TYPE_SENT_FILE = 11;
+    private static final int VIEW_TYPE_RECEIVED_FILE = 12;
 
     private final String currentUserId;
     private final List<DisplayItem> displayList = new ArrayList<>();
@@ -50,7 +54,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         void onMessageLongClick(Message message);
     }
 
+    public interface OnMediaClickListener {
+        void onMediaClick(Message message);
+    }
+
     private OnMessageClickListener listener;
+    private OnMediaClickListener mediaClickListener;
 
     public MessageAdapter(String currentUserId) {
         this.currentUserId = currentUserId;
@@ -58,6 +67,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void setOnMessageClickListener(OnMessageClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setOnMediaClickListener(OnMediaClickListener mediaClickListener) {
+        this.mediaClickListener = mediaClickListener;
     }
 
     public void setMessages(List<Message> newMessages) {
@@ -85,6 +98,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     type = isSent ? VIEW_TYPE_SENT_IMAGE : VIEW_TYPE_RECEIVED_IMAGE;
                 } else if (Message.TYPE_VIDEO.equals(msgType)) {
                     type = isSent ? VIEW_TYPE_SENT_VIDEO : VIEW_TYPE_RECEIVED_VIDEO;
+                } else if (Message.TYPE_VOICE.equals(msgType)) {
+                    type = isSent ? VIEW_TYPE_SENT_VOICE : VIEW_TYPE_RECEIVED_VOICE;
+                } else if (Message.TYPE_FILE.equals(msgType)) {
+                    type = isSent ? VIEW_TYPE_SENT_FILE : VIEW_TYPE_RECEIVED_FILE;
                 } else {
                     type = isSent ? VIEW_TYPE_SENT : VIEW_TYPE_RECEIVED;
                 }
@@ -132,6 +149,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return new SentVideoViewHolder(inflater.inflate(R.layout.item_message_sent_video, parent, false));
         } else if (viewType == VIEW_TYPE_RECEIVED_VIDEO) {
             return new ReceivedVideoViewHolder(inflater.inflate(R.layout.item_message_received_video, parent, false));
+        } else if (viewType == VIEW_TYPE_SENT_VOICE) {
+            return new SentVoiceViewHolder(inflater.inflate(R.layout.item_message_sent_voice, parent, false));
+        } else if (viewType == VIEW_TYPE_RECEIVED_VOICE) {
+            return new ReceivedVoiceViewHolder(inflater.inflate(R.layout.item_message_received_voice, parent, false));
+        } else if (viewType == VIEW_TYPE_SENT_FILE) {
+            return new SentFileViewHolder(inflater.inflate(R.layout.item_message_sent_file, parent, false));
+        } else if (viewType == VIEW_TYPE_RECEIVED_FILE) {
+            return new ReceivedFileViewHolder(inflater.inflate(R.layout.item_message_received_file, parent, false));
         } else if (viewType == VIEW_TYPE_SENT) {
             return new SentViewHolder(inflater.inflate(R.layout.item_message_sent, parent, false));
         } else if (viewType == VIEW_TYPE_TYPING) {
@@ -174,6 +199,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             bindStatus(sent.imgStatus, msg);
             bindReactions(sent.tvReaction, msg);
             loadMediaImage(sent.ivVideoThumbnail, msg);
+            if (sent.ivPlayButton != null) {
+                sent.ivPlayButton.setVisibility(msg.isDeleted() ? View.GONE : View.VISIBLE);
+            }
             setupLongClick(sent.llBubble, msg);
         } else if (holder instanceof ReceivedVideoViewHolder) {
             Message msg = item.message;
@@ -182,6 +210,57 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindReactions(recv.tvReaction, msg);
             loadMediaImage(recv.ivVideoThumbnail, msg);
+            if (recv.ivPlayButton != null) {
+                recv.ivPlayButton.setVisibility(msg.isDeleted() ? View.GONE : View.VISIBLE);
+            }
+            setupLongClick(recv.llBubble, msg);
+        } else if (holder instanceof SentVoiceViewHolder) {
+            Message msg = item.message;
+            SentVoiceViewHolder sent = (SentVoiceViewHolder) holder;
+            if (msg.getFileMetaData() != null && msg.getFileMetaData().get("duration") != null) {
+                sent.tvDuration.setText(String.valueOf(msg.getFileMetaData().get("duration")));
+            } else {
+                sent.tvDuration.setText("0:18");
+            }
+            sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindStatus(sent.imgStatus, msg);
+            bindReactions(sent.tvReaction, msg);
+            setupLongClick(sent.llBubble, msg);
+        } else if (holder instanceof ReceivedVoiceViewHolder) {
+            Message msg = item.message;
+            ReceivedVoiceViewHolder recv = (ReceivedVoiceViewHolder) holder;
+            if (msg.getFileMetaData() != null && msg.getFileMetaData().get("duration") != null) {
+                recv.tvDuration.setText(String.valueOf(msg.getFileMetaData().get("duration")));
+            } else {
+                recv.tvDuration.setText("0:18");
+            }
+            recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindReactions(recv.tvReaction, msg);
+            setupLongClick(recv.llBubble, msg);
+        } else if (holder instanceof SentFileViewHolder) {
+            Message msg = item.message;
+            SentFileViewHolder sent = (SentFileViewHolder) holder;
+            sent.tvFileName.setText(msg.getCaption() != null ? msg.getCaption() : "weekend_plan.pdf");
+            if (msg.getFileMetaData() != null && msg.getFileMetaData().get("fileSize") != null) {
+                sent.tvSubDetails.setText("FILE · " + msg.getFileMetaData().get("fileSize"));
+            } else {
+                sent.tvSubDetails.setText("PDF · 2.4 MB");
+            }
+            sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindStatus(sent.imgStatus, msg);
+            bindReactions(sent.tvReaction, msg);
+            setupLongClick(sent.llBubble, msg);
+        } else if (holder instanceof ReceivedFileViewHolder) {
+            Message msg = item.message;
+            ReceivedFileViewHolder recv = (ReceivedFileViewHolder) holder;
+            recv.tvFileName.setText(msg.getCaption() != null ? msg.getCaption() : "weekend_plan.pdf");
+            if (msg.getFileMetaData() != null && msg.getFileMetaData().get("fileSize") != null) {
+                recv.tvSubDetails.setText("FILE · " + msg.getFileMetaData().get("fileSize"));
+            } else {
+                recv.tvSubDetails.setText("PDF · 2.4 MB");
+            }
+            recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindReactions(recv.tvReaction, msg);
             setupLongClick(recv.llBubble, msg);
         } else if (holder instanceof SentViewHolder) {
             Message msg = item.message;
@@ -204,9 +283,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void bindMediaContent(TextView tvContent, Message msg) {
-        if (tvContent == null) return;
-        if (msg.getContent() != null && !msg.getContent().trim().isEmpty()) {
-            tvContent.setText(msg.getContent());
+        if (tvContent == null || msg == null) return;
+        if (msg.isDeleted()) {
+            tvContent.setText("This message was deleted");
+            tvContent.setAlpha(0.6f);
+            tvContent.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        tvContent.setAlpha(1.0f);
+        String captionText = msg.getCaption();
+        if (captionText != null && !captionText.trim().isEmpty()) {
+            tvContent.setText(captionText);
             tvContent.setVisibility(View.VISIBLE);
         } else {
             tvContent.setVisibility(View.GONE);
@@ -215,11 +303,31 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void loadMediaImage(ImageView imageView, Message msg) {
         if (imageView == null || msg == null) return;
-        if (msg.getSenderAvatar() != null && !msg.getSenderAvatar().trim().isEmpty()) {
-            Glide.with(imageView.getContext())
-                    .load(msg.getSenderAvatar())
-                    .into(imageView);
+        if (msg.isDeleted()) {
+            imageView.setVisibility(View.GONE);
+            return;
         }
+
+        imageView.setVisibility(View.VISIBLE);
+        String mediaUrl = msg.getContent();
+
+        if (mediaUrl != null && !mediaUrl.trim().isEmpty()) {
+            Glide.with(imageView.getContext())
+                    .load(mediaUrl)
+                    .placeholder(R.drawable.bg_media_placeholder)
+                    .error(R.drawable.bg_media_placeholder)
+                    .into(imageView);
+        } else {
+            Glide.with(imageView.getContext()).clear(imageView);
+            imageView.setImageResource(R.drawable.bg_media_placeholder);
+        }
+
+        imageView.setOnClickListener(v -> {
+            if (mediaClickListener != null && !msg.isDeleted()) {
+                mediaClickListener.onMediaClick(msg);
+            }
+        });
+        setupLongClick(imageView, msg);
     }
 
     private void setupLongClick(View targetView, Message msg) {
@@ -424,6 +532,74 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ivVideoThumbnail = itemView.findViewById(R.id.ivVideoThumbnail);
             ivPlayButton = itemView.findViewById(R.id.ivPlayButton);
             tvContent = itemView.findViewById(R.id.tvMessageContent);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+        }
+    }
+
+    static class SentVoiceViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivPlayButton, ivWaveform, imgStatus;
+        TextView tvDuration, tvTime, tvReaction;
+
+        SentVoiceViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivPlayButton = itemView.findViewById(R.id.ivPlayButton);
+            ivWaveform = itemView.findViewById(R.id.ivWaveform);
+            tvDuration = itemView.findViewById(R.id.tvDuration);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+            imgStatus = itemView.findViewById(R.id.imgStatus);
+        }
+    }
+
+    static class ReceivedVoiceViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivPlayButton, ivWaveform;
+        TextView tvDuration, tvTime, tvReaction;
+
+        ReceivedVoiceViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivPlayButton = itemView.findViewById(R.id.ivPlayButton);
+            ivWaveform = itemView.findViewById(R.id.ivWaveform);
+            tvDuration = itemView.findViewById(R.id.tvDuration);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+        }
+    }
+
+    static class SentFileViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivFileIcon, ivDownloadButton, imgStatus;
+        TextView tvFileName, tvSubDetails, tvTime, tvReaction;
+
+        SentFileViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivFileIcon = itemView.findViewById(R.id.ivFileIcon);
+            ivDownloadButton = itemView.findViewById(R.id.ivDownloadButton);
+            tvFileName = itemView.findViewById(R.id.tvFileName);
+            tvSubDetails = itemView.findViewById(R.id.tvSubDetails);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+            imgStatus = itemView.findViewById(R.id.imgStatus);
+        }
+    }
+
+    static class ReceivedFileViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivFileIcon, ivDownloadButton;
+        TextView tvFileName, tvSubDetails, tvTime, tvReaction;
+
+        ReceivedFileViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivFileIcon = itemView.findViewById(R.id.ivFileIcon);
+            ivDownloadButton = itemView.findViewById(R.id.ivDownloadButton);
+            tvFileName = itemView.findViewById(R.id.tvFileName);
+            tvSubDetails = itemView.findViewById(R.id.tvSubDetails);
             tvTime = itemView.findViewById(R.id.tvMessageTime);
             tvReaction = itemView.findViewById(R.id.tvReaction);
         }

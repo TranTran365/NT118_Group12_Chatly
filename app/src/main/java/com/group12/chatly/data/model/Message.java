@@ -32,6 +32,8 @@ public class Message implements Serializable {
     // Lưu trên Firestore với tên field "deleted" (do getter isDeleted()).
     private boolean deleted;
     private java.util.Map<String, String> reactions; // userId -> emoji
+    private String caption;
+    private java.util.Map<String, Object> fileMetaData;
 
     /** Required default public constructor for Firestore deserialization. */
     public Message() {
@@ -80,4 +82,10 @@ public class Message implements Serializable {
 
     public java.util.Map<String, String> getReactions() { return reactions; }
     public void setReactions(java.util.Map<String, String> reactions) { this.reactions = reactions; }
+
+    public String getCaption() { return caption; }
+    public void setCaption(String caption) { this.caption = caption; }
+
+    public java.util.Map<String, Object> getFileMetaData() { return fileMetaData; }
+    public void setFileMetaData(java.util.Map<String, Object> fileMetaData) { this.fileMetaData = fileMetaData; }
 }

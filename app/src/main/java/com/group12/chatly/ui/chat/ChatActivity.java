@@ -1,5 +1,6 @@
 package com.group12.chatly.ui.chat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.group12.chatly.R;
 import com.group12.chatly.data.model.Message;
+import com.group12.chatly.ui.media.MediaViewerActivity;
 
 import com.group12.chatly.data.repository.AuthCallback;
 import com.group12.chatly.data.repository.AuthRepository;
@@ -137,6 +139,15 @@ public class ChatActivity extends AppCompatActivity implements AttachmentBottomS
         messageAdapter.setOnMessageClickListener(message ->
                 MessageActionsDialogFragment.newInstance(chatId, message, currentUserId)
                         .show(getSupportFragmentManager(), MessageActionsDialogFragment.TAG));
+
+        messageAdapter.setOnMediaClickListener(message -> {
+            Intent intent = new Intent(ChatActivity.this, MediaViewerActivity.class);
+            intent.putExtra(MediaViewerActivity.EXTRA_MEDIA_URL, message.getContent());
+            intent.putExtra(MediaViewerActivity.EXTRA_MEDIA_TYPE, message.getType());
+            intent.putExtra(MediaViewerActivity.EXTRA_MEDIA_TITLE,
+                    message.getCaption() != null ? message.getCaption() : getString(R.string.chat_media_title));
+            startActivity(intent);
+        });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);

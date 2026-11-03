@@ -107,15 +107,31 @@ public class NewChatActivity extends AppCompatActivity {
     }
 
     private void applyFilter() {
-        String q = query.trim().toLowerCase(Locale.getDefault());
+        String q = stripAccents(query.trim());
         List<ChatItem> out = new ArrayList<>();
         for (ChatItem item : allUsers) {
-            if (q.isEmpty() || item.name.toLowerCase(Locale.getDefault()).contains(q)) {
+            if (q.isEmpty() || stripAccents(item.name).contains(q)) {
                 out.add(item);
             }
         }
         adapter.submitList(out);
-        tvEmpty.setVisibility(out.isEmpty() ? View.VISIBLE : View.GONE);
+
+        if (out.isEmpty()) {
+            tvEmpty.setVisibility(View.VISIBLE);
+            if (!allUsers.isEmpty() && !q.isEmpty()) {
+                tvEmpty.setText(R.string.new_chat_no_match);
+            } else {
+                tvEmpty.setText(R.string.new_chat_empty);
+            }
+        } else {
+            tvEmpty.setVisibility(View.GONE);
+        }
+    }
+
+    private static String stripAccents(String s) {
+        if (s == null) return "";
+        String normalized = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
+        return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "").toLowerCase(Locale.getDefault());
     }
 
     private void openChat(ChatItem item) {

@@ -3,4 +3,5 @@
     <string name="new_chat_title">new chat</string>
     <string name="new_chat_search_hint">find your people</string>
     <string name="new_chat_empty">No one here yet. Ask a friend to sign up!</string>
+    <string name="new_chat_no_match">no one matches that</string>
 </resources>

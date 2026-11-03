@@ -1,6 +1,8 @@
 package com.group12.chatly.ui.chats;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.group12.chatly.R;
 import com.group12.chatly.data.model.Chat;
+import com.group12.chatly.data.model.Message;
 import com.group12.chatly.data.model.User;
 import com.group12.chatly.data.repository.AuthCallback;
 import com.group12.chatly.data.repository.AuthRepository;
@@ -185,21 +188,28 @@ public class ChatsViewModel extends AndroidViewModel {
         }
     }
 
-    /** Áp dụng tab (all/unread/groups) và từ khóa tìm kiếm lên toàn bộ danh sách. */
+    /** Áp dụng tab (all/unread/groups) và từ khóa tìm kiếm (không phân biệt dấu tiếng Việt). */
     private void applyFilter() {
         if (!loaded) return;
 
-        String q = query.trim().toLowerCase(Locale.getDefault());
+        String q = stripAccents(query.trim());
         List<ChatItem> out = new ArrayList<>();
         for (ChatItem item : allItems) {
             if (filter == Filter.UNREAD && item.unread <= 0) continue;
             if (filter == Filter.GROUPS && !item.isGroup) continue;
-            if (!q.isEmpty() && !item.name.toLowerCase(Locale.getDefault()).contains(q)) continue;
+            if (!q.isEmpty() && !stripAccents(item.name).contains(q)) continue;
             out.add(item);
         }
 
         hasChats.setValue(!allItems.isEmpty());
         visibleItems.setValue(out);
+    }
+
+    private static String stripAccents(String s) {
+        if (s == null) return "";
+        String normalized = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
+        String plain = normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        return plain.replace('đ', 'd').replace('Đ', 'D').toLowerCase(Locale.getDefault());
     }
 
     private void fetchUser(String uid) {
@@ -235,7 +245,22 @@ public class ChatsViewModel extends AndroidViewModel {
         long time = 0;
         Chat.LastMessage last = chat.getLastMessage();
         if (last != null) {
-            preview = last.getText() == null ? "" : last.getText();
+            String text = last.getText() == null ? "" : last.getText();
+            String type = last.getType() != null ? last.getType() : Message.TYPE_TEXT;
+
+            if (Message.TYPE_IMAGE.equals(type)) {
+                text = app.getString(R.string.chats_preview_photo);
+            } else if (Message.TYPE_VIDEO.equals(type)) {
+                text = app.getString(R.string.chats_preview_video);
+            } else if (Message.TYPE_VOICE.equals(type)) {
+                text = app.getString(R.string.chats_preview_voice);
+            } else if (Message.TYPE_FILE.equals(type)) {
+                text = app.getString(R.string.chats_preview_file);
+            } else if (Message.TYPE_LOCATION.equals(type)) {
+                text = app.getString(R.string.chats_preview_location);
+            }
+
+            preview = text;
             if (myUid.equals(last.getSenderId())) {
                 preview = app.getString(R.string.chats_preview_you) + preview;
             }

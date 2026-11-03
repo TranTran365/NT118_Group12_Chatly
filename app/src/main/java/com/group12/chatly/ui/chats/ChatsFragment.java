@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.group12.chatly.ui.chat.NewChatActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.group12.chatly.R;
 import com.group12.chatly.ui.chat.ChatActivity;
+import com.group12.chatly.ui.chat.NewChatActivity;
 
 public class ChatsFragment extends Fragment {
 
@@ -55,6 +55,8 @@ public class ChatsFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(ChatsViewModel.class);
 
+        TextView tvNoResults = view.findViewById(R.id.tv_no_results);
+
         // Có chat -> danh sách + nút "let's yap."; chưa có -> màn rỗng
         viewModel.getHasChats().observe(getViewLifecycleOwner(), has -> {
             boolean hasChats = Boolean.TRUE.equals(has);
@@ -63,7 +65,15 @@ public class ChatsFragment extends Fragment {
             svChatsEmpty.setVisibility(hasChats ? View.GONE : View.VISIBLE);
         });
 
-        viewModel.getVisibleItems().observe(getViewLifecycleOwner(), adapter::submitList);
+        viewModel.getVisibleItems().observe(getViewLifecycleOwner(), items -> {
+            adapter.submitList(items);
+            boolean hasChatsOverall = Boolean.TRUE.equals(viewModel.getHasChats().getValue());
+            if (hasChatsOverall && items.isEmpty()) {
+                if (tvNoResults != null) tvNoResults.setVisibility(View.VISIBLE);
+            } else {
+                if (tvNoResults != null) tvNoResults.setVisibility(View.GONE);
+            }
+        });
 
         // Lỗi (rules, thiếu index...) -> báo lỗi và không để màn hình trắng
         viewModel.getError().observe(getViewLifecycleOwner(), message -> {
@@ -96,7 +106,7 @@ public class ChatsFragment extends Fragment {
             }
         });
 
-        // Bắt đầu chat mới (tạm: mở chat demo; sẽ đổi sang màn chọn người ở bước sau)
+        // Bắt đầu chat mới
         View btnSayHey = view.findViewById(R.id.btnSayHey);
         if (btnSayHey != null) {
             btnSayHey.setOnClickListener(v -> openNewChat());
@@ -130,7 +140,6 @@ public class ChatsFragment extends Fragment {
         startActivity(intent);
     }
 
-    /** TẠM THỜI: mở chat với user demo. Bước sau thay bằng màn chọn người. */
     /** Bắt đầu chat mới: mở màn chọn người. */
     private void openNewChat() {
         startActivity(new Intent(requireContext(), NewChatActivity.class));

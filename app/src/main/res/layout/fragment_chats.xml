@@ -163,6 +163,18 @@
                 android:paddingBottom="80dp"
                 android:visibility="gone" />
 
+            <!-- Thông báo khi tìm kiếm/lọc không thấy kết quả -->
+            <TextView
+                android:id="@+id/tv_no_results"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/nunito_bold"
+                android:text="@string/chats_no_results"
+                android:textColor="@color/register_text_muted"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
             <!-- Màn rỗng (khi chưa có trò chuyện) -->
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/sv_chats_empty"

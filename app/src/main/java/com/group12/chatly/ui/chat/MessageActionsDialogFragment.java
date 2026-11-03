@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ public class MessageActionsDialogFragment extends DialogFragment {
     private static final String ARG_CURRENT_USER_ID = "arg_current_user_id";
     private static final String ARG_MESSAGE_ID = "arg_message_id";
     private static final String ARG_SENDER_ID = "arg_sender_id";
+    private static final String ARG_TYPE = "arg_type";
     private static final String ARG_CONTENT = "arg_content";
     private static final String ARG_DELETED = "arg_deleted";
     private static final String ARG_TIME = "arg_time";
@@ -47,6 +49,7 @@ public class MessageActionsDialogFragment extends DialogFragment {
     private String currentUserId;
     private String messageId;
     private String senderId;
+    private String type;
     private String content;
     private boolean deleted;
     private long timeMillis;
@@ -62,7 +65,13 @@ public class MessageActionsDialogFragment extends DialogFragment {
         args.putString(ARG_CURRENT_USER_ID, currentUserId);
         args.putString(ARG_MESSAGE_ID, message.getMessageId());
         args.putString(ARG_SENDER_ID, message.getSenderId());
-        args.putString(ARG_CONTENT, message.getContent());
+
+        String t = message.getType();
+        boolean isMedia = Message.TYPE_IMAGE.equals(t) || Message.TYPE_VIDEO.equals(t);
+        args.putString(ARG_TYPE, t);
+        // Tin ảnh/video: dùng caption (URL không nên hiện ra cho người dùng)
+        args.putString(ARG_CONTENT, isMedia ? message.getCaption() : message.getContent());
+
         args.putBoolean(ARG_DELETED, message.isDeleted());
         args.putLong(ARG_TIME, message.getCreatedAt() == null
                 ? 0 : message.getCreatedAt().toDate().getTime());
@@ -83,6 +92,7 @@ public class MessageActionsDialogFragment extends DialogFragment {
             currentUserId = args.getString(ARG_CURRENT_USER_ID);
             messageId = args.getString(ARG_MESSAGE_ID);
             senderId = args.getString(ARG_SENDER_ID);
+            type = args.getString(ARG_TYPE);
             content = args.getString(ARG_CONTENT);
             deleted = args.getBoolean(ARG_DELETED, false);
             timeMillis = args.getLong(ARG_TIME, 0);
@@ -115,7 +125,7 @@ public class MessageActionsDialogFragment extends DialogFragment {
         LinearLayout llPreview = view.findViewById(R.id.ll_message_preview);
         TextView tvMessage = view.findViewById(R.id.tv_action_message);
         TextView tvTime = view.findViewById(R.id.tv_action_time);
-        tvMessage.setText(content != null ? content : "");
+        tvMessage.setText(previewText());
         tvTime.setText(timeMillis > 0 ? timeFormat.format(new Date(timeMillis)) : "");
         if (isMine) {
             llPreview.setBackgroundResource(R.drawable.bg_msg_sent);
@@ -128,7 +138,9 @@ public class MessageActionsDialogFragment extends DialogFragment {
 
         buildReactionBar(view);
 
-        view.findViewById(R.id.action_copy).setOnClickListener(v -> copyText());
+        View actionCopy = view.findViewById(R.id.action_copy);
+        actionCopy.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
+        actionCopy.setOnClickListener(v -> copyText());
 
         // Chỉ thu hồi được tin của chính mình
         View actionDelete = view.findViewById(R.id.action_delete);
@@ -139,6 +151,14 @@ public class MessageActionsDialogFragment extends DialogFragment {
             Toast.makeText(requireContext(), "Reply (coming soon)", Toast.LENGTH_SHORT).show();
             dismiss();
         });
+    }
+
+    /** Tin chữ/caption: hiện nội dung; ảnh/video không caption: hiện "Photo"/"Video". */
+    private String previewText() {
+        if (!TextUtils.isEmpty(content)) return content;
+        if (Message.TYPE_IMAGE.equals(type)) return getString(R.string.chats_preview_photo);
+        if (Message.TYPE_VIDEO.equals(type)) return getString(R.string.chats_preview_video);
+        return "";
     }
 
     /** Đổ danh sách QUICK_REACTIONS của TV3 vào thanh reaction; emoji đang chọn được tô nền. */
