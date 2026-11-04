@@ -33,14 +33,16 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void highlight(TextView tv, int color) {
-        SpannableString s = new SpannableString(tv.getText());
-        for (StyleSpan span : s.getSpans(0, s.length(), StyleSpan.class)) {
-            int start = s.getSpanStart(span);
-            int end = s.getSpanEnd(span);
-            s.removeSpan(span);
-            s.setSpan(new ForegroundColorSpan(color), start, end,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        CharSequence text = tv.getText();
+        if (text instanceof Spanned) {
+            SpannableString s = new SpannableString(text);
+            for (StyleSpan span : s.getSpans(0, s.length(), StyleSpan.class)) {
+                int start = s.getSpanStart(span);
+                int end = s.getSpanEnd(span);
+                s.setSpan(new ForegroundColorSpan(color), start, end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            tv.setText(s);
         }
-        tv.setText(s);
     }
 }
