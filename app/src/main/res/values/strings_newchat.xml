@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="new_chat_title">new chat</string>
+    <string name="new_chat_search_hint">find your people</string>
+    <string name="new_chat_empty">No one here yet. Ask a friend to sign up!</string>
+</resources>

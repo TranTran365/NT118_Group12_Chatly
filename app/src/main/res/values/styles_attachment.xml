@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Một ô trong bảng đính kèm: icon trên, chữ dưới -->
+    <style name="Widget.Chatly.AttachOption" parent="">
+        <item name="android:background">@drawable/bg_attach_option</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:drawableTint">@color/background</item>
+        <item name="android:fontFamily">@font/nunito_extrabold</item>
+        <item name="android:textColor">@color/surface_deep</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+    </style>
+</resources>

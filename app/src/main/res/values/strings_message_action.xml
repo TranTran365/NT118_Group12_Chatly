@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="msg_action_reply">reply</string>
+    <string name="msg_action_copy">copy</string>
+    <string name="msg_action_delete">delete</string>
+    <string name="msg_action_hint">React above, or choose an action.</string>
+</resources>

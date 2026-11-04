@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance.Chatly.Chats.Name" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/register_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.Chatly.Chats.Preview" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:fontFamily">@font/nunito_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/register_text_muted</item>
+    </style>
+
+    <style name="TextAppearance.Chatly.Chats.Time" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:fontFamily">@font/nunito_semibold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/register_text_muted</item>
+    </style>
+
+    <style name="TextAppearance.Chatly.Chats.Initials" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/register_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.Chatly.Chats.Badge" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:fontFamily">@font/nunito_extrabold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/on_accent</item>
+    </style>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="attach_label">MORE THAN WORDS</string>
+    <string name="attach_title">show. tell. send.</string>
+    <string name="attach_gallery">Gallery</string>
+    <string name="attach_camera">Camera</string>
+    <string name="attach_file">File</string>
+    <string name="attach_location">Location</string>
+    <string name="attach_voice">Voice</string>
+</resources>
