@@ -198,27 +198,27 @@ public class MessageActionsDialogFragment extends DialogFragment {
 
     /** Bấm emoji đang chọn thì gỡ reaction (truyền null), bấm emoji khác thì đổi. */
     private void sendReaction(String emoji) {
-        if (chatId == null || messageId == null) {
+        if (chatId == null || messageId == null || getContext() == null) {
             dismiss();
             return;
         }
         boolean removing = emoji.equals(myReaction);
         String newValue = removing ? null : emoji;
+        Context appCtx = requireContext().getApplicationContext();
 
         ChatRepository.getInstance().setReaction(chatId, messageId, currentUserId, newValue,
                 new AuthCallback<Void>() {
                     @Override
                     public void onSuccess(Void result) {
-                        if (!removing && getContext() != null) {
-                            Toast.makeText(getContext(), "Reacted " + emoji, Toast.LENGTH_SHORT).show();
+                        if (!removing) {
+                            Toast.makeText(appCtx, "Reacted " + emoji, Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(String errorMessage) {
-                        if (getContext() != null) {
-                            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                        }
+                        android.util.Log.e("Reaction", "failed: " + errorMessage);
+                        Toast.makeText(appCtx, errorMessage, Toast.LENGTH_LONG).show();
                     }
                 });
         dismiss();

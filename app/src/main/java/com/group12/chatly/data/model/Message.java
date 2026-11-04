@@ -31,9 +31,10 @@ public class Message implements Serializable {
     private Timestamp createdAt;
     // Lưu trên Firestore với tên field "deleted" (do getter isDeleted()).
     private boolean deleted;
-    private java.util.Map<String, String> reactions; // userId -> emoji
+    private java.util.Map<String, String> reactions = new java.util.HashMap<>(); // userId -> emoji
     private String caption;
     private java.util.Map<String, Object> fileMetaData;
+
 
     /** Required default public constructor for Firestore deserialization. */
     public Message() {

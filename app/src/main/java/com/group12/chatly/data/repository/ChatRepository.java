@@ -224,12 +224,16 @@ public class ChatRepository {
 
     /** Thả/đổi reaction cho tin nhắn; truyền emoji = null để gỡ reaction của mình. */
     public void setReaction(String chatId, String messageId, String userId, String emoji, AuthCallback<Void> callback) {
-        Object value = emoji == null ? FieldValue.delete() : emoji;
+        Map<String, Object> reactionData = new HashMap<>();
+        Map<String, Object> userReaction = new HashMap<>();
+        userReaction.put(userId, emoji == null ? FieldValue.delete() : emoji);
+        reactionData.put("reactions", userReaction);
+
         firestore.collection(COLLECTION_CHATS)
                 .document(chatId)
                 .collection(SUB_COLLECTION_MESSAGES)
                 .document(messageId)
-                .update("reactions." + userId, value)
+                .set(reactionData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> callback.onSuccess(null))
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
