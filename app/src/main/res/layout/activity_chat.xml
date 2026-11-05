@@ -233,5 +233,8 @@
                 android:visibility="gone"
                 app:tint="@color/surface_deep" />
         </LinearLayout>
+
+        <!-- Voice Recording Overlay -->
+        <include layout="@layout/layout_voice_recording" />
     </RelativeLayout>
 </LinearLayout>

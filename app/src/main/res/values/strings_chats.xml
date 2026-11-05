@@ -14,4 +14,7 @@
     <string name="chats_preview_location">Location</string>
     <string name="chat_media_title">Media</string>
     <string name="chats_no_results">no results found</string>
+    <string name="chat_file_default_name">File</string>
+    <string name="chat_location_default_title">Location</string>
+    <string name="chat_message_deleted">This message was deleted</string>
 </resources>

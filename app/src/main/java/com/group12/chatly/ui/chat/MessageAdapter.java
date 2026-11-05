@@ -41,6 +41,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_RECEIVED_VOICE = 10;
     private static final int VIEW_TYPE_SENT_FILE = 11;
     private static final int VIEW_TYPE_RECEIVED_FILE = 12;
+    private static final int VIEW_TYPE_SENT_LOCATION = 13;
+    private static final int VIEW_TYPE_RECEIVED_LOCATION = 14;
 
     private final String currentUserId;
     private final List<DisplayItem> displayList = new ArrayList<>();
@@ -104,6 +106,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     type = isSent ? VIEW_TYPE_SENT_VOICE : VIEW_TYPE_RECEIVED_VOICE;
                 } else if (Message.TYPE_FILE.equals(msgType)) {
                     type = isSent ? VIEW_TYPE_SENT_FILE : VIEW_TYPE_RECEIVED_FILE;
+                } else if (Message.TYPE_LOCATION.equals(msgType)) {
+                    type = isSent ? VIEW_TYPE_SENT_LOCATION : VIEW_TYPE_RECEIVED_LOCATION;
                 } else {
                     type = isSent ? VIEW_TYPE_SENT : VIEW_TYPE_RECEIVED;
                 }
@@ -159,6 +163,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return new SentFileViewHolder(inflater.inflate(R.layout.item_message_sent_file, parent, false));
         } else if (viewType == VIEW_TYPE_RECEIVED_FILE) {
             return new ReceivedFileViewHolder(inflater.inflate(R.layout.item_message_received_file, parent, false));
+        } else if (viewType == VIEW_TYPE_SENT_LOCATION) {
+            return new SentLocationViewHolder(inflater.inflate(R.layout.item_message_sent_location, parent, false));
+        } else if (viewType == VIEW_TYPE_RECEIVED_LOCATION) {
+            return new ReceivedLocationViewHolder(inflater.inflate(R.layout.item_message_received_location, parent, false));
         } else if (viewType == VIEW_TYPE_SENT) {
             return new SentViewHolder(inflater.inflate(R.layout.item_message_sent, parent, false));
         } else if (viewType == VIEW_TYPE_TYPING) {
@@ -246,11 +254,47 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindReactions(recv.tvReaction, msg);
             setupLongClick(recv.llBubble, msg);
+        } else if (holder instanceof SentLocationViewHolder) {
+            Message msg = item.message;
+            SentLocationViewHolder sent = (SentLocationViewHolder) holder;
+            bindLocationInfo(sent.tvLocationTitle, sent.tvLocationAddress, msg);
+            sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindStatus(sent.imgStatus, msg);
+            bindReactions(sent.tvReaction, msg);
+            loadMediaImage(sent.ivMapThumbnail, msg);
+            setupLongClick(sent.llBubble, msg);
+            if (sent.llBubble != null) {
+                sent.llBubble.setOnClickListener(v -> {
+                    if (mediaClickListener != null && !msg.isDeleted()) {
+                        mediaClickListener.onMediaClick(msg);
+                    }
+                });
+            }
+        } else if (holder instanceof ReceivedLocationViewHolder) {
+            Message msg = item.message;
+            ReceivedLocationViewHolder recv = (ReceivedLocationViewHolder) holder;
+            bindLocationInfo(recv.tvLocationTitle, recv.tvLocationAddress, msg);
+            recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
+            bindReactions(recv.tvReaction, msg);
+            loadMediaImage(recv.ivMapThumbnail, msg);
+            setupLongClick(recv.llBubble, msg);
+            if (recv.llBubble != null) {
+                recv.llBubble.setOnClickListener(v -> {
+                    if (mediaClickListener != null && !msg.isDeleted()) {
+                        mediaClickListener.onMediaClick(msg);
+                    }
+                });
+            }
         } else if (holder instanceof SentViewHolder) {
             Message msg = item.message;
             SentViewHolder sent = (SentViewHolder) holder;
-            sent.tvContent.setText(msg.isDeleted() ? "This message was deleted" : msg.getContent());
-            sent.tvContent.setAlpha(msg.isDeleted() ? 0.6f : 1.0f);
+            if (msg.isDeleted()) {
+                sent.tvContent.setText(R.string.chat_message_deleted);
+                sent.tvContent.setAlpha(0.6f);
+            } else {
+                sent.tvContent.setText(msg.getContent());
+                sent.tvContent.setAlpha(1.0f);
+            }
             sent.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindStatus(sent.imgStatus, msg);
             bindReactions(sent.tvReaction, msg);
@@ -258,8 +302,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (holder instanceof ReceivedViewHolder) {
             Message msg = item.message;
             ReceivedViewHolder recv = (ReceivedViewHolder) holder;
-            recv.tvContent.setText(msg.isDeleted() ? "This message was deleted" : msg.getContent());
-            recv.tvContent.setAlpha(msg.isDeleted() ? 0.6f : 1.0f);
+            if (msg.isDeleted()) {
+                recv.tvContent.setText(R.string.chat_message_deleted);
+                recv.tvContent.setAlpha(0.6f);
+            } else {
+                recv.tvContent.setText(msg.getContent());
+                recv.tvContent.setAlpha(1.0f);
+            }
             recv.tvTime.setText(formatTimestamp(msg.getCreatedAt()));
             bindReactions(recv.tvReaction, msg);
             setupLongClick(recv.llBubble != null ? recv.llBubble : recv.itemView, msg);
@@ -288,20 +337,44 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void bindFileInfo(TextView tvFileName, TextView tvSubDetails, Message msg) {
         java.util.Map<String, Object> meta = msg.getFileMetaData();
         String name = (meta != null && meta.get("fileName") != null)
-                ? String.valueOf(meta.get("fileName")) : "File";
+                ? String.valueOf(meta.get("fileName"))
+                : tvFileName.getContext().getString(R.string.chat_file_default_name);
         tvFileName.setText(name);
 
         int dot = name.lastIndexOf('.');
         String ext = (dot >= 0 && dot < name.length() - 1)
                 ? name.substring(dot + 1).toUpperCase(Locale.ROOT) : "";
         String size = formatFileSize(meta != null ? meta.get("fileSize") : null);
-        tvSubDetails.setText(ext.isEmpty() ? size : (size.isEmpty() ? ext : ext + " · " + size));
+
+        String sub;
+        if (ext.isEmpty()) sub = size;
+        else if (size.isEmpty()) sub = ext;
+        else sub = ext + " · " + size;
+        tvSubDetails.setText(sub);
+    }
+
+    private void bindLocationInfo(TextView tvTitle, TextView tvAddress, Message msg) {
+        if (tvTitle == null || tvAddress == null) return;
+
+        String caption = msg.getCaption();
+        if (caption != null && !caption.trim().isEmpty()) {
+            tvTitle.setText(caption);
+        } else {
+            tvTitle.setText(tvTitle.getContext().getString(R.string.chat_location_default_title));
+        }
+
+        java.util.Map<String, Object> meta = msg.getFileMetaData();
+        Object address = meta != null ? meta.get("address") : null;
+        String addressText = address != null ? String.valueOf(address) : "";
+
+        tvAddress.setText(addressText);
+        tvAddress.setVisibility(addressText.trim().isEmpty() ? View.GONE : View.VISIBLE);
     }
 
     private void bindMediaContent(TextView tvContent, Message msg) {
         if (tvContent == null || msg == null) return;
         if (msg.isDeleted()) {
-            tvContent.setText("This message was deleted");
+            tvContent.setText(R.string.chat_message_deleted);
             tvContent.setAlpha(0.6f);
             tvContent.setVisibility(View.VISIBLE);
             return;
@@ -616,6 +689,39 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ivDownloadButton = itemView.findViewById(R.id.ivDownloadButton);
             tvFileName = itemView.findViewById(R.id.tvFileName);
             tvSubDetails = itemView.findViewById(R.id.tvSubDetails);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+        }
+    }
+
+    static class SentLocationViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivMapThumbnail, imgStatus;
+        TextView tvLocationTitle, tvLocationAddress, tvTime, tvReaction;
+
+        SentLocationViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivMapThumbnail = itemView.findViewById(R.id.ivMapThumbnail);
+            tvLocationTitle = itemView.findViewById(R.id.tvLocationTitle);
+            tvLocationAddress = itemView.findViewById(R.id.tvLocationAddress);
+            tvTime = itemView.findViewById(R.id.tvMessageTime);
+            tvReaction = itemView.findViewById(R.id.tvReaction);
+            imgStatus = itemView.findViewById(R.id.imgStatus);
+        }
+    }
+
+    static class ReceivedLocationViewHolder extends RecyclerView.ViewHolder {
+        View llBubble;
+        ImageView ivMapThumbnail;
+        TextView tvLocationTitle, tvLocationAddress, tvTime, tvReaction;
+
+        ReceivedLocationViewHolder(@NonNull View itemView) {
+            super(itemView);
+            llBubble = itemView.findViewById(R.id.ll_bubble);
+            ivMapThumbnail = itemView.findViewById(R.id.ivMapThumbnail);
+            tvLocationTitle = itemView.findViewById(R.id.tvLocationTitle);
+            tvLocationAddress = itemView.findViewById(R.id.tvLocationAddress);
             tvTime = itemView.findViewById(R.id.tvMessageTime);
             tvReaction = itemView.findViewById(R.id.tvReaction);
         }
