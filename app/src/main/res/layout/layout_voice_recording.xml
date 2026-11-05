@@ -5,7 +5,7 @@
     android:id="@+id/layoutVoiceRecordingOverlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#66000000"
+    android:background="@color/voice_overlay_scrim"
     android:clickable="true"
     android:focusable="true"
     android:visibility="gone"
@@ -14,7 +14,7 @@
     <!-- Vertical Lock Capsule Pill (Floating on the right above mic button) -->
     <LinearLayout
         android:id="@+id/layoutLockCapsule"
-        android:layout_width="50dp"
+        android:layout_width="48dp"
         android:layout_height="100dp"
         android:layout_above="@id/layoutRecordingInputBar"
         android:layout_alignParentEnd="true"
@@ -30,7 +30,7 @@
             android:id="@+id/ivVoiceLock"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:contentDescription="Lock Recording"
+            android:contentDescription="@string/voice_cd_lock"
             android:src="@drawable/ic_voice_lock"
             app:tint="@color/surface_deep" />
 
@@ -39,7 +39,7 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginTop="10dp"
-            android:contentDescription="Swipe Up"
+            android:contentDescription="@string/voice_cd_swipe_up"
             android:src="@drawable/ic_voice_chevron_up"
             app:tint="@color/surface_deep" />
     </LinearLayout>
@@ -58,12 +58,12 @@
         <!-- Yellow Mic Recording Button -->
         <ImageButton
             android:id="@+id/btnVoiceRecording"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/bg_btn_send"
-            android:contentDescription="Record Voice"
+            android:contentDescription="@string/voice_cd_record"
             android:elevation="4dp"
             android:src="@drawable/ic_mic"
             app:tint="@color/surface_deep" />
@@ -74,7 +74,7 @@
             android:layout_height="50dp"
             android:layout_toStartOf="@id/btnVoiceRecording"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="6dp"
             android:background="@drawable/bg_chat_input"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -113,7 +113,7 @@
                     android:id="@+id/ivLiveWaveform"
                     android:layout_width="match_parent"
                     android:layout_height="22dp"
-                    android:contentDescription="Waveform"
+                    android:contentDescription="@string/voice_cd_waveform"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_waveform_received"
                     app:tint="@color/chatly_blue" />
@@ -130,17 +130,17 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:contentDescription="Cancel"
-                    android:src="@drawable/ic_slide_cancle_arrow"
-                    app:tint="#64748B" />
+                    android:contentDescription="@string/voice_cd_cancel"
+                    android:src="@drawable/ic_slide_cancel_arrow"
+                    app:tint="@color/voice_hint_text" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:fontFamily="@font/nunito_bold"
-                    android:text="slide to cancel"
-                    android:textColor="#64748B"
+                    android:text="@string/voice_slide_to_cancel"
+                    android:textColor="@color/voice_hint_text"
                     android:textSize="13sp" />
             </LinearLayout>
         </LinearLayout>

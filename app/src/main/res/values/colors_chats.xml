@@ -2,4 +2,8 @@
 <resources>
     <color name="chats_avatar_bg">#E8EDFA</color>
     <color name="msg_tick_sent">#DBEAFE</color>
+    <color name="voice_overlay_scrim">#66000000</color>
+    <color name="voice_hint_text">#64748B</color>
+    <color name="voice_recording_dot">#EF4444</color>
+    <color name="voice_capsule_stroke">#E2E8F0</color>
 </resources>

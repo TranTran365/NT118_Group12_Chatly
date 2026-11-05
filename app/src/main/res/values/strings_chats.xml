@@ -17,4 +17,10 @@
     <string name="chat_file_default_name">File</string>
     <string name="chat_location_default_title">Location</string>
     <string name="chat_message_deleted">This message was deleted</string>
+    <string name="voice_slide_to_cancel">slide to cancel</string>
+    <string name="voice_cd_lock">Lock recording</string>
+    <string name="voice_cd_swipe_up">Swipe up to lock</string>
+    <string name="voice_cd_record">Record voice message</string>
+    <string name="voice_cd_waveform">Recording waveform</string>
+    <string name="voice_cd_cancel">Cancel recording</string>
 </resources>
