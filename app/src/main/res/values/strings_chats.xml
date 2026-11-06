@@ -23,4 +23,12 @@
     <string name="voice_cd_record">Record voice message</string>
     <string name="voice_cd_waveform">Recording waveform</string>
     <string name="voice_cd_cancel">Cancel recording</string>
+    <string name="voice_locked_status">RECORDING · LOCKED</string>
+    <string name="voice_locked_cancel">cancel</string>
+    <string name="voice_locked_pause">pause</string>
+    <string name="voice_locked_send">send</string>
+    <string name="voice_cd_cancel_locked">Cancel recording</string>
+    <string name="voice_cd_pause">Pause recording</string>
+    <string name="voice_cd_send">Send voice message</string>
+
 </resources>

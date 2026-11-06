@@ -236,5 +236,6 @@
 
         <!-- Voice Recording Overlay -->
         <include layout="@layout/layout_voice_recording" />
+        <include layout="@layout/layout_voice_locked" />
     </RelativeLayout>
 </LinearLayout>
