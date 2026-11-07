@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutVoiceRecordingOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/voice_overlay_scrim"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <!-- Vertical Lock Capsule Pill (Floating on the right above mic button) -->
+    <LinearLayout
+        android:id="@+id/layoutLockCapsule"
+        android:layout_width="48dp"
+        android:layout_height="100dp"
+        android:layout_above="@id/layoutRecordingInputBar"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_voice_lock_capsule"
+        android:elevation="6dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/ivVoiceLock"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/voice_cd_lock"
+            android:src="@drawable/ic_voice_lock"
+            app:tint="@color/surface_deep" />
+
+        <ImageView
+            android:id="@+id/ivVoiceChevronUp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="@string/voice_cd_swipe_up"
+            android:src="@drawable/ic_voice_chevron_up"
+            app:tint="@color/surface_deep" />
+    </LinearLayout>
+
+    <!-- Bottom Recording Input Bar -->
+    <RelativeLayout
+        android:id="@+id/layoutRecordingInputBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp">
+
+        <!-- Yellow Mic Recording Button -->
+        <ImageButton
+            android:id="@+id/btnVoiceRecording"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_btn_send"
+            android:contentDescription="@string/voice_cd_record"
+            android:elevation="4dp"
+            android:src="@drawable/ic_mic"
+            app:tint="@color/surface_deep" />
+
+        <!-- White Recording Capsule (Replaces text input bar) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_toStartOf="@id/btnVoiceRecording"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_chat_input"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp">
+
+            <!-- Red Recording Indicator Dot -->
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:background="@drawable/bg_recording_dot" />
+
+            <!-- Recording Timer -->
+            <TextView
+                android:id="@+id/tvRecordingTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/nunito_extrabold"
+                android:textColor="@color/surface_deep"
+                android:textSize="14sp"
+                tools:text="0:12" />
+
+            <!-- Waveform Animation View -->
+            <LinearLayout
+                android:id="@+id/layoutWaveformRow"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivLiveWaveform"
+                    android:layout_width="match_parent"
+                    android:layout_height="22dp"
+                    android:contentDescription="@string/voice_cd_waveform"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_waveform_received"
+                    app:tint="@color/chatly_blue" />
+            </LinearLayout>
+
+            <!-- Slide to Cancel Hint -->
+            <LinearLayout
+                android:id="@+id/layoutSlideToCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@string/voice_cd_cancel"
+                    android:src="@drawable/ic_slide_cancel_arrow"
+                    app:tint="@color/voice_hint_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="@string/voice_slide_to_cancel"
+                    android:textColor="@color/voice_hint_text"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

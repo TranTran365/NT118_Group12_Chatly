@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="contacts_tagline">YOUR DAILY DOSE OF PEOPLE</string>
+    <string name="contacts_title">your people</string>
+    <string name="contacts_search_hint">find your people</string>
+
+    <string name="contacts_filter_all">all</string>
+    <string name="contacts_filter_online">online</string>
+    <string name="contacts_filter_requests">requests</string>
+
+    <string name="contacts_requests_title">%1$d people said hey</string>
+    <string name="contacts_requests_subtitle">%1$s · take a peek</string>
+
+    <string name="contacts_online_now">online now</string>
+    <string name="contacts_online_around">%1$d around</string>
+
+    <string name="contacts_status_online">online</string>
+    <string name="contacts_action_message">message</string>
+    <string name="contacts_add_friend">add a friend</string>
+
+    <string name="contacts_cd_add_friend">Friend requests</string>
+    <string name="contacts_cd_message">Send message</string>
+
+    <string name="contacts_alphabet_index" translatable="false">A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ</string>
+    <string name="contacts_cd_alphabet_index">Alphabet index</string>
+</resources>

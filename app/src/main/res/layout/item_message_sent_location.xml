@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="end"
+    android:orientation="vertical"
+    android:paddingStart="48dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="4dp">
+
+    <LinearLayout
+        android:id="@+id/ll_bubble"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_msg_media_sent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- Khung ảnh bản đồ thu nhỏ -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivMapThumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Chatly.MediaCorner"
+            tools:src="@drawable/bg_media_placeholder" />
+
+        <!-- Tên địa điểm -->
+        <TextView
+            android:id="@+id/tvLocationTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/bevietnampro_bold"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            tools:text="Cà phê bên hồ" />
+
+        <!-- Địa chỉ chi tiết -->
+        <TextView
+            android:id="@+id/tvLocationAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/nunito_regular"
+            android:textColor="#DBEAFE"
+            android:textSize="12sp"
+            tools:text="12 Trần Vũ, Hà Nội" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvMessageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_semibold"
+                android:textColor="#DBEAFE"
+                android:textSize="11sp"
+                tools:text="9:31" />
+
+            <ImageView
+                android:id="@+id/imgStatus"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="4dp"
+                android:contentDescription="Status"
+                android:src="@drawable/ic_double_check"
+                app:tint="#DBEAFE" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvReaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-6dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/bg_date_badge"
+        android:paddingStart="6dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/surface_deep"
+        android:textSize="14sp"
+        android:visibility="gone" />
+</LinearLayout>
