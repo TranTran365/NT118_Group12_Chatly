@@ -226,4 +226,65 @@ public class AuthRepository {
     public void logout() {
         firebaseAuth.signOut();
     }
+
+    /**
+     * Cập nhật thông tin profile (Tên, Bio, SĐT) lên Firestore.
+     */
+    public void updateUserProfile(@NonNull String fullName,
+                                  @NonNull String bio,
+                                  @NonNull String phone,
+                                  @NonNull AuthCallback<User> callback) {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser == null) {
+            callback.onFailure("No authenticated user.");
+            return;
+        }
+
+        String uid = firebaseUser.getUid();
+        firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update("displayName", fullName,
+                        "bio", bio,
+                        "phoneNumber", phone)
+                .addOnSuccessListener(aVoid -> getCurrentUserProfile(callback))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    /**
+     * Tải ảnh Avatar lên Firebase Storage và lưu URL vào Firestore.
+     */
+    public void uploadAvatar(@NonNull android.net.Uri imageUri,
+                             @NonNull AuthCallback<String> callback) {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser == null) {
+            callback.onFailure("No authenticated user.");
+            return;
+        }
+
+        String uid = firebaseUser.getUid();
+        com.google.firebase.storage.StorageReference avatarRef =
+                com.google.firebase.storage.FirebaseStorage.getInstance()
+                        .getReference().child("avatars/" + uid + ".jpg");
+
+        avatarRef.putFile(imageUri)
+                .continueWithTask(task -> {
+                    if (!task.isSuccessful() && task.getException() != null) {
+                        throw task.getException();
+                    }
+                    return avatarRef.getDownloadUrl();
+                })
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        String downloadUrl = task.getResult().toString();
+                        firestore.collection(COLLECTION_USERS)
+                                .document(uid)
+                                .update("avatarUrl", downloadUrl)
+                                .addOnSuccessListener(aVoid -> callback.onSuccess(downloadUrl))
+                                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                    } else {
+                        String msg = task.getException() != null ? task.getException().getMessage() : "Upload failed.";
+                        callback.onFailure(msg);
+                    }
+                });
+    }
 }

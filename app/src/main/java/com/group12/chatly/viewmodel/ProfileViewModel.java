@@ -54,4 +54,29 @@ public class ProfileViewModel extends ViewModel {
         authRepository.logout();
         userProfileState.setValue(AuthState.idle());
     }
+
+    /**
+     * Cập nhật thông tin profile cá nhân.
+     */
+    public void updateProfile(String fullName, String bio, String phone) {
+        userProfileState.setValue(AuthState.loading());
+        authRepository.updateUserProfile(fullName, bio, phone, new AuthCallback<User>() {
+            @Override
+            public void onSuccess(User result) {
+                userProfileState.setValue(AuthState.success(result));
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                userProfileState.setValue(AuthState.error(errorMessage));
+            }
+        });
+    }
+
+    /**
+     * Tải avatar mới lên Firebase.
+     */
+    public void uploadAvatar(android.net.Uri imageUri, AuthCallback<String> callback) {
+        authRepository.uploadAvatar(imageUri, callback);
+    }
 }
