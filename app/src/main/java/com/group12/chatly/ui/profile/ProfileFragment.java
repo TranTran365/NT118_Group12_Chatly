@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -201,15 +204,23 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showLogoutDialog() {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Log out")
-                .setMessage("Are you sure you want to log out?")
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .setPositiveButton("Log out", (dialog, which) -> {
-                    dialog.dismiss();
-                    logout();
-                })
-                .show();
+        View content = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_logout, null, false);
+        int inset = getResources().getDimensionPixelSize(R.dimen.profile_padding);
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setView(content)
+                .setBackground(AppCompatResources.getDrawable(requireContext(), R.drawable.bg_profile_dialog))
+                .setBackgroundInsetStart(inset)
+                .setBackgroundInsetEnd(inset)
+                .create();
+
+        content.findViewById(R.id.btn_logout_stay).setOnClickListener(v -> dialog.dismiss());
+        content.findViewById(R.id.btn_logout_confirm).setOnClickListener(v -> {
+            dialog.dismiss();
+            logout();
+        });
+        dialog.show();
     }
 
     private void logout() {
