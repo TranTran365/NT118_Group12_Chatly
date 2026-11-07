@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chats_unread_overflow">99+</string>
+    <string name="chats_unknown_user">User</string>
+    <string name="chats_preview_you">You: </string>
+    <string name="chat_status_online">Online</string>
+    <string name="chat_status_typing">typing…</string>
+    <string name="chats_typing">typing…</string>
+    <string name="chat_notice_new_message">New message</string>
+    <string name="chats_preview_photo">Photo</string>
+    <string name="chats_preview_video">Video</string>
+    <string name="chats_preview_voice">Voice message</string>
+    <string name="chats_preview_file">File</string>
+    <string name="chats_preview_location">Location</string>
+    <string name="chat_media_title">Media</string>
+    <string name="chats_no_results">no results found</string>
+</resources>

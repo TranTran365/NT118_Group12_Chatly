@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="media_action_save">save</string>
+    <string name="media_action_forward">forward</string>
+    <string name="media_action_share">share</string>
+    <string name="media_cd_back">Back</string>
+    <string name="media_cd_more">More options</string>
+    <string name="media_cd_thumbs">Media thumbnails</string>
+</resources>
