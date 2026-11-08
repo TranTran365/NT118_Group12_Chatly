@@ -3,13 +3,21 @@ package com.group12.chatly.ui.profile;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,16 +26,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.group12.chatly.R;
 import com.group12.chatly.data.model.User;
+import com.group12.chatly.data.repository.AuthCallback;
+import com.group12.chatly.multimedia.MediaPickerHelper;
 import com.group12.chatly.ui.welcome.WelcomeActivity;
 import com.group12.chatly.viewmodel.ProfileViewModel;
 
 import java.util.Locale;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.content.res.AppCompatResources;
-import android.view.LayoutInflater;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class ProfileFragment extends Fragment {
 
@@ -39,9 +47,16 @@ public class ProfileFragment extends Fragment {
     private SwitchCompat swNotifications, swDarkMode;
 
     private ProfileViewModel profileViewModel;
+    private ActivityResultLauncher<PickVisualMediaRequest> imagePickerLauncher;
 
     public ProfileFragment() {
         super(R.layout.fragment_profile);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        imagePickerLauncher = MediaPickerHelper.registerSingleImagePicker(this, this::uploadAvatar);
     }
 
     @Override
@@ -105,7 +120,6 @@ public class ProfileFragment extends Fragment {
                     tvInitials.setVisibility(View.VISIBLE);
                 }
             } else if (state.isError()) {
-                // Fallback display if not logged in or offline
                 tvDisplayName.setText(R.string.app_name);
                 tvBio.setText(state.getErrorMessage());
                 tvInitials.setText("?");
@@ -117,20 +131,16 @@ public class ProfileFragment extends Fragment {
         SharedPreferences prefs = requireContext()
                 .getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
-        // Đặt trạng thái trước rồi mới gắn listener để khỏi bắn sự kiện giả
         swNotifications.setChecked(prefs.getBoolean(KEY_NOTIFICATIONS, true));
         swNotifications.setOnCheckedChangeListener((button, checked) ->
                 prefs.edit().putBoolean(KEY_NOTIFICATIONS, checked).apply());
 
-        // Dark mode: UI placeholder
         root.findViewById(R.id.row_notifications).setOnClickListener(v -> swNotifications.toggle());
         root.findViewById(R.id.row_dark_mode).setOnClickListener(v -> swDarkMode.toggle());
     }
 
     private void setupRows(View root) {
-        root.findViewById(R.id.btn_change_photo).setOnClickListener(v -> {
-            // TODO: mở image picker, upload ảnh đại diện
-        });
+        root.findViewById(R.id.btn_change_photo).setOnClickListener(v -> showChangePhotoSheet());
 
         root.findViewById(R.id.row_edit_profile).setOnClickListener(v ->
                 startActivity(new Intent(requireContext(), EditProfileActivity.class)));
@@ -145,6 +155,52 @@ public class ProfileFragment extends Fragment {
             // TODO: mở màn Privacy & security
         });
         root.findViewById(R.id.row_logout).setOnClickListener(v -> showLogoutDialog());
+    }
+
+    private void showChangePhotoSheet() {
+        if (getContext() == null) return;
+        BottomSheetDialog sheet = new BottomSheetDialog(requireContext());
+        View content = getLayoutInflater().inflate(R.layout.sheet_change_photo, null, false);
+        sheet.setContentView(content);
+
+        View parent = (View) content.getParent();
+        if (parent != null) {
+            parent.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+        content.findViewById(R.id.btn_sheet_close).setOnClickListener(v -> sheet.dismiss());
+        content.findViewById(R.id.row_choose_gallery).setOnClickListener(v -> {
+            sheet.dismiss();
+            MediaPickerHelper.launchSingleImagePicker(imagePickerLauncher);
+        });
+        sheet.show();
+    }
+
+    private void uploadAvatar(Uri uri) {
+        if (getContext() == null) return;
+        Toast.makeText(requireContext(), "Uploading avatar...", Toast.LENGTH_SHORT).show();
+        profileViewModel.uploadAvatar(uri, new AuthCallback<String>() {
+            @Override
+            public void onSuccess(String downloadUrl) {
+                if (getContext() != null) {
+                    Toast.makeText(requireContext(), "Avatar updated!", Toast.LENGTH_SHORT).show();
+                    if (imgAvatar != null) {
+                        Glide.with(ProfileFragment.this)
+                                .load(downloadUrl)
+                                .circleCrop()
+                                .into(imgAvatar);
+                        if (tvInitials != null) tvInitials.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                if (getContext() != null) {
+                    Toast.makeText(requireContext(), "Failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void showLogoutDialog() {
@@ -170,13 +226,11 @@ public class ProfileFragment extends Fragment {
     private void logout() {
         profileViewModel.logout();
 
-        // Xóa hết back stack để bấm Back không quay lại màn đã đăng nhập
         Intent intent = new Intent(requireContext(), WelcomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
-    /** "Alex Morgan" -> "AM", "Alex" -> "A", rỗng -> "?" */
     private static String initialsOf(@Nullable String name) {
         if (name == null) return "?";
         String[] parts = name.trim().split("\\s+");

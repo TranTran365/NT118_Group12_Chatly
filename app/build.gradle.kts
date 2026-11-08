@@ -52,8 +52,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
-    implementation(libs.firebase.messaging)
 
     // Member 3: Multimedia, Location, Glide, ZegoCloud
     implementation(libs.play.services.location)

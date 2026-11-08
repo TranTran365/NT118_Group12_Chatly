@@ -1,26 +1,33 @@
 package com.group12.chatly.ui.profile;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.group12.chatly.R;
 import com.group12.chatly.data.model.User;
+import com.group12.chatly.data.repository.AuthCallback;
+import com.group12.chatly.multimedia.MediaPickerHelper;
 import com.group12.chatly.viewmodel.ProfileViewModel;
 
 import java.util.Locale;
@@ -31,8 +38,11 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private ProfileViewModel profileViewModel;
     private TextView tvInitials, tvBioCounter;
+    private ImageView imgAvatar;
     private TextInputLayout tilFullName, tilPhone;
     private TextInputEditText etFullName, etBio, etEmail, etPhone;
+
+    private ActivityResultLauncher<PickVisualMediaRequest> imagePickerLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +52,7 @@ public class EditProfileActivity extends AppCompatActivity {
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         tvInitials = findViewById(R.id.tv_initials);
+        imgAvatar = findViewById(R.id.img_avatar);
         tvBioCounter = findViewById(R.id.tv_bio_counter);
         tilFullName = findViewById(R.id.til_full_name);
         tilPhone = findViewById(R.id.til_phone);
@@ -52,6 +63,7 @@ public class EditProfileActivity extends AppCompatActivity {
         MaterialButton btnSave = findViewById(R.id.btn_save);
 
         setupInsets();
+        setupImagePicker();
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         findViewById(R.id.btn_change_photo).setOnClickListener(v -> showChangePhotoSheet());
@@ -68,6 +80,32 @@ public class EditProfileActivity extends AppCompatActivity {
 
         observeUser();
         profileViewModel.loadUserProfile();
+    }
+
+    private void setupImagePicker() {
+        imagePickerLauncher = MediaPickerHelper.registerSingleImagePicker(this, this::uploadAvatar);
+    }
+
+    private void uploadAvatar(Uri uri) {
+        Toast.makeText(this, "Uploading avatar...", Toast.LENGTH_SHORT).show();
+        profileViewModel.uploadAvatar(uri, new AuthCallback<String>() {
+            @Override
+            public void onSuccess(String downloadUrl) {
+                Toast.makeText(EditProfileActivity.this, "Avatar updated!", Toast.LENGTH_SHORT).show();
+                if (imgAvatar != null) {
+                    Glide.with(EditProfileActivity.this)
+                            .load(downloadUrl)
+                            .circleCrop()
+                            .into(imgAvatar);
+                    if (tvInitials != null) tvInitials.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(EditProfileActivity.this, "Failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupInsets() {
@@ -93,6 +131,14 @@ public class EditProfileActivity extends AppCompatActivity {
             etEmail.setText(u.getEmail() != null ? u.getEmail() : "");
             etPhone.setText(u.getPhoneNumber() != null ? u.getPhoneNumber() : "");
             tvInitials.setText(initialsOf(name));
+
+            if (u.getAvatarUrl() != null && !u.getAvatarUrl().trim().isEmpty() && imgAvatar != null) {
+                Glide.with(this)
+                        .load(u.getAvatarUrl())
+                        .circleCrop()
+                        .into(imgAvatar);
+                tvInitials.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -105,6 +151,7 @@ public class EditProfileActivity extends AppCompatActivity {
         tilPhone.setError(null);
 
         String name = String.valueOf(etFullName.getText()).trim();
+        String bio = String.valueOf(etBio.getText()).trim();
         String phone = String.valueOf(etPhone.getText()).trim();
 
         if (name.isEmpty()) {
@@ -115,8 +162,10 @@ public class EditProfileActivity extends AppCompatActivity {
             tilPhone.setError(getString(R.string.edit_error_phone));
             return;
         }
-        // TODO: gọi profileViewModel.updateProfile(name, bio, phone)
-        Toast.makeText(this, "Saved (demo)", Toast.LENGTH_SHORT).show();
+
+        profileViewModel.updateProfile(name, bio, phone);
+        Toast.makeText(this, "Profile saved successfully!", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void showChangePhotoSheet() {
@@ -128,17 +177,9 @@ public class EditProfileActivity extends AppCompatActivity {
         parent.setBackgroundColor(Color.TRANSPARENT);
 
         content.findViewById(R.id.btn_sheet_close).setOnClickListener(v -> sheet.dismiss());
-        content.findViewById(R.id.row_take_photo).setOnClickListener(v -> {
-            sheet.dismiss();
-            // TODO: mở camera
-        });
         content.findViewById(R.id.row_choose_gallery).setOnClickListener(v -> {
             sheet.dismiss();
-            // TODO: mở thư viện ảnh
-        });
-        content.findViewById(R.id.row_remove_photo).setOnClickListener(v -> {
-            sheet.dismiss();
-            // TODO: xóa ảnh đại diện
+            MediaPickerHelper.launchSingleImagePicker(imagePickerLauncher);
         });
         sheet.show();
     }

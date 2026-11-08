@@ -35,12 +35,28 @@ public class MediaPickerHelper {
     }
 
     /**
-     * Registers a launcher for picking a single image (e.g. Avatar).
+     * Registers a launcher for picking a single image (e.g. Avatar) from Activity.
      */
     public static ActivityResultLauncher<PickVisualMediaRequest> registerSingleImagePicker(
             @NonNull ComponentActivity activity,
             @NonNull SingleMediaCallback callback) {
         return activity.registerForActivityResult(
+                new ActivityResultContracts.PickVisualMedia(),
+                uri -> {
+                    if (uri != null) {
+                        callback.onMediaPicked(uri);
+                    }
+                }
+        );
+    }
+
+    /**
+     * Registers a launcher for picking a single image (e.g. Avatar) from Fragment.
+     */
+    public static ActivityResultLauncher<PickVisualMediaRequest> registerSingleImagePicker(
+            @NonNull androidx.fragment.app.Fragment fragment,
+            @NonNull SingleMediaCallback callback) {
+        return fragment.registerForActivityResult(
                 new ActivityResultContracts.PickVisualMedia(),
                 uri -> {
                     if (uri != null) {
