@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- Chữ cái nhóm: chỉ hiện ở dòng đầu của mỗi nhóm -->
+    <TextView
+        android:id="@+id/tvContactLetter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/nunito_extrabold"
+        android:textColor="@color/chatly_blue"
+        android:textSize="28sp"
+        android:visibility="gone"
+        tools:text="L"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/layoutContactRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="8dp">
+
+        <FrameLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_contacts_avatar">
+
+            <TextView
+                android:id="@+id/tvContactInitials"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="@style/TextAppearance.Chatly.Chats.Initials"
+                tools:text="LT" />
+
+            <ImageView
+                android:id="@+id/ivContactAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="2dp"
+                android:contentDescription="@null"
+                android:visibility="gone" />
+
+            <View
+                android:id="@+id/vContactOnlineDot"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/bg_contacts_online_dot" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvContactName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.Chatly.Chats.Name"
+                tools:text="Linh Trần" />
+
+            <TextView
+                android:id="@+id/tvContactStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/nunito_semibold"
+                android:maxLines="1"
+                android:textColor="@color/chatly_blue"
+                android:textSize="12sp"
+                tools:text="online" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnContactMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:contentDescription="@string/contacts_cd_message"
+                android:src="@drawable/ic_contacts_message"
+                app:tint="@color/surface_deep" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/nunito_bold"
+                android:text="@string/contacts_action_message"
+                android:textColor="@color/surface_deep"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Nút gọi: hiện thay cho "message" khi dòng được vuốt -->
+        <LinearLayout
+            android:id="@+id/layoutContactCallActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/btnContactVoice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_btn_send"
+                    android:contentDescription="@string/contacts_cd_voice"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_call_voice"
+                    app:tint="@color/surface_deep" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="@string/contacts_action_voice"
+                    android:textColor="@color/surface_deep"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnContactVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_btn_send"
+                    android:contentDescription="@string/contacts_cd_video"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_call_video"
+                    app:tint="@color/surface_deep" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="@string/contacts_action_video"
+                    android:textColor="@color/surface_deep"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Đường kẻ bắt đầu từ chỗ tên -->
+    <View
+        android:id="@+id/vContactDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="86dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/contacts_divider" />
+</LinearLayout>

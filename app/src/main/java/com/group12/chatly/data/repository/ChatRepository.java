@@ -22,6 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
+import com.group12.chatly.data.model.User;
+
 /**
  * Repository managing Chat rooms (Direct 1-1, Group) and Realtime Messages.
  */
@@ -321,7 +326,7 @@ public class ChatRepository {
                 .document(chatId)
                 .collection(SUB_COLLECTION_MESSAGES)
                 .document(messageId)
-                .update("isDeleted", true, "content", "Tin nhắn đã bị thu hồi")
+                .update("deleted", true, "content", "Tin nhắn đã bị thu hồi")
                 .addOnSuccessListener(aVoid -> callback.onSuccess(null))
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
@@ -371,6 +376,200 @@ public class ChatRepository {
                     }
                     callback.onSuccess(chats);
                 });
+    }
+
+    // ===== Từ PR #23 (UI chat 1-1) =====
+
+    public interface MessagesListener {
+        void onMessagesUpdated(List<Message> messages);
+        void onError(String error);
+    }
+
+    public interface ChatsListener {
+        void onChatsUpdated(List<Chat> chats);
+        void onError(String error);
+    }
+
+    public interface ChatListener {
+        void onChatChanged(Chat chat, boolean fromCache);
+    }
+
+    /** Gửi tin trong 1 batch: ghi tin + cập nhật chats/{chatId} (participants, lastMessage, unreadCount). */
+    public void sendMessage(String chatId, String receiverId, Message message,
+                            AuthCallback<Void> callback) {
+        String senderId = message.getSenderId();
+
+        DocumentReference chatRef = firestore.collection(COLLECTION_CHATS).document(chatId);
+        DocumentReference msgRef = chatRef.collection(SUB_COLLECTION_MESSAGES).document();
+
+        List<String> participants = Arrays.asList(senderId, receiverId);
+        Collections.sort(participants);
+
+        Map<String, Object> lastMessage = new HashMap<>();
+        lastMessage.put("senderId", senderId);
+        lastMessage.put("text", previewOf(message));
+        lastMessage.put("type", message.getType());
+        lastMessage.put("timestamp", FieldValue.serverTimestamp());
+        lastMessage.put("readBy", Arrays.asList(senderId));
+
+        Map<String, Object> unread = new HashMap<>();
+        unread.put(receiverId, FieldValue.increment(1));
+        unread.put(senderId, 0);
+
+        Map<String, Object> lastReadAt = new HashMap<>();
+        lastReadAt.put(senderId, FieldValue.serverTimestamp());
+
+        Map<String, Object> chatData = new HashMap<>();
+        chatData.put("type", Chat.TYPE_DIRECT);
+        chatData.put("participants", participants);
+        chatData.put("lastMessage", lastMessage);
+        chatData.put("unreadCount", unread);
+        chatData.put("lastReadAt", lastReadAt);
+        chatData.put("updatedAt", FieldValue.serverTimestamp());
+
+        WriteBatch batch = firestore.batch();
+        batch.set(chatRef, chatData, SetOptions.merge());
+        batch.set(msgRef, message);
+        batch.commit()
+                .addOnSuccessListener(unused -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public ListenerRegistration listenForMessages(String chatId, MessagesListener listener) {
+        return firestore.collection(COLLECTION_CHATS)
+                .document(chatId)
+                .collection(SUB_COLLECTION_MESSAGES)
+                .orderBy("createdAt", Query.Direction.ASCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        listener.onError(error.getMessage());
+                        return;
+                    }
+                    if (value != null) {
+                        List<Message> messages = new ArrayList<>();
+                        for (DocumentSnapshot doc : value.getDocuments()) {
+                            Message msg = doc.toObject(Message.class, DocumentSnapshot.ServerTimestampBehavior.ESTIMATE);
+                            if (msg != null) {
+                                msg.setMessageId(doc.getId());
+                                messages.add(msg);
+                            }
+                        }
+                        listener.onMessagesUpdated(messages);
+                    }
+                });
+    }
+
+    public ListenerRegistration listenForChats(String userId, ChatsListener listener) {
+        return firestore.collection(COLLECTION_CHATS)
+                .whereArrayContains("participants", userId)
+                .orderBy("updatedAt", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        listener.onError(error.getMessage());
+                        return;
+                    }
+                    if (value != null) {
+                        List<Chat> chats = new ArrayList<>();
+                        for (DocumentSnapshot doc : value.getDocuments()) {
+                            Chat chat = doc.toObject(Chat.class, DocumentSnapshot.ServerTimestampBehavior.ESTIMATE);
+                            if (chat != null) {
+                                chat.setChatId(doc.getId());
+                                chats.add(chat);
+                            }
+                        }
+                        listener.onChatsUpdated(chats);
+                    }
+                });
+    }
+
+    public ListenerRegistration listenForChat(String chatId, ChatListener listener) {
+        return firestore.collection(COLLECTION_CHATS).document(chatId)
+                .addSnapshotListener((doc, error) -> {
+                    if (error != null || doc == null) {
+                        listener.onChatChanged(null, false);
+                        return;
+                    }
+                    boolean fromCache = doc.getMetadata().isFromCache();
+                    if (!doc.exists()) {
+                        listener.onChatChanged(null, fromCache);
+                        return;
+                    }
+                    Chat chat = doc.toObject(Chat.class, DocumentSnapshot.ServerTimestampBehavior.ESTIMATE);
+                    if (chat != null) chat.setChatId(doc.getId());
+                    listener.onChatChanged(chat, fromCache);
+                });
+    }
+
+    public void setTyping(String chatId, String myUid, boolean typing) {
+        Object value = typing ? FieldValue.serverTimestamp() : FieldValue.delete();
+        firestore.collection(COLLECTION_CHATS).document(chatId)
+                .update("typingAt." + myUid, value);
+    }
+
+    public void markAsRead(String chatId, String myUid) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("unreadCount." + myUid, 0);
+        updates.put("lastReadAt." + myUid, FieldValue.serverTimestamp());
+        firestore.collection(COLLECTION_CHATS).document(chatId).update(updates);
+    }
+
+    public void getAllUsers(AuthCallback<List<User>> callback) {
+        firestore.collection("users").get()
+                .addOnSuccessListener(snapshot -> {
+                    List<User> users = new ArrayList<>();
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                        User user = doc.toObject(User.class);
+                        if (user != null) users.add(user);
+                    }
+                    callback.onSuccess(users);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void getUserById(String uid, AuthCallback<User> callback) {
+        firestore.collection("users").document(uid).get()
+                .addOnSuccessListener(doc -> {
+                    User user = doc.toObject(User.class);
+                    if (user != null) {
+                        callback.onSuccess(user);
+                    } else {
+                        callback.onFailure("User not found");
+                    }
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void deleteMessage(String chatId, String messageId, AuthCallback<Void> callback) {
+        firestore.collection(COLLECTION_CHATS)
+                .document(chatId)
+                .collection(SUB_COLLECTION_MESSAGES)
+                .document(messageId)
+                .update("deleted", true, "content", "")
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    /** emoji = null để gỡ reaction của mình. */
+    public void setReaction(String chatId, String messageId, String userId, String emoji, AuthCallback<Void> callback) {
+        Map<String, Object> reactionData = new HashMap<>();
+        Map<String, Object> userReaction = new HashMap<>();
+        userReaction.put(userId, emoji == null ? FieldValue.delete() : emoji);
+        reactionData.put("reactions", userReaction);
+
+        firestore.collection(COLLECTION_CHATS)
+                .document(chatId)
+                .collection(SUB_COLLECTION_MESSAGES)
+                .document(messageId)
+                .set(reactionData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    private String previewOf(Message message) {
+        if (Message.TYPE_TEXT.equals(message.getType())) {
+            return message.getContent();
+        }
+        return message.getType();
     }
 }
 
