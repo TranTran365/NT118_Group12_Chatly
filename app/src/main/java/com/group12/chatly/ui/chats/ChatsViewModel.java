@@ -240,7 +240,7 @@ public class ChatsViewModel extends AndroidViewModel {
 
         String preview = "";
         long time = 0;
-        Chat.LastMessage last = chat.getLastMessage();
+        Chat.LastMessage last = chat.lastMessageInfo();
         if (last != null) {
             String text = last.getText() == null ? "" : last.getText();
             String type = last.getType() != null ? last.getType() : Message.TYPE_TEXT;

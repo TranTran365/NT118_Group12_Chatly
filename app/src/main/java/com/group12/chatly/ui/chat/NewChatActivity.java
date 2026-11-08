@@ -93,7 +93,7 @@ public class NewChatActivity extends AppCompatActivity {
                     String sub = !TextUtils.isEmpty(user.getBio()) ? user.getBio() : user.getEmail();
 
                     allUsers.add(new ChatItem(
-                            ChatRepository.generateChatId(myUid, uid), uid, name,
+                            ChatRepository.getDirectChatId(myUid, uid), uid, name,
                             user.getAvatarUrl(), sub == null ? "" : sub, 0, 0, false));
                 }
                 applyFilter();

@@ -86,7 +86,7 @@ public class ChatActivity extends AppCompatActivity implements AttachmentBottomS
             return;
         }
 
-        chatId = ChatRepository.generateChatId(currentUserId, targetUserId);
+        chatId = ChatRepository.getDirectChatId(currentUserId, targetUserId);
         chatRepository = ChatRepository.getInstance();
 
         initViews();

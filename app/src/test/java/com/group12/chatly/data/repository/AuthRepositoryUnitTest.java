@@ -1,5 +1,6 @@
 package com.group12.chatly.data.repository;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -14,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +29,9 @@ public class AuthRepositoryUnitTest {
 
     @Mock
     private FirebaseUser mockUser;
+
+    @Mock
+    private Task<Void> mockVoidTask;
 
     private AuthRepository authRepository;
 
@@ -86,6 +91,44 @@ public class AuthRepositoryUnitTest {
             public void onFailure(String errorMessage) {
                 failureCalled[0] = true;
                 assertEquals("No user is currently authenticated.", errorMessage);
+            }
+        });
+
+        assertTrue(failureCalled[0]);
+    }
+
+    @Test
+    public void testSendPasswordResetEmail_whenEmailEmpty_callsOnFailure() {
+        final boolean[] failureCalled = {false};
+        authRepository.sendPasswordResetEmail("", new AuthCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                failureCalled[0] = true;
+                assertEquals("Email cannot be empty.", errorMessage);
+            }
+        });
+
+        assertTrue(failureCalled[0]);
+    }
+
+    @Test
+    public void testUpdateFcmToken_whenNotLoggedIn_callsOnFailure() {
+        when(mockAuth.getCurrentUser()).thenReturn(null);
+
+        final boolean[] failureCalled = {false};
+        authRepository.updateFcmToken("sample_token", new AuthCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                failureCalled[0] = true;
+                assertEquals("User is not authenticated.", errorMessage);
             }
         });
 
