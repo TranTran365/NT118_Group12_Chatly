@@ -1,0 +1,22 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Quy tắc cho ảnh đại diện người dùng
+    match /users/{userId}/avatar.jpg {
+      // Mọi người dùng đã đăng nhập đều có thể xem avatar của nhau
+      allow read: if request.auth != null;
+      // Chỉ chủ tài khoản mới được upload ảnh đại diện (dung lượng < 5MB)
+      allow write: if request.auth != null && request.auth.uid == userId
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Quy tắc cho tin nhắn đa phương tiện trong chat (ảnh, video, ghi âm, tài liệu)
+    match /chats/{chatId}/{folder}/{fileName} {
+      allow read, write: if request.auth != null
+                         && request.resource.size < 50 * 1024 * 1024;
+    }
+  }
+}
+
