@@ -3,8 +3,10 @@ package com.group12.chatly.data.repository;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -17,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class AuthRepository {
 
-    private static final String COLLECTION_USERS = "users";
+    public static final String COLLECTION_USERS = "users";
     private static volatile AuthRepository instance;
 
     private final FirebaseAuth firebaseAuth;
@@ -69,9 +71,6 @@ public class AuthRepository {
     /**
      * Registers a new user with email, password, and display name.
      * Updates Firebase Auth profile and creates a document in Firestore 'users'.
-     *
-     * In case of Firestore write failure, onFailure is invoked to ensure the UI
-     * does not falsely report complete success.
      */
     public void registerWithEmail(@NonNull String fullName,
                                   @NonNull String email,
@@ -173,6 +172,107 @@ public class AuthRepository {
     }
 
     /**
+     * Signs in with Google using ID Token.
+     * If user document does not exist in Firestore, creates it automatically.
+     */
+    public void signInWithGoogleIdToken(@NonNull String idToken,
+                                        @NonNull AuthCallback<User> callback) {
+        final AtomicBoolean callbackDispatched = new AtomicBoolean(false);
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful() || task.getResult() == null) {
+                        String errorMsg = task.getException() != null && task.getException().getMessage() != null
+                                ? task.getException().getMessage()
+                                : "Google sign-in failed.";
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onFailure(errorMsg);
+                        }
+                        return;
+                    }
+
+                    FirebaseUser firebaseUser = task.getResult().getUser();
+                    if (firebaseUser == null) {
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onFailure("User not found after Google authentication.");
+                        }
+                        return;
+                    }
+
+                    // Check if document already exists in Firestore
+                    firestore.collection(COLLECTION_USERS)
+                            .document(firebaseUser.getUid())
+                            .get()
+                            .addOnCompleteListener(getTask -> {
+                                if (getTask.isSuccessful() && getTask.getResult() != null && getTask.getResult().exists()) {
+                                    User existingUser = getTask.getResult().toObject(User.class);
+                                    if (existingUser != null) {
+                                        if (callbackDispatched.compareAndSet(false, true)) {
+                                            callback.onSuccess(existingUser);
+                                        }
+                                        return;
+                                    }
+                                }
+
+                                // First time login: Create new user profile in Firestore
+                                String displayName = firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "Chatly User";
+                                String email = firebaseUser.getEmail() != null ? firebaseUser.getEmail() : "";
+                                User newUser = new User(firebaseUser.getUid(), displayName, email);
+                                if (firebaseUser.getPhotoUrl() != null) {
+                                    newUser.setAvatarUrl(firebaseUser.getPhotoUrl().toString());
+                                }
+                                if (firebaseUser.getPhoneNumber() != null) {
+                                    newUser.setPhoneNumber(firebaseUser.getPhoneNumber());
+                                }
+
+                                firestore.collection(COLLECTION_USERS)
+                                        .document(newUser.getUserId())
+                                        .set(newUser)
+                                        .addOnSuccessListener(aVoid -> {
+                                            if (callbackDispatched.compareAndSet(false, true)) {
+                                                callback.onSuccess(newUser);
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            if (callbackDispatched.compareAndSet(false, true)) {
+                                                callback.onFailure("Failed to initialize Google user profile in Firestore: " + e.getMessage());
+                                            }
+                                        });
+                            });
+                });
+    }
+
+    /**
+     * Sends password reset email.
+     */
+    public void sendPasswordResetEmail(@NonNull String email,
+                                       @NonNull AuthCallback<Void> callback) {
+        final AtomicBoolean callbackDispatched = new AtomicBoolean(false);
+
+        if (email.trim().isEmpty()) {
+            callback.onFailure("Email cannot be empty.");
+            return;
+        }
+
+        firebaseAuth.sendPasswordResetEmail(email.trim())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onSuccess(null);
+                        }
+                    } else {
+                        String errorMsg = task.getException() != null && task.getException().getMessage() != null
+                                ? task.getException().getMessage()
+                                : "Failed to send password reset email.";
+                        if (callbackDispatched.compareAndSet(false, true)) {
+                            callback.onFailure(errorMsg);
+                        }
+                    }
+                });
+    }
+
+    /**
      * Fetches the current user profile from Firestore.
      */
     public void getCurrentUserProfile(@NonNull AuthCallback<User> callback) {
@@ -221,16 +321,107 @@ public class AuthRepository {
     }
 
     /**
+     * Updates user profile attributes in Firestore.
+     */
+    public void updateUserProfile(@Nullable String displayName,
+                                  @Nullable String bio,
+                                  @Nullable String avatarUrl,
+                                  @NonNull AuthCallback<Void> callback) {
+        String uid = getCurrentUserId();
+        if (uid == null) {
+            callback.onFailure("User is not authenticated.");
+            return;
+        }
+
+        java.util.Map<String, Object> updates = new java.util.HashMap<>();
+        if (displayName != null) updates.put("displayName", displayName);
+        if (bio != null) updates.put("bio", bio);
+        if (avatarUrl != null) updates.put("avatarUrl", avatarUrl);
+
+        if (updates.isEmpty()) {
+            callback.onSuccess(null);
+            return;
+        }
+
+        firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update(updates)
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage() != null ? e.getMessage() : "Failed to update profile."));
+    }
+
+    /**
+     * Updates the user's online status and lastSeen timestamp.
+     */
+    public void updateOnlineStatus(boolean isOnline) {
+        String uid = getCurrentUserId();
+        if (uid == null) return;
+
+        java.util.Map<String, Object> updates = new java.util.HashMap<>();
+        updates.put("isOnline", isOnline);
+        updates.put("lastSeen", com.google.firebase.Timestamp.now());
+
+        try {
+            firestore.collection(COLLECTION_USERS)
+                    .document(uid)
+                    .update(updates);
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * Updates the FCM device token in the user's Firestore document.
+     */
+    public void updateFcmToken(@NonNull String token, @Nullable AuthCallback<Void> callback) {
+        String uid = getCurrentUserId();
+        if (uid == null) {
+            if (callback != null) callback.onFailure("User is not authenticated.");
+            return;
+        }
+
+        firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .update("fcmToken", token)
+                .addOnSuccessListener(aVoid -> {
+                    if (callback != null) callback.onSuccess(null);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onFailure(e != null ? e.getMessage() : "Failed to update FCM token.");
+                });
+    }
+
+    /**
+     * Retrieves the current FCM token from FirebaseMessaging and syncs it to Firestore.
+     */
+    public void syncCurrentFcmToken() {
+        String uid = getCurrentUserId();
+        if (uid == null) return;
+
+        try {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            String token = task.getResult();
+                            updateFcmToken(token, null);
+                        }
+                    });
+        } catch (Exception ignored) {
+            // FirebaseApp might not be initialized in Unit tests
+        }
+    }
+
+    /**
      * Signs out the current user.
      */
     public void logout() {
+        updateOnlineStatus(false);
         firebaseAuth.signOut();
     }
 
     /**
      * Cập nhật thông tin profile (Tên, Bio, SĐT) lên Firestore.
      */
-    public void updateUserProfile(@NonNull String fullName,
+    public void updateProfileDetails(@NonNull String fullName,
                                   @NonNull String bio,
                                   @NonNull String phone,
                                   @NonNull AuthCallback<User> callback) {

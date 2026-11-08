@@ -32,7 +32,7 @@ public final class ZegoCallHelper {
 
         try {
             ZegoUIKitPrebuiltCallInvitationConfig callInvitationConfig = new ZegoUIKitPrebuiltCallInvitationConfig();
-            ZegoUIKitPrebuiltCallService.init(application, ZegoConfig.APP_ID, ZegoConfig.APP_SIGN, userId, userName, callInvitationConfig);
+            ZegoUIKitPrebuiltCallService.init(application, ZegoConfig.getAppId(), ZegoConfig.getAppSign(), userId, userName, callInvitationConfig);
             isInitialized = true;
             Log.i(TAG, "ZegoCallService initialized successfully for user: " + userId);
         } catch (Exception e) {
