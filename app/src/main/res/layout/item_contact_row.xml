@@ -52,6 +52,7 @@
                 android:id="@+id/ivContactAvatar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="2dp"
                 android:contentDescription="@null"
                 android:visibility="gone" />
 
@@ -115,6 +116,75 @@
                 android:text="@string/contacts_action_message"
                 android:textColor="@color/surface_deep"
                 android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Nút gọi: hiện thay cho "message" khi dòng được vuốt -->
+        <LinearLayout
+            android:id="@+id/layoutContactCallActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/btnContactVoice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_btn_send"
+                    android:contentDescription="@string/contacts_cd_voice"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_call_voice"
+                    app:tint="@color/surface_deep" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="@string/contacts_action_voice"
+                    android:textColor="@color/surface_deep"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnContactVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_btn_send"
+                    android:contentDescription="@string/contacts_cd_video"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_call_video"
+                    app:tint="@color/surface_deep" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="@string/contacts_action_video"
+                    android:textColor="@color/surface_deep"
+                    android:textSize="11sp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

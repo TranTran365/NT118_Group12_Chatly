@@ -23,4 +23,9 @@
 
     <string name="contacts_alphabet_index" translatable="false">A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ</string>
     <string name="contacts_cd_alphabet_index">Alphabet index</string>
+
+    <string name="contacts_action_voice">voice</string>
+    <string name="contacts_action_video">video</string>
+    <string name="contacts_cd_voice">Voice call</string>
+    <string name="contacts_cd_video">Video call</string>
 </resources>
