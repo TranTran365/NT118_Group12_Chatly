@@ -12,6 +12,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.os.CancellationSignal;
+import androidx.credentials.Credential;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.CustomCredential;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialCancellationException;
+import androidx.credentials.exceptions.GetCredentialException;
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,12 +42,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private AuthViewModel authViewModel;
 
+    private CredentialManager credentialManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        credentialManager = CredentialManager.create(this);
 
         tilEmail = findViewById(R.id.til_email);
         tilPassword = findViewById(R.id.til_password);
@@ -68,10 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-        findViewById(R.id.btn_google).setOnClickListener(v -> {
-            // TODO: đăng nhập bằng Google
-            Toast.makeText(this, "Google Sign-In is coming soon.", Toast.LENGTH_SHORT).show();
-        });
+        findViewById(R.id.btn_google).setOnClickListener(v -> startGoogleSignIn());
 
         tvCreateAccount.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterActivity.class));
@@ -79,6 +91,42 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         setupObservers();
+    }
+
+    private void startGoogleSignIn() {
+        GetSignInWithGoogleOption googleOption =
+                new GetSignInWithGoogleOption.Builder(getString(R.string.default_web_client_id)).build();
+        GetCredentialRequest request = new GetCredentialRequest.Builder()
+                .addCredentialOption(googleOption)
+                .build();
+
+        credentialManager.getCredentialAsync(
+                this, request, new CancellationSignal(), ContextCompat.getMainExecutor(this),
+                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+                        Credential credential = result.getCredential();
+                        if (credential instanceof CustomCredential
+                                && GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                                .equals(credential.getType())) {
+                            try {
+                                GoogleIdTokenCredential google = GoogleIdTokenCredential
+                                        .createFrom(((CustomCredential) credential).getData());
+                                authViewModel.loginWithGoogleIdToken(google.getIdToken());
+                            } catch (Exception e) {
+                                Toast.makeText(LoginActivity.this,
+                                        "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(GetCredentialException e) {
+                        if (e instanceof GetCredentialCancellationException) return; // user bấm hủy
+                        Toast.makeText(LoginActivity.this,
+                                "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void setupObservers() {

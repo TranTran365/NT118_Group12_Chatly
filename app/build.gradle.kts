@@ -67,4 +67,10 @@ dependencies {
     testImplementation(libs.mockito.core)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
+
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation(libs.googleid)
+
 }
