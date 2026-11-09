@@ -49,8 +49,13 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
         findViewById(R.id.tv_forgot_password).setOnClickListener(v -> {
-            // TODO: mở ForgotPasswordActivity khi có màn này
-            Toast.makeText(this, "Forgot password feature is coming soon.", Toast.LENGTH_SHORT).show();
+            String email = String.valueOf(etEmail.getText()).trim();
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                tilEmail.setError(getString(R.string.register_error_email));
+                return;
+            }
+            tilEmail.setError(null);
+            authViewModel.sendPasswordResetEmail(email);
         });
 
         if (btnSignIn != null) {
@@ -94,6 +99,16 @@ public class LoginActivity extends AppCompatActivity {
             } else if (state.isError()) {
                 btnSignIn.setEnabled(true);
                 btnSignIn.setText(R.string.login_sign_in);
+                Toast.makeText(this, state.getErrorMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        authViewModel.getPasswordResetState().observe(this, state -> {
+            if (state == null) return;
+            if (state.isSuccess()) {
+                Toast.makeText(this, R.string.login_reset_sent, Toast.LENGTH_LONG).show();
+                authViewModel.resetStates();
+            } else if (state.isError()) {
                 Toast.makeText(this, state.getErrorMessage(), Toast.LENGTH_LONG).show();
             }
         });

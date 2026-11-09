@@ -7,4 +7,5 @@
     <string name="login_success">Signed in successfully!</string>
     <string name="login_new_here">New to chatly? <b>Create an account</b></string>
     <string name="login_error_password">Please enter your password</string>
+    <string name="login_reset_sent">Đã gửi email đặt lại mật khẩu. Nhớ check cả mục spam nhé!</string>
 </resources>
