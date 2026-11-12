@@ -1,5 +1,6 @@
 package com.group12.chatly.ui.chat;
 
+import android.graphics.Color;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,8 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -74,7 +80,19 @@ public class ChatActivity extends AppCompatActivity implements AttachmentBottomS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this,
+                SystemBarStyle.dark(Color.TRANSPARENT),
+                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT));
         setContentView(R.layout.activity_chat);
+
+        View rootChat = findViewById(R.id.rootChat);
+        if (rootChat != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(rootChat, (v, insets) -> {
+                Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(0, bars.top, 0, 0);
+                return insets;
+            });
+        }
 
         currentUserId = AuthRepository.getInstance().getCurrentUserId();
         targetUserId = getIntent().getStringExtra(EXTRA_TARGET_USER_ID);

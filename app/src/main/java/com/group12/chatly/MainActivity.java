@@ -2,6 +2,7 @@ package com.group12.chatly;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.SystemBarStyle;
@@ -33,6 +34,15 @@ public class MainActivity extends AppCompatActivity {
                 SystemBarStyle.dark(Color.TRANSPARENT),
                 SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT));
         setContentView(R.layout.activity_main);
+
+        View rootMain = findViewById(R.id.main);
+        if (rootMain != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(rootMain, (v, insets) -> {
+                Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(0, bars.top, 0, 0);
+                return insets;
+            });
+        }
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         final int basePaddingBottom = bottomNav.getPaddingBottom();

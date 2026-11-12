@@ -2,7 +2,9 @@ package com.group12.chatly.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -10,8 +12,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.credentials.Credential;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.CustomCredential;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialCancellationException;
+import androidx.credentials.exceptions.GetCredentialException;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.group12.chatly.MainActivity;
@@ -27,6 +40,8 @@ public class RegisterActivity extends AppCompatActivity {
     private Button btnCreateAccount;
 
     private AuthViewModel authViewModel;
+    private CredentialManager credentialManager;
+    private View btnGoogle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        credentialManager = CredentialManager.create(this);
 
         tilFullName = findViewById(R.id.tilFullName);
         tilEmail = findViewById(R.id.tilEmail);
@@ -44,6 +60,11 @@ public class RegisterActivity extends AppCompatActivity {
         cbTerms = findViewById(R.id.cbTerms);
 
         btnCreateAccount = findViewById(R.id.btnCreateAccount);
+        btnGoogle = findViewById(R.id.btnGoogle);
+        if (btnGoogle != null) {
+            btnGoogle.setOnClickListener(v -> startGoogleSignIn());
+        }
+
         TextView tvSignIn = findViewById(R.id.tvSignIn);
         ImageButton btnBack = findViewById(R.id.btnBack);
 
@@ -72,6 +93,42 @@ public class RegisterActivity extends AppCompatActivity {
         setupObservers();
     }
 
+    private void startGoogleSignIn() {
+        GetSignInWithGoogleOption googleOption =
+                new GetSignInWithGoogleOption.Builder(getString(R.string.default_web_client_id)).build();
+        GetCredentialRequest request = new GetCredentialRequest.Builder()
+                .addCredentialOption(googleOption)
+                .build();
+
+        credentialManager.getCredentialAsync(
+                this, request, new CancellationSignal(), ContextCompat.getMainExecutor(this),
+                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+                        Credential credential = result.getCredential();
+                        if (credential instanceof CustomCredential
+                                && GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                                        .equals(credential.getType())) {
+                            try {
+                                GoogleIdTokenCredential google = GoogleIdTokenCredential
+                                        .createFrom(((CustomCredential) credential).getData());
+                                authViewModel.loginWithGoogleIdToken(google.getIdToken());
+                            } catch (Exception e) {
+                                Toast.makeText(RegisterActivity.this,
+                                        "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(GetCredentialException e) {
+                        if (e instanceof GetCredentialCancellationException) return;
+                        Toast.makeText(RegisterActivity.this,
+                                "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
     private void setupObservers() {
         authViewModel.getRegisterState().observe(this, state -> {
             if (state == null || btnCreateAccount == null) return;
@@ -90,6 +147,23 @@ public class RegisterActivity extends AppCompatActivity {
             } else if (state.isError()) {
                 btnCreateAccount.setEnabled(true);
                 btnCreateAccount.setText(R.string.register_create_account);
+                Toast.makeText(this, state.getErrorMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        authViewModel.getLoginState().observe(this, state -> {
+            if (state == null) return;
+            if (state.isLoading()) {
+                if (btnGoogle != null) btnGoogle.setEnabled(false);
+            } else if (state.isSuccess()) {
+                if (btnGoogle != null) btnGoogle.setEnabled(true);
+                Toast.makeText(this, R.string.register_success, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else if (state.isError()) {
+                if (btnGoogle != null) btnGoogle.setEnabled(true);
                 Toast.makeText(this, state.getErrorMessage(), Toast.LENGTH_LONG).show();
             }
         });

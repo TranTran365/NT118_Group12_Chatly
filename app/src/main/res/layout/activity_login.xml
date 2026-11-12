@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/register_sheet"
     android:fillViewport="true"
+    android:fitsSystemWindows="true"
     android:overScrollMode="never"
     tools:context=".ui.auth.LoginActivity">
 

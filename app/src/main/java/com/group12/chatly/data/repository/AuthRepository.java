@@ -455,7 +455,7 @@ public class AuthRepository {
         String uid = firebaseUser.getUid();
         com.google.firebase.storage.StorageReference avatarRef =
                 com.google.firebase.storage.FirebaseStorage.getInstance()
-                        .getReference().child("avatars/" + uid + ".jpg");
+                        .getReference().child("users/" + uid + "/avatar.jpg");
 
         avatarRef.putFile(imageUri)
                 .continueWithTask(task -> {
