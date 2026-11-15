@@ -20,4 +20,5 @@
         <item name="cornerRadius">@dimen/corner_field</item>
         <item name="android:textAppearance">@style/TextAppearance.Chatly.Button</item>
     </style>
+
 </resources>

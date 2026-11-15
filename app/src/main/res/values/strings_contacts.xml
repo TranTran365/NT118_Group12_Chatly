@@ -28,4 +28,12 @@
     <string name="contacts_action_video">video</string>
     <string name="contacts_cd_voice">Voice call</string>
     <string name="contacts_cd_video">Video call</string>
+
+    <string name="contacts_empty_tagline">A FRESH LITTLE START</string>
+    <string name="contacts_empty_badge">good friendships start with hi</string>
+    <string name="contacts_empty_title">a little hello.\na lot of possibility.</string>
+    <string name="contacts_empty_subtitle">your people are one hello away. find a friend and make yourself at home.</string>
+    <string name="contacts_empty_btn_add">add your first friend</string>
+    <string name="contacts_empty_btn_invite">invite friends</string>
+    <string name="contacts_invite_text">Join me on Chatly, it\'s where my people hang out!</string>
 </resources>
