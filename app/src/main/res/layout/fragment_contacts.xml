@@ -24,6 +24,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tvContactsTagline"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -97,6 +98,7 @@
 
         <!-- Tab lọc: all / online / requests -->
         <LinearLayout
+            android:id="@+id/layoutContactsFilters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -170,6 +172,7 @@
 
         <!-- Vùng cuộn: thẻ requests + (Bước 3) online now + danh sách -->
         <FrameLayout
+            android:id="@+id/frameContactsList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -358,5 +361,122 @@
                 android:src="@drawable/ic_arrow_right"
                 app:tint="@color/surface_deep" />
         </LinearLayout>
+
+        <!-- Màn rỗng (chưa có ai trong contacts) -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/layoutContactsEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingStart="24dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="16dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_chats_badge"
+                    android:fontFamily="@font/nunito_bold"
+                    android:paddingStart="14dp"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="6dp"
+                    android:text="@string/contacts_empty_badge"
+                    android:textColor="@color/surface_deep"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nunito_extrabold"
+                    android:gravity="center"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/contacts_empty_title"
+                    android:textColor="@color/surface_deep"
+                    android:textSize="26sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4dp"
+                    android:text="@string/contacts_empty_subtitle"
+                    android:textColor="#475569"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Nút 1: add your first friend -->
+                <RelativeLayout
+                    android:id="@+id/btnEmptyAddFriend"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/bg_btn_yellow"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/nunito_extrabold"
+                        android:text="@string/contacts_empty_btn_add"
+                        android:textColor="@color/surface_deep"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="@color/surface_deep" />
+                </RelativeLayout>
+
+                <!-- Nút 2: invite friends (chữ giữa, không icon) -->
+                <TextView
+                    android:id="@+id/btnEmptyInvite"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_btn_outlined"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/nunito_extrabold"
+                    android:gravity="center"
+                    android:text="@string/contacts_empty_btn_invite"
+                    android:textColor="@color/surface_deep"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </LinearLayout>

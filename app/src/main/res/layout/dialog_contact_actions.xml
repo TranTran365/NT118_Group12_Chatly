@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootContactActions"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/message_actions_dim"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_action_card"
+        android:clickable="true"
+        android:clipToOutline="true"
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <LinearLayout android:id="@+id/actionMessage" style="@style/Widget.Chatly.ContactAction.Row">
+            <ImageView style="@style/Widget.Chatly.ContactAction.Icon"
+                android:src="@drawable/ic_action_message" app:tint="@color/surface_deep" />
+            <TextView style="@style/Widget.Chatly.ContactAction.Label"
+                android:text="@string/contact_action_message" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/actionCall" style="@style/Widget.Chatly.ContactAction.Row">
+            <ImageView style="@style/Widget.Chatly.ContactAction.Icon"
+                android:src="@drawable/ic_action_call" app:tint="@color/surface_deep" />
+            <TextView style="@style/Widget.Chatly.ContactAction.Label"
+                android:text="@string/contact_action_call" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/actionProfile" style="@style/Widget.Chatly.ContactAction.Row">
+            <ImageView style="@style/Widget.Chatly.ContactAction.Icon"
+                android:src="@drawable/ic_action_profile" app:tint="@color/surface_deep" />
+            <TextView style="@style/Widget.Chatly.ContactAction.Label"
+                android:text="@string/contact_action_profile" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/actionBlock" style="@style/Widget.Chatly.ContactAction.Row">
+            <ImageView style="@style/Widget.Chatly.ContactAction.Icon"
+                android:src="@drawable/ic_action_block" app:tint="@color/surface_deep" />
+            <TextView style="@style/Widget.Chatly.ContactAction.Label"
+                android:text="@string/contact_action_block" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/actionRemove" style="@style/Widget.Chatly.ContactAction.Row">
+            <ImageView style="@style/Widget.Chatly.ContactAction.Icon"
+                android:src="@drawable/ic_action_remove" app:tint="@color/surface_deep" />
+            <TextView style="@style/Widget.Chatly.ContactAction.Label"
+                android:text="@string/contact_action_remove" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

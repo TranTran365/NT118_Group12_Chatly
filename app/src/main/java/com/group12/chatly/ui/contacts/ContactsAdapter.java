@@ -26,6 +26,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         void onContactMessageClick(Contact contact);
         void onContactVoiceClick(Contact contact);
         void onContactVideoClick(Contact contact);
+
+        void onContactLongClick(Contact contact);
     }
 
     private final List<Contact> contacts = new ArrayList<>();
@@ -154,6 +156,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
                         listener.onContactMessageClick(contact);
                     }
                     return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    if (listener != null) listener.onContactLongClick(contact);
                 }
 
                 @Override

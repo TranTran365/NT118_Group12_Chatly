@@ -1,0 +1,10 @@
+<resources>
+    <string name="contact_action_message">message</string>
+    <string name="contact_action_call">call</string>
+    <string name="contact_action_profile">profile</string>
+    <string name="contact_action_block">block</string>
+    <string name="contact_action_remove">remove</string>
+
+    <string name="contact_profile_message">message</string>
+    <string name="contact_profile_call">call</string>
+</resources>

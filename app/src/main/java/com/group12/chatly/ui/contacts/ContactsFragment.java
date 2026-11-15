@@ -12,6 +12,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import android.widget.Toast;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.group12.chatly.data.repository.ContactRepository;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -28,6 +35,7 @@ import com.group12.chatly.data.repository.AuthRepository;
 import com.group12.chatly.data.repository.ChatRepository;
 import com.group12.chatly.multimedia.call.ZegoCallHelper;
 import com.group12.chatly.ui.chat.ChatActivity;
+import com.group12.chatly.ui.chat.NewChatActivity;
 import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton;
 
 import java.text.Collator;
@@ -37,7 +45,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class ContactsFragment extends Fragment {
+public class ContactsFragment extends Fragment implements ContactActionsDialogFragment.Listener {
 
     public static final int FILTER_ALL = 0;
     public static final int FILTER_ONLINE = 1;
@@ -50,6 +58,9 @@ public class ContactsFragment extends Fragment {
     private RecyclerView rcvContacts;
     private RecyclerView rcvContactsOnline;
     private EditText etContactsSearch;
+
+    private View layoutContactsEmpty, layoutContactsFilters, frameContactsList, btnAddFriend;
+    private TextView tvContactsTagline;
 
     private ContactsAdapter contactsAdapter;
     private ContactsOnlineAdapter onlineAdapter;
@@ -69,6 +80,16 @@ public class ContactsFragment extends Fragment {
         rcvContacts = view.findViewById(R.id.rcvContacts);
         rcvContactsOnline = view.findViewById(R.id.rcvContactsOnline);
         etContactsSearch = view.findViewById(R.id.etContactsSearch);
+
+        layoutContactsEmpty = view.findViewById(R.id.layoutContactsEmpty);
+        layoutContactsFilters = view.findViewById(R.id.layoutContactsFilters);
+        frameContactsList = view.findViewById(R.id.frameContactsList);
+        btnAddFriend = view.findViewById(R.id.btnAddFriend);
+        tvContactsTagline = view.findViewById(R.id.tvContactsTagline);
+
+        view.findViewById(R.id.btnEmptyAddFriend).setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), NewChatActivity.class)));
+        view.findViewById(R.id.btnEmptyInvite).setOnClickListener(v -> inviteFriends());
 
         // Ẩn các banner chưa có nguồn dữ liệu thật (Requests)
         View layoutRequestsBanner = view.findViewById(R.id.layoutRequestsBanner);
@@ -106,6 +127,12 @@ public class ContactsFragment extends Fragment {
             public void onContactVideoClick(Contact contact) {
                 startZegoCall(contact, true);
             }
+
+            @Override
+            public void onContactLongClick(Contact contact) {
+                ContactActionsDialogFragment.newInstance(contact)
+                        .show(getChildFragmentManager(), ContactActionsDialogFragment.TAG);
+            }
         });
 
         if (rcvContacts != null) {
@@ -125,6 +152,65 @@ public class ContactsFragment extends Fragment {
             rcvContactsOnline.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
             rcvContactsOnline.setAdapter(onlineAdapter);
         }
+    }
+
+    @Override
+    public void onContactAction(Contact contact, ContactActionsDialogFragment.Action action) {
+        if (contact == null) return;
+        switch (action) {
+            case MESSAGE:
+                openChat(contact);
+                break;
+            case CALL:
+                startZegoCall(contact, false);
+                break;
+            case PROFILE:
+                ContactProfileBottomSheet.newInstance(contact)
+                        .show(getChildFragmentManager(), ContactProfileBottomSheet.TAG);
+                break;
+            case BLOCK:
+                confirm("Block " + contact.getDisplayName() + "?",
+                        "They won't be able to message or call you.",
+                        () -> {
+                            // TODO: chờ Backend thêm blockUser()
+                            Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show();
+                        });
+                break;
+            case REMOVE:
+                confirm("Remove " + contact.getDisplayName() + "?",
+                        "You will no longer be friends.",
+                        () -> removeContact(contact));
+                break;
+        }
+    }
+
+    private void confirm(String title, String message, Runnable onConfirm) {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(title)
+                .setMessage(message)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("OK", (d, w) -> onConfirm.run())
+                .show();
+    }
+
+    private void removeContact(Contact contact) {
+        FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
+        if (me == null || TextUtils.isEmpty(contact.getUserId())) return;
+
+        String friendshipId = ContactRepository.getCompositeFriendshipId(me.getUid(), contact.getUserId());
+        ContactRepository.getInstance().removeFriendship(friendshipId, new AuthCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                if (!isAdded()) return;
+                loadContactsData();   // load lại danh sách
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                if (!isAdded()) return;
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void startZegoCall(Contact contact, boolean isVideo) {
@@ -209,6 +295,7 @@ public class ContactsFragment extends Fragment {
                 Collections.sort(rawContacts, (c1, c2) -> collator.compare(c1.getDisplayName(), c2.getDisplayName()));
 
                 allContacts.addAll(rawContacts);
+                setEmptyState(allContacts.isEmpty());
 
                 updateOnlineHeader();
 
@@ -227,8 +314,27 @@ public class ContactsFragment extends Fragment {
                 if (contactsAdapter != null) {
                     contactsAdapter.setContacts(new ArrayList<>());
                 }
+                setEmptyState(true);
             }
         });
+    }
+
+    private void setEmptyState(boolean empty) {
+        int listVisibility = empty ? View.GONE : View.VISIBLE;
+        if (layoutContactsEmpty != null) layoutContactsEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+        if (layoutContactsFilters != null) layoutContactsFilters.setVisibility(listVisibility);
+        if (frameContactsList != null) frameContactsList.setVisibility(listVisibility);
+        if (btnAddFriend != null) btnAddFriend.setVisibility(listVisibility);
+        if (tvContactsTagline != null) {
+            tvContactsTagline.setText(empty ? R.string.contacts_empty_tagline : R.string.contacts_tagline);
+        }
+    }
+
+    private void inviteFriends() {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.putExtra(Intent.EXTRA_TEXT, getString(R.string.contacts_invite_text));
+        startActivity(Intent.createChooser(share, getString(R.string.contacts_empty_btn_invite)));
     }
 
     private void updateOnlineHeader() {
@@ -343,5 +449,10 @@ public class ContactsFragment extends Fragment {
         rcvContacts = null;
         rcvContactsOnline = null;
         etContactsSearch = null;
+        layoutContactsEmpty = null;
+        layoutContactsFilters = null;
+        frameContactsList = null;
+        btnAddFriend = null;
+        tvContactsTagline = null;
     }
 }

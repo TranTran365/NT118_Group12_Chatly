@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_chats_sheet"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="28dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="32dp">
+
+    <!-- Avatar -->
+    <FrameLayout
+        android:layout_width="88dp"
+        android:layout_height="88dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_contacts_avatar">
+
+            <TextView
+                android:id="@+id/tvSheetInitials"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="@style/TextAppearance.Chatly.Chats.Initials"
+                android:textSize="28sp"
+                tools:text="LT" />
+
+            <ImageView
+                android:id="@+id/ivSheetAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <View
+            android:id="@+id/vSheetOnlineDot"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="bottom|end"
+            android:background="@drawable/bg_contacts_online_dot"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <!-- Tên + trạng thái -->
+    <TextView
+        android:id="@+id/tvSheetName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:fontFamily="@font/nunito_extrabold"
+        android:textColor="@color/surface_deep"
+        android:textSize="22sp"
+        tools:text="Linh Trần" />
+
+    <TextView
+        android:id="@+id/tvSheetStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/nunito_semibold"
+        android:textColor="@color/chatly_blue"
+        android:textSize="13sp"
+        tools:text="Online" />
+
+    <!-- Bio / email / sđt: ẩn tới khi load xong -->
+    <TextView
+        android:id="@+id/tvSheetBio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/bevietnampro_regular"
+        android:gravity="center"
+        android:textColor="@color/surface_deep"
+        android:textSize="14sp"
+        android:visibility="gone"
+        tools:text="Đang ngủ, đừng gọi." />
+
+    <TextView
+        android:id="@+id/tvSheetEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/nunito_semibold"
+        android:textColor="@color/surface_deep"
+        android:textSize="13sp"
+        android:visibility="gone"
+        tools:text="linh@gmail.com" />
+
+    <TextView
+        android:id="@+id/tvSheetPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/nunito_semibold"
+        android:textColor="@color/surface_deep"
+        android:textSize="13sp"
+        android:visibility="gone"
+        tools:text="0901 234 567" />
+
+    <!-- 2 nút -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnSheetMessage"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_yellow"
+            android:fontFamily="@font/nunito_extrabold"
+            android:gravity="center"
+            android:text="@string/contact_profile_message"
+            android:textColor="@color/on_accent"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/btnSheetCall"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_search_bar"
+            android:fontFamily="@font/nunito_extrabold"
+            android:gravity="center"
+            android:text="@string/contact_profile_call"
+            android:textColor="@color/surface_deep"
+            android:textSize="15sp" />
+    </LinearLayout>
+</LinearLayout>
