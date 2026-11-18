@@ -98,6 +98,9 @@ public class AuthRepository {
                         return;
                     }
 
+                    // Send Firebase Email Verification
+                    firebaseUser.sendEmailVerification();
+
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(fullName)
                             .build();

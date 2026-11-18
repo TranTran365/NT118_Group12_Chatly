@@ -75,6 +75,12 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".ui.auth.VerifyEmailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly.Register"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".ui.welcome.WelcomeActivity"
             android:exported="false" />
 
