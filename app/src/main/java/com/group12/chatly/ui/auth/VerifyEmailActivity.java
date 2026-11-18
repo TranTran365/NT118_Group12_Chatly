@@ -2,6 +2,7 @@ package com.group12.chatly.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -12,11 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.group12.chatly.R;
+import com.group12.chatly.data.repository.AuthRepository;
 import com.group12.chatly.ui.profile.EditProfileActivity;
 
 public class VerifyEmailActivity extends AppCompatActivity {
 
     public static final String EXTRA_EMAIL = "extra_email";
+    private static final long COOLDOWN_MS = 30000; // 30 seconds cooldown
 
     private TextView tvEmail;
     private TextView tvChangeEmail;
@@ -24,6 +27,8 @@ public class VerifyEmailActivity extends AppCompatActivity {
     private Button btnOpenMail;
     private TextView tvResend;
     private ImageButton btnBack;
+
+    private CountDownTimer resendTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +53,11 @@ public class VerifyEmailActivity extends AppCompatActivity {
         }
 
         if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish());
+            btnBack.setOnClickListener(v -> performSignOutAndBack());
         }
 
         if (tvChangeEmail != null) {
-            tvChangeEmail.setOnClickListener(v -> finish());
+            tvChangeEmail.setOnClickListener(v -> performSignOutAndBack());
         }
 
         if (btnVerify != null) {
@@ -71,18 +76,23 @@ public class VerifyEmailActivity extends AppCompatActivity {
     private void checkEmailVerification() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            Toast.makeText(this, "Session expired. Please sign in again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.verify_session_expired, Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
         user.reload().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Toast.makeText(this, R.string.verify_error_network, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (user.isEmailVerified()) {
-                Toast.makeText(this, "Email verified successfully!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.verify_success, Toast.LENGTH_SHORT).show();
                 navigateToProfileSetup();
             } else {
-                Toast.makeText(this, "Email not verified yet. Please check your inbox and tap the link.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.verify_not_yet, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -92,9 +102,9 @@ public class VerifyEmailActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_APP_EMAIL);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(Intent.createChooser(intent, "Open mail app"));
+            startActivity(Intent.createChooser(intent, getString(R.string.verify_btn_open_mail)));
         } catch (Exception e) {
-            Toast.makeText(this, "No mail app found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.verify_no_mail_app, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -103,15 +113,53 @@ public class VerifyEmailActivity extends AppCompatActivity {
         if (user != null) {
             user.sendEmailVerification().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(this, "Verification email sent!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.verify_email_sent, Toast.LENGTH_SHORT).show();
+                    startResendCooldown();
                 } else {
-                    String msg = task.getException() != null ? task.getException().getMessage() : "Failed to send email.";
+                    String msg = task.getException() != null && task.getException().getMessage() != null
+                            ? task.getException().getMessage()
+                            : getString(R.string.verify_not_yet);
                     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Toast.makeText(this, "No user signed in.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.verify_session_expired, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void startResendCooldown() {
+        if (tvResend == null) return;
+        tvResend.setEnabled(false);
+        tvResend.setAlpha(0.6f);
+
+        if (resendTimer != null) {
+            resendTimer.cancel();
+        }
+
+        resendTimer = new CountDownTimer(COOLDOWN_MS, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long seconds = millisUntilFinished / 1000;
+                long mins = seconds / 60;
+                long secs = seconds % 60;
+                tvResend.setText(getString(R.string.verify_resend_cooldown, mins, secs));
+            }
+
+            @Override
+            public void onFinish() {
+                tvResend.setEnabled(true);
+                tvResend.setAlpha(1.0f);
+                tvResend.setText(R.string.verify_resend);
+            }
+        }.start();
+    }
+
+    private void performSignOutAndBack() {
+        AuthRepository.getInstance().logout();
+        Intent intent = new Intent(this, RegisterActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void navigateToProfileSetup() {
@@ -119,5 +167,13 @@ public class VerifyEmailActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (resendTimer != null) {
+            resendTimer.cancel();
+        }
     }
 }

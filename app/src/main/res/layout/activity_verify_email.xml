@@ -29,7 +29,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="start|center_vertical"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Back"
+                    android:contentDescription="@string/register_back"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_reg_back"
@@ -41,7 +41,7 @@
                     android:layout_height="28dp"
                     android:layout_gravity="end|center_vertical"
                     android:adjustViewBounds="true"
-                    android:contentDescription="Chatly Logo"
+                    android:contentDescription="@string/register_logo_description"
                     android:src="@drawable/ic_chatly_logo" />
             </FrameLayout>
 
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="One tiny step.\nThen you’re in."
+                android:text="@string/verify_header_title"
                 android:textColor="@android:color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Let’s make sure it’s really you."
+                android:text="@string/verify_header_subtitle"
                 android:textColor="#CFDAFF"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -83,6 +83,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:background="@drawable/bg_icon_title"
+                    android:contentDescription="@string/verify_card_title"
                     android:padding="22dp"
                     android:src="@drawable/ic_prof_mail" />
 
@@ -96,7 +97,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Check your inbox"
+                        android:text="@string/verify_card_title"
                         android:textColor="@color/text_primary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -115,7 +116,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="2dp"
-                        android:text="Change email"
+                        android:text="@string/verify_change_email"
                         android:textColor="@color/brand_primary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -127,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:lineSpacingExtra="2dp"
-                android:text="We sent you a link. It’s your ticket to the conversation."
+                android:text="@string/verify_description"
                 android:textColor="@color/text_secondary" />
 
             <!-- 3 steps -->
@@ -149,7 +150,7 @@
 
                     <TextView
                         style="@style/StepText"
-                        android:text="Open the email from Chatly" />
+                        android:text="@string/verify_step_1" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -165,7 +166,7 @@
 
                     <TextView
                         style="@style/StepText"
-                        android:text="Tap the verify link inside" />
+                        android:text="@string/verify_step_2" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -181,7 +182,7 @@
 
                     <TextView
                         style="@style/StepText"
-                        android:text="Come back here and start chatting" />
+                        android:text="@string/verify_step_3" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -197,7 +198,7 @@
                 android:drawableEnd="@drawable/ic_reg_arrow_forward"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:text="Verify &amp; start chatting"
+                android:text="@string/verify_btn_submit"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"
@@ -211,7 +212,7 @@
                 android:background="@drawable/bg_btn_outline"
                 android:backgroundTint="@null"
                 app:backgroundTint="@null"
-                android:text="Open mail app"
+                android:text="@string/verify_btn_open_mail"
                 android:textAllCaps="false"
                 android:textColor="@color/brand_primary"
                 android:textSize="14sp"
@@ -222,7 +223,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:text="Didn’t get the email? Check your spam folder."
+                android:text="@string/verify_spam_notice"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
@@ -233,9 +234,10 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:drawableStart="@drawable/ic_refresh"
+                app:drawableStartCompat="@drawable/ic_refresh"
                 android:drawablePadding="6dp"
                 android:padding="4dp"
-                android:text="Resend email"
+                android:text="@string/verify_resend"
                 android:textColor="@color/brand_primary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -266,7 +268,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
-                    android:text="A little check to keep your account safe. Only tap links from emails you requested."
+                    android:text="@string/verify_security_notice"
                     android:textColor="@color/text_primary"
                     android:textSize="12sp" />
             </LinearLayout>

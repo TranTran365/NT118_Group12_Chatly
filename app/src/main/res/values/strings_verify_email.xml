@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="verify_header_title">One tiny step.\nThen you’re in.</string>
+    <string name="verify_header_subtitle">Let’s make sure it’s really you.</string>
+    <string name="verify_card_title">Check your inbox</string>
+    <string name="verify_change_email">Change email</string>
+    <string name="verify_description">We sent you a link. It’s your ticket to the conversation.</string>
+    <string name="verify_step_1">Open the email from Chatly</string>
+    <string name="verify_step_2">Tap the verify link inside</string>
+    <string name="verify_step_3">Come back here and start chatting</string>
+    <string name="verify_btn_submit">Verify &amp; start chatting</string>
+    <string name="verify_btn_open_mail">Open mail app</string>
+    <string name="verify_spam_notice">Didn’t get the email? Check your spam folder.</string>
+    <string name="verify_resend">Resend email</string>
+    <string name="verify_resend_cooldown">Resend email in %1$02d:%2$02d</string>
+    <string name="verify_security_notice">A little check to keep your account safe. Only tap links from emails you requested.</string>
+    <string name="verify_success">Email verified successfully!</string>
+    <string name="verify_not_yet">Email not verified yet. Please check your inbox and tap the link.</string>
+    <string name="verify_error_network">Unable to connect. Please check your internet connection and try again.</string>
+    <string name="verify_email_sent">Verification email sent! Check your inbox.</string>
+    <string name="verify_session_expired">Session expired. Please sign in again.</string>
+    <string name="verify_no_mail_app">No mail app found</string>
+</resources>
