@@ -140,8 +140,12 @@ public class RegisterActivity extends AppCompatActivity {
                 btnCreateAccount.setEnabled(true);
                 btnCreateAccount.setText(R.string.register_create_account);
                 Toast.makeText(this, R.string.register_success, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                Intent intent = new Intent(this, VerifyEmailActivity.class);
+                if (state.getData() != null && state.getData().getEmail() != null) {
+                    intent.putExtra(VerifyEmailActivity.EXTRA_EMAIL, state.getData().getEmail());
+                } else {
+                    intent.putExtra(VerifyEmailActivity.EXTRA_EMAIL, String.valueOf(etEmail.getText()).trim());
+                }
                 startActivity(intent);
                 finish();
             } else if (state.isError()) {

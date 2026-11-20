@@ -21,4 +21,12 @@
     <color name="chatly_blue">#2455EF</color>
     <color name="chatly_lime">#FFE36B</color>
     <color name="chatly_white">#FFFFFFFF</color>
+
+    <color name="brand_primary">#2350E8</color>
+    <color name="brand_accent">#FFD95A</color>
+    <color name="otp_box_bg">#EEF2FF</color>
+    <color name="otp_box_stroke">#C9D4FF</color>
+    <color name="notice_bg">#FFF6D6</color>
+    <color name="text_primary">#0F1B3D</color>
+    <color name="text_secondary">#5B6785</color>
 </resources>

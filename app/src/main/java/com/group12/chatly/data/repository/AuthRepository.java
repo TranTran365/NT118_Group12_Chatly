@@ -98,6 +98,18 @@ public class AuthRepository {
                         return;
                     }
 
+                    // Send Firebase Email Verification
+                    try {
+                        com.google.android.gms.tasks.Task<Void> verificationTask = firebaseUser.sendEmailVerification();
+                        if (verificationTask != null) {
+                            verificationTask.addOnFailureListener(e ->
+                                android.util.Log.e("AuthRepository", "Failed to send initial email verification: " + e.getMessage(), e)
+                            );
+                        }
+                    } catch (Exception e) {
+                        android.util.Log.e("AuthRepository", "Exception when sending email verification: " + e.getMessage(), e);
+                    }
+
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(fullName)
                             .build();

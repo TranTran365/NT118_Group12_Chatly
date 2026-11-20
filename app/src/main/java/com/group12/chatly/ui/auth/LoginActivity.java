@@ -140,6 +140,16 @@ public class LoginActivity extends AppCompatActivity {
                 btnSignIn.setEnabled(true);
                 btnSignIn.setText(R.string.login_sign_in);
                 Toast.makeText(this, R.string.login_success, Toast.LENGTH_SHORT).show();
+
+                com.google.firebase.auth.FirebaseUser currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null && !currentUser.isEmailVerified() && currentUser.getProviderData().stream().anyMatch(p -> "password".equals(p.getProviderId()))) {
+                    Intent intent = new Intent(this, VerifyEmailActivity.class);
+                    intent.putExtra(VerifyEmailActivity.EXTRA_EMAIL, currentUser.getEmail());
+                    startActivity(intent);
+                    finish();
+                    return;
+                }
+
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
