@@ -29,4 +29,10 @@
     <color name="notice_bg">#FFF6D6</color>
     <color name="text_primary">#0F1B3D</color>
     <color name="text_secondary">#5B6785</color>
+
+    <color name="call_bg">#14264F</color>
+    <color name="call_yellow">#FFD95A</color>
+    <color name="call_avatar_text">#2F5BEA</color>
+    <color name="call_white">#FFFFFF</color>
+    <color name="call_text_dim">#CCFFFFFF</color>
 </resources>

@@ -98,7 +98,8 @@
     <!-- Content Sheet -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@drawable/bg_chats_sheet">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -240,4 +241,8 @@
         <include layout="@layout/layout_voice_recording" />
         <include layout="@layout/layout_voice_locked" />
     </RelativeLayout>
+
+    <include
+        android:id="@+id/layoutEmojiPicker"
+        layout="@layout/layout_emoji_picker"/>
 </LinearLayout>

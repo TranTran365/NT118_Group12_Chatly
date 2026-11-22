@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/call_bg"
+    android:fitsSystemWindows="true">
+
+    <!-- Top bar -->
+    <ImageView
+        android:id="@+id/btnMinimize"
+        android:layout_width="48dp" android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_chevron_down"
+        app:tint="@color/call_white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="CHATLY AUDIO"
+        android:textColor="@color/call_white"
+        android:textSize="12sp" android:textStyle="bold"
+        android:letterSpacing="0.05"
+        app:layout_constraintTop_toTopOf="@id/btnMinimize"
+        app:layout_constraintBottom_toBottomOf="@id/btnMinimize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/btnMore"
+        android:layout_width="48dp" android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_call_more"
+        app:tint="@color/call_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!-- Center content -->
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.38">
+
+        <TextView
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:background="@drawable/bg_badge_yellow"
+            android:paddingHorizontal="14dp" android:paddingVertical="6dp"
+            android:text="pick up the good vibes"
+            android:textColor="@color/call_bg"
+            android:textSize="11sp" android:textStyle="bold"/>
+
+        <FrameLayout
+            android:layout_width="104dp" android:layout_height="104dp"
+            android:layout_marginTop="16dp">
+
+            <FrameLayout
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:background="@drawable/bg_circle_white">
+                <TextView
+                    android:id="@+id/tvInitials"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    tools:text="MA"
+                    android:textColor="@color/call_avatar_text"
+                    android:textSize="38sp" android:textStyle="bold"/>
+            </FrameLayout>
+
+            <View
+                android:layout_width="14dp" android:layout_height="14dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="6dp" android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_circle_yellow"/>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            tools:text="Minh Anh"
+            android:textColor="@color/call_white"
+            android:textSize="32sp" android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="incoming audio call"
+            android:textColor="@color/call_white"
+            android:textSize="15sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical" android:orientation="horizontal">
+            <ImageView
+                android:layout_width="14dp" android:layout_height="14dp"
+                android:src="@drawable/ic_lock" app:tint="@color/call_text_dim"/>
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="just between you two"
+                android:textColor="@color/call_text_dim" android:textSize="11sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Remind me / Message -->
+    <LinearLayout
+        android:id="@+id/btnRemind"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginStart="24dp" android:layout_marginBottom="28dp"
+        android:gravity="center_vertical" android:orientation="horizontal"
+        android:clickable="true" android:focusable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layoutActions">
+        <ImageView android:layout_width="20dp" android:layout_height="20dp"
+            android:src="@drawable/ic_bell" app:tint="@color/call_white"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="8dp" android:text="remind me"
+            android:textColor="@color/call_white" android:textSize="12sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnMessage"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp" android:layout_marginBottom="28dp"
+        android:gravity="center_vertical" android:orientation="horizontal"
+        android:clickable="true" android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layoutActions">
+        <ImageView android:layout_width="20dp" android:layout_height="20dp"
+            android:src="@drawable/ic_message" app:tint="@color/call_white"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="8dp" android:text="message"
+            android:textColor="@color/call_white" android:textSize="12sp"/>
+    </LinearLayout>
+
+    <!-- Decline / Accept -->
+    <LinearLayout
+        android:id="@+id/layoutActions"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/btnDecline"
+                android:layout_width="44dp" android:layout_height="44dp"
+                android:background="@drawable/bg_circle_white"
+                android:padding="11dp"
+                android:src="@drawable/ic_call_decline"
+                app:tint="@color/call_bg"
+                android:contentDescription="Decline"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" android:text="decline"
+                android:textColor="@color/call_white" android:textSize="11sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/btnAccept"
+                android:layout_width="44dp" android:layout_height="44dp"
+                android:background="@drawable/bg_circle_yellow"
+                android:padding="11dp"
+                android:src="@drawable/ic_call_accept"
+                app:tint="@color/call_bg"
+                android:contentDescription="Accept"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" android:text="accept"
+                android:textColor="@color/call_white" android:textSize="11sp"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

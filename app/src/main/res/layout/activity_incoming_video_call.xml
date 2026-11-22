@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface_deep"
+    android:fitsSystemWindows="true">
+
+    <!-- Top bar -->
+    <ImageView
+        android:id="@+id/btnMinimize"
+        android:layout_width="48dp" android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_chevron_down"
+        app:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:fontFamily="@font/nunito_bold"
+        android:text="CHATLY VIDEO"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:letterSpacing="0.05"
+        app:layout_constraintTop_toTopOf="@id/btnMinimize"
+        app:layout_constraintBottom_toBottomOf="@id/btnMinimize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/btnMore"
+        android:layout_width="48dp" android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_call_more"
+        app:tint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!-- Khung preview: Multimedia Lead nhét camera/video vào đây -->
+    <FrameLayout
+        android:id="@+id/previewContainer"
+        android:layout_width="0dp" android:layout_height="0dp"
+        android:background="#EEF1FA"
+        app:layout_constraintTop_toBottomOf="@id/btnMinimize"
+        app:layout_constraintBottom_toTopOf="@id/bottomPanel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvCallingChip"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_margin="12dp"
+            android:background="@drawable/bg_call_badge"
+            android:paddingHorizontal="12dp" android:paddingVertical="5dp"
+            android:fontFamily="@font/nunito_bold"
+            android:textColor="@color/surface_deep"
+            android:textSize="11sp"
+            tools:text="Minh Anh is calling..."/>
+
+        <TextView
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="12dp"
+            android:background="@drawable/bg_call_badge"
+            android:paddingHorizontal="12dp" android:paddingVertical="4dp"
+            android:fontFamily="@font/nunito_bold"
+            android:text="you"
+            android:textColor="@color/surface_deep"
+            android:textSize="11sp"/>
+    </FrameLayout>
+
+    <!-- Bottom panel -->
+    <LinearLayout
+        android:id="@+id/bottomPanel"
+        android:layout_width="0dp" android:layout_height="wrap_content"
+        android:background="@color/surface_deep"
+        android:orientation="vertical"
+        android:paddingTop="20dp" android:paddingBottom="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- remind me / message -->
+        <RelativeLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:paddingHorizontal="24dp">
+
+            <LinearLayout
+                android:id="@+id/btnRemind"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:gravity="center_vertical" android:orientation="horizontal"
+                android:clickable="true" android:focusable="true">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                    android:src="@drawable/ic_prof_bell" app:tint="@color/white"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="remind me"
+                    android:textColor="@color/white" android:textSize="12sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnMessage"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_vertical" android:orientation="horizontal"
+                android:clickable="true" android:focusable="true">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                    android:src="@drawable/ic_action_message" app:tint="@color/white"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="message"
+                    android:textColor="@color/white" android:textSize="12sp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- decline / accept -->
+        <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:gravity="center_horizontal"
+                android:orientation="vertical">
+                <ImageButton
+                    android:id="@+id/btnDecline"
+                    android:layout_width="48dp" android:layout_height="48dp"
+                    android:background="@drawable/bg_call_circle_white"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_call_decline"
+                    app:tint="@color/surface_deep"
+                    android:contentDescription="Decline"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="decline"
+                    android:textColor="@color/white" android:textSize="11sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:gravity="center_horizontal"
+                android:orientation="vertical">
+                <ImageButton
+                    android:id="@+id/btnAccept"
+                    android:layout_width="48dp" android:layout_height="48dp"
+                    android:background="@drawable/bg_call_circle_yellow"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_call_video"
+                    app:tint="@color/surface_deep"
+                    android:contentDescription="Accept"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunito_regular"
+                    android:text="accept"
+                    android:textColor="@color/white" android:textSize="11sp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

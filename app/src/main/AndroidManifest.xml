@@ -75,10 +75,20 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".ui.call.IncomingCallActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly" />
+
+        <activity
             android:name=".ui.auth.VerifyEmailActivity"
             android:exported="false"
             android:theme="@style/Theme.Chatly.Register"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.call.OutgoingCallActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly" />
 
         <activity
             android:name=".ui.welcome.WelcomeActivity"
@@ -89,6 +99,26 @@
             android:exported="false"
             android:theme="@style/Theme.Chatly.Register"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.call.ActiveVideoCallActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly" />
+
+        <activity
+            android:name=".ui.call.OutgoingVideoCallActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly" />
+
+        <activity
+            android:name=".ui.call.ActiveCallActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly" />
+
+        <activity
+            android:name=".ui.call.IncomingVideoCallActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly" />
 
         <!-- Member 3: Multimedia Activities -->
         <activity
