@@ -55,6 +55,11 @@ public class ChatsFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(ChatsViewModel.class);
 
+        viewModel.getUnreadChatCount().observe(getViewLifecycleOwner(), count -> {
+            String label = getString(R.string.chats_filter_unread);
+            tvFilterUnread.setText(count != null && count > 0 ? label + " " + count : label);
+        });
+
         TextView tvNoResults = view.findViewById(R.id.tv_no_results);
 
         // Có chat -> danh sách + nút "let's yap."; chưa có -> màn rỗng

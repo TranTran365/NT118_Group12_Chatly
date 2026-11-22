@@ -1,12 +1,17 @@
 package com.group12.chatly;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.SystemBarStyle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -14,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.group12.chatly.data.repository.AuthRepository;
 import com.group12.chatly.ui.chats.ChatsFragment;
 import com.group12.chatly.ui.contacts.ContactsFragment;
 import com.group12.chatly.ui.profile.ProfileFragment;
@@ -79,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
             else return false;
             return true;
         });
+
+        AuthRepository.getInstance().syncCurrentFcmToken();
+        if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(this,
+                Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1001);
+        }
     }
 
     private void show(Fragment target) {

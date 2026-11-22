@@ -20,6 +20,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.group12.chatly.MainActivity;
 import com.group12.chatly.R;
+import com.group12.chatly.ui.chat.ChatActivity;
 
 import java.util.Map;
 
@@ -85,12 +86,16 @@ public class ChatlyMessagingService extends FirebaseMessagingService {
     }
 
     private void showNotification(String title, String messageBody, Map<String, String> data) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (data != null) {
-            for (Map.Entry<String, String> entry : data.entrySet()) {
-                intent.putExtra(entry.getKey(), entry.getValue());
-            }
+        Intent intent;
+        String senderId = data != null ? data.get("senderId") : null;
+        if (senderId != null) {
+            intent = new Intent(this, ChatActivity.class);
+            intent.putExtra(ChatActivity.EXTRA_TARGET_USER_ID, senderId);
+            intent.putExtra(ChatActivity.EXTRA_TARGET_USER_NAME, data.get("senderName"));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        } else {
+            intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
 
         int flags = PendingIntent.FLAG_ONE_SHOT;

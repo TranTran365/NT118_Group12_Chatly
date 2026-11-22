@@ -172,6 +172,7 @@ public class ChatRepository {
      * Base method to send a Message and update Chat's lastMessage.
      */
     public void sendMessage(@NonNull Message message, @NonNull AuthCallback<Message> callback) {
+
         if (message.getMessageId() == null || message.getMessageId().isEmpty()) {
             message.setMessageId(UUID.randomUUID().toString());
         }
