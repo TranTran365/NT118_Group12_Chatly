@@ -73,4 +73,5 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.3.0")
     implementation(libs.googleid)
 
+    implementation("com.google.firebase:firebase-messaging")
 }

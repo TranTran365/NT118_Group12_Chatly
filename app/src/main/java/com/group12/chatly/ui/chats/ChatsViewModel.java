@@ -199,6 +199,11 @@ public class ChatsViewModel extends AndroidViewModel {
         }
 
         hasChats.setValue(!allItems.isEmpty());
+        int unreadChats = 0;
+        for (ChatItem item : allItems) {
+            if (item.unread > 0) unreadChats++;
+        }
+        unreadChatCount.setValue(unreadChats);
         visibleItems.setValue(out);
     }
 
@@ -282,5 +287,11 @@ public class ChatsViewModel extends AndroidViewModel {
             registration.remove();
         }
         handler.removeCallbacksAndMessages(null);
+    }
+
+    private final MutableLiveData<Integer> unreadChatCount = new MutableLiveData<>(0);
+
+    public LiveData<Integer> getUnreadChatCount() {
+        return unreadChatCount;
     }
 }
