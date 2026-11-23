@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <!-- Tabs + backspace -->
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:gravity="center_vertical" android:orientation="horizontal"
+        android:paddingStart="16dp" android:paddingEnd="8dp"
+        android:paddingTop="12dp" android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/tabEmoji"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:background="@drawable/bg_emoji_tab"
+            android:fontFamily="@font/nunito_extrabold"
+            android:paddingHorizontal="14dp" android:paddingVertical="6dp"
+            android:text="emoji"
+            android:textColor="@color/surface_deep"
+            android:textSize="12sp"/>
+
+        <FrameLayout
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tabStickers"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_emoji_tab"
+                android:fontFamily="@font/nunito_extrabold"
+                android:paddingHorizontal="14dp" android:paddingVertical="6dp"
+                android:text="stickers"
+                android:textColor="@color/surface_deep"
+                android:textSize="14sp"/>
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/btnEmojiBackspace"
+            android:layout_width="44dp" android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="10dp"
+            android:src="@drawable/ic_emoji_backspace"
+            app:tint="@color/surface_deep"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:contentDescription="Delete"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- Nội dung tab emoji -->
+        <LinearLayout
+            android:id="@+id/layoutEmojiContent"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:paddingTop="4dp" android:paddingBottom="4dp">
+                <TextView
+                    android:id="@+id/tvEmojiSectionTitle"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/nunito_extrabold"
+                    android:letterSpacing="0.05"
+                    android:textColor="@color/surface_deep"
+                    android:textSize="10sp"/>
+                <TextView
+                    android:id="@+id/tvEmojiCategoryName"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_extrabold"
+                    android:textColor="@color/surface_deep"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcvEmoji"
+                android:layout_width="match_parent" android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingHorizontal="8dp"/>
+
+            <View
+                android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="#1A14234A"/>
+
+            <!-- Thanh danh mục -->
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="52dp"
+                android:orientation="horizontal"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
+                <ImageView android:id="@+id/catRecent"
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_weight="1" android:padding="14dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_emoji_recent"
+                    app:tint="@color/emoji_cat_tint"
+                    android:contentDescription="Recent"/>
+                <ImageView android:id="@+id/catSmileys"
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_weight="1" android:padding="14dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_emoji_smiley"
+                    app:tint="@color/emoji_cat_tint"
+                    android:contentDescription="Smileys"/>
+                <ImageView android:id="@+id/catHearts"
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_weight="1" android:padding="14dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_emoji_heart"
+                    app:tint="@color/emoji_cat_tint"
+                    android:contentDescription="Hearts"/>
+                <ImageView android:id="@+id/catFood"
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_weight="1" android:padding="14dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_emoji_food"
+                    app:tint="@color/emoji_cat_tint"
+                    android:contentDescription="Food"/>
+                <ImageView android:id="@+id/catFlags"
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_weight="1" android:padding="14dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_emoji_flag"
+                    app:tint="@color/emoji_cat_tint"
+                    android:contentDescription="Flags"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Placeholder tab stickers -->
+        <TextView
+            android:id="@+id/tvStickersSoon"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/nunito_regular"
+            android:text="stickers coming soon"
+            android:textColor="@color/surface_deep"
+            android:textSize="13sp"
+            android:visibility="gone"/>
+    </FrameLayout>
+</LinearLayout>

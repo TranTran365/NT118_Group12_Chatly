@@ -1,5 +1,6 @@
 package com.group12.chatly.ui.chat;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.SystemBarStyle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -76,6 +79,7 @@ public class ChatActivity extends AppCompatActivity implements AttachmentBottomS
     private long lastOtherTypingMillis = 0;
 
     private ImageView btnAttachment;
+    private EmojiPickerController emojiPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +116,18 @@ public class ChatActivity extends AppCompatActivity implements AttachmentBottomS
         setupListeners();
         listenMessages();
         listenChatState();
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (emojiPicker != null && emojiPicker.isShowing()) {
+                    emojiPicker.hide();
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        });
     }
 
     private void initViews() {
@@ -150,6 +166,24 @@ public class ChatActivity extends AppCompatActivity implements AttachmentBottomS
             public void onFailure(String errorMessage) {
             }
         });
+
+        emojiPicker = new EmojiPickerController(findViewById(R.id.layoutEmojiPicker), etMessage);
+    }
+
+    private void toggleEmojiPicker() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (emojiPicker.isShowing()) {
+            emojiPicker.hide();
+            etMessage.requestFocus();
+            if (imm != null) {
+                imm.showSoftInput(etMessage, InputMethodManager.SHOW_IMPLICIT);
+            }
+        } else {
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
+            }
+            emojiPicker.show();
+        }
     }
 
     private void setupRecyclerView() {
@@ -201,6 +235,13 @@ public class ChatActivity extends AppCompatActivity implements AttachmentBottomS
 
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
+
+        findViewById(R.id.btnEmoji).setOnClickListener(v -> toggleEmojiPicker());
+        etMessage.setOnClickListener(v -> {
+            if (emojiPicker != null && emojiPicker.isShowing()) {
+                emojiPicker.hide();
+            }
+        });
 
         btnSend.setOnClickListener(v -> {
             String text = etMessage.getText().toString().trim();

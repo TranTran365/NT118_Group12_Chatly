@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface_deep"
+    android:fitsSystemWindows="true">
+
+    <!-- Top bar -->
+    <ImageView
+        android:id="@+id/btnMinimize"
+        android:layout_width="48dp" android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_arrow_down"
+        app:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:fontFamily="@font/nunito_bold"
+        android:text="CHATLY AUDIO"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:letterSpacing="0.05"
+        app:layout_constraintTop_toTopOf="@id/btnMinimize"
+        app:layout_constraintBottom_toBottomOf="@id/btnMinimize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/btnMore"
+        android:layout_width="48dp" android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_call_more"
+        app:tint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!-- Center content -->
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.36">
+
+        <TextView
+            android:id="@+id/tvBadge"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:background="@drawable/bg_call_badge"
+            android:paddingHorizontal="14dp" android:paddingVertical="6dp"
+            android:fontFamily="@font/nunito_bold"
+            android:text="a little ring-ring"
+            android:textColor="@color/surface_deep"
+            android:textSize="11sp"/>
+        
+
+        <FrameLayout
+            android:layout_width="104dp" android:layout_height="104dp"
+            android:layout_marginTop="16dp">
+
+            <FrameLayout
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:background="@drawable/bg_call_circle_white">
+                <TextView
+                    android:id="@+id/tvInitials"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/nunito_extrabold"
+                    android:textColor="@color/background"
+                    android:textSize="38sp"
+                    tools:text="MA"/>
+            </FrameLayout>
+
+            <View
+                android:layout_width="14dp" android:layout_height="14dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="6dp" android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_call_circle_yellow"/>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/nunito_extrabold"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            tools:text="Minh Anh"/>
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:fontFamily="@font/nunito_regular"
+            android:text="calling..."
+            android:textColor="@color/white"
+            android:textSize="15sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical" android:orientation="horizontal">
+            <ImageView
+                android:layout_width="14dp" android:layout_height="14dp"
+                android:src="@drawable/ic_reg_lock"
+                app:tint="@color/on_background_muted"/>
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:fontFamily="@font/nunito_regular"
+                android:text="just between you two"
+                android:textColor="@color/on_background_muted"
+                android:textSize="11sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Mute / Speaker / Keypad -->
+    <LinearLayout
+        android:id="@+id/layoutActions"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/btnCancel">
+
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/btnMute"
+                android:layout_width="48dp" android:layout_height="48dp"
+                android:background="@drawable/bg_call_action"
+                android:padding="12dp"
+                android:src="@drawable/ic_call_mute"
+                app:tint="@color/call_action_tint"
+                android:contentDescription="Mute"/>
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/nunito_regular"
+                android:text="mute"
+                android:textColor="@color/white" android:textSize="11sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/btnSpeaker"
+                android:layout_width="48dp" android:layout_height="48dp"
+                android:background="@drawable/bg_call_action"
+                android:padding="12dp"
+                android:src="@drawable/ic_call_speaker"
+                app:tint="@color/call_action_tint"
+                android:contentDescription="Speaker"/>
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/nunito_regular"
+                android:text="speaker"
+                android:textColor="@color/white" android:textSize="11sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/btnKeypad"
+                android:layout_width="48dp" android:layout_height="48dp"
+                android:background="@drawable/bg_call_action"
+                android:padding="12dp"
+                android:src="@drawable/ic_call_keypad"
+                app:tint="@color/call_action_tint"
+                android:contentDescription="Keypad"/>
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/nunito_regular"
+                android:text="keypad"
+                android:textColor="@color/white" android:textSize="11sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Cancel call: icon + chữ nằm giữa nút -->
+    <LinearLayout
+        android:id="@+id/btnCancel"
+        android:layout_width="0dp" android:layout_height="56dp"
+        android:layout_marginStart="24dp" android:layout_marginEnd="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/bg_call_pill_yellow"
+        android:clickable="true" android:focusable="true"
+        android:gravity="center" android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:layout_width="22dp" android:layout_height="22dp"
+            android:src="@drawable/ic_call_decline"
+            app:tint="@color/surface_deep"/>
+
+        <TextView
+            android:id="@+id/tvCancelLabel"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/nunito_extrabold"
+            android:includeFontPadding="false"
+            android:text="cancel call"
+            android:textColor="@color/surface_deep"
+            android:textSize="15sp"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
