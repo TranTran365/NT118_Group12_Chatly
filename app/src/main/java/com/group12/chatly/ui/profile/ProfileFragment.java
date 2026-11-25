@@ -151,9 +151,8 @@ public class ProfileFragment extends Fragment {
         root.findViewById(R.id.row_phone).setOnClickListener(v -> {
             // TODO: đổi số điện thoại
         });
-        root.findViewById(R.id.row_privacy).setOnClickListener(v -> {
-            // TODO: mở màn Privacy & security
-        });
+        root.findViewById(R.id.row_privacy).setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), PrivacyActivity.class)));
         root.findViewById(R.id.row_logout).setOnClickListener(v -> showLogoutDialog());
     }
 

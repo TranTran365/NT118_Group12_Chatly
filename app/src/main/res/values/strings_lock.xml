@@ -8,4 +8,15 @@
     <string name="lock_pin_cd_lock">Locked</string>
     <string name="lock_pin_cd_biometric">Unlock with fingerprint</string>
     <string name="lock_pin_cd_delete">Delete</string>
+
+    <string name="lock_pin_create_title">create your PIN</string>
+    <string name="lock_pin_create_subtitle">Choose a 6-digit PIN.</string>
+    <string name="lock_pin_confirm_title">one more time</string>
+    <string name="lock_pin_confirm_subtitle">Re-enter your PIN to confirm.</string>
+    <string name="lock_pin_error_wrong">Wrong PIN. %1$d attempts left.</string>
+    <string name="lock_pin_error_mismatch">PINs don\'t match. Try again.</string>
+    <string name="lock_pin_error_locked">Too many attempts. Try again in %1$ds.</string>
+    <string name="lock_pin_biometric_title">Unlock Chatly</string>
+    <string name="lock_pin_biometric_subtitle">Use your fingerprint to continue</string>
+    <string name="lock_pin_biometric_cancel">Use PIN</string>
 </resources>
