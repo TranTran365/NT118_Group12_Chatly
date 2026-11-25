@@ -93,7 +93,7 @@
                 android:text="@string/lock_pin_subtitle"
                 android:textAppearance="@style/TextAppearance.Chatly.Register.Footer" />
 
-            <!-- 6 chấm PIN (3 chấm đầu selected để preview giống Figma) -->
+            <!-- 6 chấm PIN (được cập nhật trạng thái chọn trong LockPinActivity) -->
             <LinearLayout
                 android:id="@+id/layout_pin_dots"
                 android:layout_width="wrap_content"
