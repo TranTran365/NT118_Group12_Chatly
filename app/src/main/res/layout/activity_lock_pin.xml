@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    android:overScrollMode="never"
+    tools:context=".ui.profile.LockPinActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_padding"
+            android:paddingTop="4dp"
+            android:paddingEnd="@dimen/screen_padding"
+            android:paddingBottom="@dimen/register_header_padding_bottom">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="@string/lock_pin_eyebrow"
+                    android:textAppearance="@style/TextAppearance.Chatly.Profile.Eyebrow" />
+
+                <ImageView
+                    android:id="@+id/img_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/register_logo_description"
+                    android:src="@drawable/ic_chatly_logo" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_headline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/lock_pin_headline"
+                android:textAppearance="@style/TextAppearance.Chatly.Profile.Name" />
+        </LinearLayout>
+
+        <!-- Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_sheet_top"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_padding"
+            android:paddingTop="28dp"
+            android:paddingEnd="@dimen/screen_padding"
+            android:paddingBottom="16dp">
+
+            <ImageView
+                android:layout_width="@dimen/lock_pin_badge_size"
+                android:layout_height="@dimen/lock_pin_badge_size"
+                android:background="@drawable/bg_profile_badge"
+                android:contentDescription="@string/lock_pin_cd_lock"
+                android:padding="16dp"
+                app:srcCompat="@drawable/ic_reg_lock"
+                app:tint="@color/surface_deep" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/lock_pin_title"
+                android:textAppearance="@style/TextAppearance.Chatly.LockPin.Title" />
+
+            <TextView
+                android:id="@+id/tv_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/lock_pin_subtitle"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.Footer" />
+
+            <!-- 6 chấm PIN (3 chấm đầu selected để preview giống Figma) -->
+            <LinearLayout
+                android:id="@+id/layout_pin_dots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <View android:id="@+id/pin_dot_1" android:layout_width="@dimen/lock_pin_dot_size" android:layout_height="@dimen/lock_pin_dot_size" android:layout_margin="@dimen/lock_pin_dot_margin" android:background="@drawable/bg_lock_pin_dot" />
+                <View android:id="@+id/pin_dot_2" android:layout_width="@dimen/lock_pin_dot_size" android:layout_height="@dimen/lock_pin_dot_size" android:layout_margin="@dimen/lock_pin_dot_margin" android:background="@drawable/bg_lock_pin_dot" />
+                <View android:id="@+id/pin_dot_3" android:layout_width="@dimen/lock_pin_dot_size" android:layout_height="@dimen/lock_pin_dot_size" android:layout_margin="@dimen/lock_pin_dot_margin" android:background="@drawable/bg_lock_pin_dot" />
+                <View android:id="@+id/pin_dot_4" android:layout_width="@dimen/lock_pin_dot_size" android:layout_height="@dimen/lock_pin_dot_size" android:layout_margin="@dimen/lock_pin_dot_margin" android:background="@drawable/bg_lock_pin_dot" />
+                <View android:id="@+id/pin_dot_5" android:layout_width="@dimen/lock_pin_dot_size" android:layout_height="@dimen/lock_pin_dot_size" android:layout_margin="@dimen/lock_pin_dot_margin" android:background="@drawable/bg_lock_pin_dot" />
+                <View android:id="@+id/pin_dot_6" android:layout_width="@dimen/lock_pin_dot_size" android:layout_height="@dimen/lock_pin_dot_size" android:layout_margin="@dimen/lock_pin_dot_margin" android:background="@drawable/bg_lock_pin_dot" />
+            </LinearLayout>
+
+            <!-- Keypad -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/lock_pin_row_height" android:orientation="horizontal">
+                    <TextView android:id="@+id/key_1" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="1" />
+                    <TextView android:id="@+id/key_2" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="2" />
+                    <TextView android:id="@+id/key_3" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="3" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/lock_pin_row_height" android:orientation="horizontal">
+                    <TextView android:id="@+id/key_4" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="4" />
+                    <TextView android:id="@+id/key_5" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="5" />
+                    <TextView android:id="@+id/key_6" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="6" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/lock_pin_row_height" android:orientation="horizontal">
+                    <TextView android:id="@+id/key_7" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="7" />
+                    <TextView android:id="@+id/key_8" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="8" />
+                    <TextView android:id="@+id/key_9" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="9" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/lock_pin_row_height" android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/key_biometric"
+                        style="@style/Widget.Chatly.LockPin.Key"
+                        android:contentDescription="@string/lock_pin_cd_biometric"
+                        android:padding="16dp"
+                        app:srcCompat="@drawable/ic_lock_fingerprint" />
+                    <TextView android:id="@+id/key_0" style="@style/Widget.Chatly.LockPin.Key.Digit" android:text="0" />
+                    <ImageView
+                        android:id="@+id/key_delete"
+                        style="@style/Widget.Chatly.LockPin.Key"
+                        android:contentDescription="@string/lock_pin_cd_delete"
+                        android:padding="16dp"
+                        app:srcCompat="@drawable/ic_lock_backspace" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_forgot_pin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="?attr/selectableItemBackground"
+                android:padding="8dp"
+                android:text="@string/lock_pin_forgot"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.FieldLabel" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/lock_pin_footer"
+                android:textAppearance="@style/TextAppearance.Chatly.Register.Muted" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

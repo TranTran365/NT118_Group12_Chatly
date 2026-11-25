@@ -1,0 +1,11 @@
+<resources>
+    <string name="lock_pin_eyebrow">YOUR CHATS. YOUR BUSINESS.</string>
+    <string name="lock_pin_headline">for your eyes only.</string>
+    <string name="lock_pin_title">hey, it\'s really you?</string>
+    <string name="lock_pin_subtitle">Enter your 6-digit Chatly PIN.</string>
+    <string name="lock_pin_forgot">forgot your PIN?</string>
+    <string name="lock_pin_footer">Your chats stay hidden until you unlock.</string>
+    <string name="lock_pin_cd_lock">Locked</string>
+    <string name="lock_pin_cd_biometric">Unlock with fingerprint</string>
+    <string name="lock_pin_cd_delete">Delete</string>
+</resources>

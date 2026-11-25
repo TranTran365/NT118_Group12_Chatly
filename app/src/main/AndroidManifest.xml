@@ -85,6 +85,11 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.profile.LockPinActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Chatly.Register" />
+
+        <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.Chatly.Register"

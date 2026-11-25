@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="lock_pin_badge_size">56dp</dimen>
+    <dimen name="lock_pin_dot_size">12dp</dimen>
+    <dimen name="lock_pin_dot_margin">8dp</dimen>
+    <dimen name="lock_pin_row_height">68dp</dimen>
+    <dimen name="lock_pin_key_margin">6dp</dimen>
+</resources>
