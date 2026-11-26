@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_friend_tagline">ONE HELLO AWAY</string>
+    <string name="add_friend_title">add a friend</string>
+    <string name="add_friend_intro">one email or phone number. one new hello.</string>
+
+    <string name="add_friend_tab_email">email</string>
+    <string name="add_friend_tab_phone">phone</string>
+
+    <string name="add_friend_label_email">email address</string>
+    <string name="add_friend_helper_email">use the email they signed up with.</string>
+    <string name="add_friend_hint_email">name@email.com</string>
+
+    <!-- Tab phone-->
+    <string name="add_friend_label_phone">phone number</string>
+    <string name="add_friend_helper_phone">use the number they signed up with.</string>
+    <string name="add_friend_hint_phone">0912 345 678</string>
+
+    <string name="add_friend_match_one">1 exact match</string>
+    <string name="add_friend_found">found them! send a little hello.</string>
+    <string name="add_friend_send">add friend</string>
+
+
+    <string name="add_friend_sample_initials">AV</string>
+    <string name="add_friend_sample_name">An Võ</string>
+    <string name="add_friend_sample_email">an.vo@email.com</string>
+</resources>

@@ -85,6 +85,8 @@ public class ContactsFragment extends Fragment implements ContactActionsDialogFr
         layoutContactsFilters = view.findViewById(R.id.layoutContactsFilters);
         frameContactsList = view.findViewById(R.id.frameContactsList);
         btnAddFriend = view.findViewById(R.id.btnAddFriend);
+        btnAddFriend.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), AddFriendActivity.class)));
         tvContactsTagline = view.findViewById(R.id.tvContactsTagline);
 
         view.findViewById(R.id.btnEmptyAddFriend).setOnClickListener(v ->
