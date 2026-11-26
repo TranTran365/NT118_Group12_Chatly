@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -31,11 +32,11 @@ import com.group12.chatly.R;
 import com.group12.chatly.data.model.Contact;
 import com.group12.chatly.data.model.User;
 import com.group12.chatly.data.repository.AuthCallback;
-import com.group12.chatly.data.repository.AuthRepository;
-import com.group12.chatly.data.repository.ChatRepository;
 import com.group12.chatly.multimedia.call.ZegoCallHelper;
 import com.group12.chatly.ui.chat.ChatActivity;
 import com.group12.chatly.ui.chat.NewChatActivity;
+import com.group12.chatly.viewmodel.AuthState;
+import com.group12.chatly.viewmodel.ContactViewModel;
 import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton;
 
 import java.text.Collator;
@@ -62,6 +63,8 @@ public class ContactsFragment extends Fragment implements ContactActionsDialogFr
     private View layoutContactsEmpty, layoutContactsFilters, frameContactsList, btnAddFriend;
     private TextView tvContactsTagline;
 
+    private ContactViewModel contactViewModel;
+
     private ContactsAdapter contactsAdapter;
     private ContactsOnlineAdapter onlineAdapter;
 
@@ -85,8 +88,6 @@ public class ContactsFragment extends Fragment implements ContactActionsDialogFr
         layoutContactsFilters = view.findViewById(R.id.layoutContactsFilters);
         frameContactsList = view.findViewById(R.id.frameContactsList);
         btnAddFriend = view.findViewById(R.id.btnAddFriend);
-        btnAddFriend.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), AddFriendActivity.class)));
         tvContactsTagline = view.findViewById(R.id.tvContactsTagline);
 
         view.findViewById(R.id.btnEmptyAddFriend).setOnClickListener(v ->
@@ -107,8 +108,37 @@ public class ContactsFragment extends Fragment implements ContactActionsDialogFr
         setupFilterTabs(view);
         setupSearch();
 
-        loadContactsData();
+        contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
+        observeFriends();
         selectFilter(selectedFilter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Realtime listener của TV1: chỉ lấy bạn bè đã accepted
+        contactViewModel.startListeningToFriends();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        contactViewModel.stopListening();
+    }
+
+    private void observeFriends() {
+        contactViewModel.getFriendsListState().observe(getViewLifecycleOwner(), state -> {
+            if (state == null) return;
+            if (state.getStatus() == AuthState.Status.SUCCESS) {
+                bindFriends(state.getData() != null ? state.getData() : new ArrayList<>());
+            } else if (state.getStatus() == AuthState.Status.ERROR) {
+                bindFriends(new ArrayList<>());
+                if (isAdded() && state.getErrorMessage() != null) {
+                    Toast.makeText(requireContext(), state.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+            // IDLE / LOADING: giữ nguyên list hiện tại, tránh nháy empty state
+        });
     }
 
     private void setupAdapters() {
@@ -203,8 +233,7 @@ public class ContactsFragment extends Fragment implements ContactActionsDialogFr
         ContactRepository.getInstance().removeFriendship(friendshipId, new AuthCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
-                if (!isAdded()) return;
-                loadContactsData();   // load lại danh sách
+                // Không cần reload: listener realtime trong ContactViewModel tự cập nhật list
             }
 
             @Override
@@ -263,62 +292,45 @@ public class ContactsFragment extends Fragment implements ContactActionsDialogFr
         });
     }
 
-    private void loadContactsData() {
-        String myUid = AuthRepository.getInstance().getCurrentUserId();
-        ChatRepository.getInstance().getAllUsers(new AuthCallback<List<User>>() {
-            @Override
-            public void onSuccess(List<User> users) {
-                allContacts.clear();
-                onlineContactsList.clear();
+    private void bindFriends(List<User> users) {
+        allContacts.clear();
+        onlineContactsList.clear();
 
-                List<Contact> rawContacts = new ArrayList<>();
-                for (User user : users) {
-                    String uid = user.getUserId();
-                    if (TextUtils.isEmpty(uid) || uid.equals(myUid)) continue;
+        List<Contact> rawContacts = new ArrayList<>();
+        for (User user : users) {
+            String uid = user.getUserId();
+            if (TextUtils.isEmpty(uid)) continue;
 
-                    String name = TextUtils.isEmpty(user.getDisplayName())
-                            ? getString(R.string.chats_unknown_user) : user.getDisplayName();
-                    String statusText = user.isOnline()
-                            ? "online"
-                            : (!TextUtils.isEmpty(user.getBio()) ? user.getBio() : "offline");
+            String name = TextUtils.isEmpty(user.getDisplayName())
+                    ? getString(R.string.chats_unknown_user) : user.getDisplayName();
+            String statusText = user.isOnline()
+                    ? "online"
+                    : (!TextUtils.isEmpty(user.getBio()) ? user.getBio() : "offline");
 
-                    Contact contact = new Contact(
-                            uid, name, statusText, user.isOnline(),
-                            user.getAvatarUrl(), getGroupLetter(name), false
-                    );
-                    rawContacts.add(contact);
-                    if (user.isOnline()) {
-                        onlineContactsList.add(contact);
-                    }
-                }
-
-                // Sắp xếp theo tên (dùng Collator tiếng Việt)
-                Collator collator = Collator.getInstance(new Locale("vi", "VN"));
-                Collections.sort(rawContacts, (c1, c2) -> collator.compare(c1.getDisplayName(), c2.getDisplayName()));
-
-                allContacts.addAll(rawContacts);
-                setEmptyState(allContacts.isEmpty());
-
-                updateOnlineHeader();
-
-                if (onlineAdapter != null) {
-                    onlineAdapter.setOnlineContacts(onlineContactsList);
-                }
-
-                filterData(etContactsSearch != null ? etContactsSearch.getText().toString() : "");
+            Contact contact = new Contact(
+                    uid, name, statusText, user.isOnline(),
+                    user.getAvatarUrl(), getGroupLetter(name), false
+            );
+            rawContacts.add(contact);
+            if (user.isOnline()) {
+                onlineContactsList.add(contact);
             }
+        }
 
-            @Override
-            public void onFailure(String errorMessage) {
-                allContacts.clear();
-                onlineContactsList.clear();
-                updateOnlineHeader();
-                if (contactsAdapter != null) {
-                    contactsAdapter.setContacts(new ArrayList<>());
-                }
-                setEmptyState(true);
-            }
-        });
+        // Sắp xếp theo tên (dùng Collator tiếng Việt)
+        Collator collator = Collator.getInstance(new Locale("vi", "VN"));
+        Collections.sort(rawContacts, (c1, c2) -> collator.compare(c1.getDisplayName(), c2.getDisplayName()));
+
+        allContacts.addAll(rawContacts);
+        setEmptyState(allContacts.isEmpty());
+
+        updateOnlineHeader();
+
+        if (onlineAdapter != null) {
+            onlineAdapter.setOnlineContacts(onlineContactsList);
+        }
+
+        filterData(etContactsSearch != null ? etContactsSearch.getText().toString() : "");
     }
 
     private void setEmptyState(boolean empty) {
