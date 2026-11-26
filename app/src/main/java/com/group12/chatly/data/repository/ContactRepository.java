@@ -46,6 +46,9 @@ public class ContactRepository {
      * Builds a deterministic unique document ID for two users regardless of who initiated.
      */
     public static String getCompositeFriendshipId(@NonNull String userId1, @NonNull String userId2) {
+        if (userId1 == null || userId2 == null || userId1.trim().isEmpty() || userId2.trim().isEmpty()) {
+            return "";
+        }
         return userId1.compareTo(userId2) < 0 ? userId1 + "_" + userId2 : userId2 + "_" + userId1;
     }
 
@@ -61,6 +64,40 @@ public class ContactRepository {
             return;
         }
 
+        boolean containsDigits = sanitizedQuery.replaceAll("\\D", "").length() >= 3;
+
+        if (containsDigits) {
+            // Search by phoneNumber
+            firestore.collection(COLLECTION_USERS)
+                    .orderBy("phoneNumber")
+                    .startAt(sanitizedQuery)
+                    .endAt(sanitizedQuery + "\uf8ff")
+                    .limit(20)
+                    .get()
+                    .addOnSuccessListener(phoneSnapshot -> {
+                        List<User> phoneResults = new ArrayList<>();
+                        for (DocumentSnapshot doc : phoneSnapshot.getDocuments()) {
+                            User user = doc.toObject(User.class);
+                            if (user != null && (currentUserId == null || !user.getUserId().equals(currentUserId))) {
+                                phoneResults.add(user);
+                            }
+                        }
+                        if (!phoneResults.isEmpty()) {
+                            callback.onSuccess(phoneResults);
+                        } else {
+                            searchByEmailOrName(sanitizedQuery, currentUserId, callback);
+                        }
+                    })
+                    .addOnFailureListener(e -> searchByEmailOrName(sanitizedQuery, currentUserId, callback));
+            return;
+        }
+
+        searchByEmailOrName(sanitizedQuery, currentUserId, callback);
+    }
+
+    private void searchByEmailOrName(@NonNull String sanitizedQuery,
+                                     @Nullable String currentUserId,
+                                     @NonNull AuthCallback<List<User>> callback) {
         firestore.collection(COLLECTION_USERS)
                 .orderBy("email")
                 .startAt(sanitizedQuery)
@@ -96,9 +133,60 @@ public class ContactRepository {
                                         nameResults.add(user);
                                     }
                                 }
-                                callback.onSuccess(nameResults);
+
+                                if (!nameResults.isEmpty()) {
+                                    callback.onSuccess(nameResults);
+                                    return;
+                                }
+
+                                // Final fallback: fetch recent users and check phone/digits fallback
+                                firestore.collection(COLLECTION_USERS)
+                                        .limit(50)
+                                        .get()
+                                        .addOnSuccessListener(allSnapshot -> {
+                                            List<User> fallbackResults = new ArrayList<>();
+                                            String targetDigits = sanitizedQuery.replaceAll("\\D", "");
+                                            for (DocumentSnapshot doc : allSnapshot.getDocuments()) {
+                                                User user = doc.toObject(User.class);
+                                                if (user != null && (currentUserId == null || !user.getUserId().equals(currentUserId))) {
+                                                    if (!targetDigits.isEmpty() && user.getPhoneNumber() != null) {
+                                                        String uDigits = user.getPhoneNumber().replaceAll("\\D", "");
+                                                        if (uDigits.contains(targetDigits) || targetDigits.contains(uDigits)) {
+                                                            fallbackResults.add(user);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            callback.onSuccess(fallbackResults);
+                                        })
+                                        .addOnFailureListener(e -> callback.onSuccess(Collections.emptyList()));
                             })
                             .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    /**
+     * Retrieves friendship document between current user and target user if it exists.
+     */
+    public void getFriendship(@NonNull String currentUserId,
+                              @NonNull String targetUserId,
+                              @NonNull AuthCallback<Friendship> callback) {
+        String friendshipId = getCompositeFriendshipId(currentUserId, targetUserId);
+        if (friendshipId.isEmpty()) {
+            callback.onSuccess(null);
+            return;
+        }
+        firestore.collection(COLLECTION_FRIENDSHIPS)
+                .document(friendshipId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        Friendship f = snapshot.toObject(Friendship.class);
+                        callback.onSuccess(f);
+                    } else {
+                        callback.onSuccess(null);
+                    }
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
@@ -115,6 +203,10 @@ public class ContactRepository {
         }
 
         String friendshipId = getCompositeFriendshipId(currentUserId, targetUserId);
+        if (friendshipId.isEmpty()) {
+            callback.onFailure("Invalid user ID.");
+            return;
+        }
 
         firestore.collection(COLLECTION_FRIENDSHIPS)
                 .document(friendshipId)
@@ -164,6 +256,10 @@ public class ContactRepository {
      * Accepts a pending friend request.
      */
     public void acceptFriendRequest(@NonNull String friendshipId, @NonNull AuthCallback<Void> callback) {
+        if (friendshipId.isEmpty()) {
+            callback.onFailure("Invalid friendship ID.");
+            return;
+        }
         firestore.collection(COLLECTION_FRIENDSHIPS)
                 .document(friendshipId)
                 .update("status", Friendship.STATUS_ACCEPTED, "updatedAt", Timestamp.now())
@@ -175,6 +271,10 @@ public class ContactRepository {
      * Rejects or removes a friendship.
      */
     public void removeFriendship(@NonNull String friendshipId, @NonNull AuthCallback<Void> callback) {
+        if (friendshipId.isEmpty()) {
+            callback.onFailure("Invalid friendship ID.");
+            return;
+        }
         firestore.collection(COLLECTION_FRIENDSHIPS)
                 .document(friendshipId)
                 .delete()

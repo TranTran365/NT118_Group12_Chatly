@@ -147,26 +147,69 @@
                 android:textAppearance="@style/TextAppearance.Chatly.Register.Muted"
                 android:textSize="12sp" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilAddFriend"
-                style="@style/Widget.Chatly.Register.TextInput"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:startIconDrawable="@drawable/ic_reg_mail"
-                app:startIconTint="@color/surface_deep">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etAddFriend"
-                    style="@style/Widget.Chatly.Register.EditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/register_field_height"
-                    android:hint="@string/add_friend_hint_email"
-                    android:imeOptions="actionSearch"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    tools:text="an.vo@email.com" />
-            </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout
+                    android:id="@+id/layoutCountryCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="56dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/bg_search_bar"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="12dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/tvCountryCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_extrabold"
+                        android:text="+84"
+                        android:textColor="@color/surface_deep"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:id="@+id/ivCountryCodeChevron"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="6dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_arrow_down"
+                        app:tint="@color/surface_deep" />
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilAddFriend"
+                    style="@style/Widget.Chatly.Register.TextInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:startIconDrawable="@drawable/ic_contact_call"
+                    app:startIconTint="@color/surface_deep">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAddFriend"
+                        style="@style/Widget.Chatly.Register.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/register_field_height"
+                        android:hint="@string/add_friend_hint_email"
+                        android:imeOptions="actionSearch"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        tools:text="an.vo@email.com" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvAddFriendHelper"
@@ -239,17 +282,37 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvAddFriendFound"
+                <!-- Dòng trạng thái (check icon + text) -->
+                <LinearLayout
+                    android:id="@+id/layoutAddFriendStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:fontFamily="@font/nunito_bold"
-                    android:text="@string/add_friend_found"
-                    android:textColor="@color/surface_deep"
-                    android:textSize="14sp" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <!-- Nút add friend: cùng kiểu nút "add a friend" ở Contacts -->
+                    <ImageView
+                        android:id="@+id/ivAddFriendStatusCheck"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_single_check"
+                        android:visibility="gone"
+                        app:tint="@color/register_blue"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tvAddFriendFound"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_bold"
+                        android:text="@string/add_friend_found"
+                        android:textColor="@color/surface_deep"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- Nút 1: Add friend (nút vàng) -->
                 <LinearLayout
                     android:id="@+id/btnAddFriendSend"
                     android:layout_width="match_parent"
@@ -264,6 +327,7 @@
                     android:paddingEnd="20dp">
 
                     <TextView
+                        android:id="@+id/tvAddFriendSend"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -279,6 +343,28 @@
                         android:src="@drawable/ic_arrow_right"
                         app:tint="@color/surface_deep" />
                 </LinearLayout>
+
+                <!-- Nút 2: Cancel request (nút viền trắng) -->
+                <FrameLayout
+                    android:id="@+id/btnAddFriendCancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_btn_outlined"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/nunito_extrabold"
+                        android:text="@string/add_friend_cancel_request"
+                        android:textColor="@color/surface_deep"
+                        android:textSize="16sp" />
+                </FrameLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

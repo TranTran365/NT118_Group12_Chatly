@@ -45,6 +45,8 @@ public class ContactViewModel extends ViewModel {
         this.authRepository = authRepository;
     }
 
+    private final MutableLiveData<AuthState<Friendship>> friendshipStatusState = new MutableLiveData<>(AuthState.idle());
+
     public LiveData<AuthState<List<User>>> getSearchResultState() {
         return searchResultState;
     }
@@ -59,6 +61,10 @@ public class ContactViewModel extends ViewModel {
 
     public LiveData<AuthState<Friendship>> getSendRequestState() {
         return sendRequestState;
+    }
+
+    public LiveData<AuthState<Friendship>> getFriendshipStatusState() {
+        return friendshipStatusState;
     }
 
     public LiveData<AuthState<Void>> getActionState() {
@@ -99,11 +105,54 @@ public class ContactViewModel extends ViewModel {
             @Override
             public void onSuccess(Friendship result) {
                 sendRequestState.setValue(AuthState.success(result));
+                checkFriendshipStatus(targetUserId);
             }
 
             @Override
             public void onFailure(String errorMessage) {
                 sendRequestState.setValue(AuthState.error(errorMessage));
+            }
+        });
+    }
+
+    /**
+     * Checks friendship status between current user and target user.
+     */
+    public void checkFriendshipStatus(@NonNull String targetUserId) {
+        String currentUid = authRepository.getCurrentUserId();
+        if (currentUid == null) return;
+        friendshipStatusState.setValue(AuthState.loading());
+        contactRepository.getFriendship(currentUid, targetUserId, new AuthCallback<Friendship>() {
+            @Override
+            public void onSuccess(Friendship result) {
+                friendshipStatusState.setValue(AuthState.success(result));
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                friendshipStatusState.setValue(AuthState.error(errorMessage));
+            }
+        });
+    }
+
+    /**
+     * Cancels a pending friend request sent to target user.
+     */
+    public void cancelFriendRequest(@NonNull String targetUserId) {
+        String currentUid = authRepository.getCurrentUserId();
+        if (currentUid == null) return;
+        String friendshipId = ContactRepository.getCompositeFriendshipId(currentUid, targetUserId);
+        actionState.setValue(AuthState.loading());
+        contactRepository.removeFriendship(friendshipId, new AuthCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                actionState.setValue(AuthState.success(null));
+                checkFriendshipStatus(targetUserId);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                actionState.setValue(AuthState.error(errorMessage));
             }
         });
     }

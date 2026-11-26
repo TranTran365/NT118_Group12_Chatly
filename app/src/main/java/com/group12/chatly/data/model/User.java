@@ -87,10 +87,12 @@ public class User implements Serializable {
         this.bio = bio;
     }
 
+    @com.google.firebase.firestore.PropertyName("isOnline")
     public boolean isOnline() {
         return isOnline;
     }
 
+    @com.google.firebase.firestore.PropertyName("isOnline")
     public void setOnline(boolean online) {
         isOnline = online;
     }

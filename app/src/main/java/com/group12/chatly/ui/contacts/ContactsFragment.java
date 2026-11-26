@@ -34,7 +34,6 @@ import com.group12.chatly.data.model.User;
 import com.group12.chatly.data.repository.AuthCallback;
 import com.group12.chatly.multimedia.call.ZegoCallHelper;
 import com.group12.chatly.ui.chat.ChatActivity;
-import com.group12.chatly.ui.chat.NewChatActivity;
 import com.group12.chatly.viewmodel.AuthState;
 import com.group12.chatly.viewmodel.ContactViewModel;
 import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton;
@@ -90,8 +89,10 @@ public class ContactsFragment extends Fragment implements ContactActionsDialogFr
         btnAddFriend = view.findViewById(R.id.btnAddFriend);
         tvContactsTagline = view.findViewById(R.id.tvContactsTagline);
 
-        view.findViewById(R.id.btnEmptyAddFriend).setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), NewChatActivity.class)));
+        View.OnClickListener openAddFriend = v ->
+                startActivity(new Intent(requireContext(), AddFriendActivity.class));
+        view.findViewById(R.id.btnEmptyAddFriend).setOnClickListener(openAddFriend);
+        btnAddFriend.setOnClickListener(openAddFriend);
         view.findViewById(R.id.btnEmptyInvite).setOnClickListener(v -> inviteFriends());
 
         // Ẩn các banner chưa có nguồn dữ liệu thật (Requests)

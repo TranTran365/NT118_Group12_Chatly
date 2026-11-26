@@ -13,12 +13,20 @@
 
     <!-- Tab phone-->
     <string name="add_friend_label_phone">phone number</string>
-    <string name="add_friend_helper_phone">use the number they signed up with.</string>
-    <string name="add_friend_hint_phone">0912 345 678</string>
+    <string name="add_friend_helper_phone">include their country code to find an exact match.</string>
+    <string name="add_friend_hint_phone">912 345 678</string>
 
     <string name="add_friend_match_one">1 exact match</string>
     <string name="add_friend_found">found them! send a little hello.</string>
+    <string name="add_friend_requested_status">requested · waiting for a hello</string>
+    <string name="add_friend_already_status">already in your people. say hey instead.</string>
     <string name="add_friend_send">add friend</string>
+    <string name="add_friend_message">message</string>
+    <string name="add_friend_cancel_request">cancel request</string>
+    <string name="add_friend_sent">request sent!</string>
+    <string name="add_friend_now_friends">you two are friends now!</string>
+    <string name="add_friend_request_cancelled">request cancelled</string>
+    <string name="add_friend_not_found">no exact match yet.</string>
 
 
     <string name="add_friend_sample_initials">AV</string>
