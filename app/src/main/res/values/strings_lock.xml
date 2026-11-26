@@ -19,4 +19,9 @@
     <string name="lock_pin_biometric_title">Unlock Chatly</string>
     <string name="lock_pin_biometric_subtitle">Use your fingerprint to continue</string>
     <string name="lock_pin_biometric_cancel">Use PIN</string>
+
+    <string name="lock_pin_forgot_title">Forgot your PIN?</string>
+    <string name="lock_pin_forgot_message">You\'ll be logged out and App lock will be turned off. Sign in again to keep chatting.</string>
+    <string name="lock_pin_forgot_confirm">Log out</string>
+    <string name="lock_pin_forgot_cancel">Cancel</string>
 </resources>

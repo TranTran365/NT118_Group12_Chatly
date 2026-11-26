@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.group12.chatly.multimedia.call.ZegoCallHelper;
 import com.group12.chatly.utils.FileUtils;
+import com.group12.chatly.utils.AppLockManager;
 
 /**
  * Chatly Application class.
@@ -20,6 +21,7 @@ public class ChatlyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        AppLockManager.init(this);
 
         // Initialize EmojiCompat
         com.group12.chatly.multimedia.EmojiHelper.initEmojiCompat(this);

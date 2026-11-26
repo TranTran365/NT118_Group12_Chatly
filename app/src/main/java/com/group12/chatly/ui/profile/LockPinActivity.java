@@ -8,6 +8,13 @@ import android.view.View;
 import android.view.animation.CycleInterpolator;
 import android.widget.TextView;
 
+import android.content.Intent;
+import androidx.lifecycle.ViewModelProvider;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.group12.chatly.ui.welcome.WelcomeActivity;
+import com.group12.chatly.utils.AppLockManager;
+import com.group12.chatly.viewmodel.ProfileViewModel;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
@@ -22,6 +29,8 @@ public class LockPinActivity extends AppCompatActivity {
     public static final String EXTRA_MODE = "extra_mode";
     public static final int MODE_UNLOCK = 0;
     public static final int MODE_CREATE = 1;
+
+    public static final int MODE_VERIFY = 2; // nhập PIN hiện tại để xác nhận (tắt khóa / đổi PIN)
 
     private static final int[] KEY_IDS = {
             R.id.key_0, R.id.key_1, R.id.key_2, R.id.key_3, R.id.key_4,
@@ -56,7 +65,7 @@ public class LockPinActivity extends AppCompatActivity {
         setupModeUi();
         setupBackPress();
 
-        if (mode == MODE_UNLOCK) {
+        if (mode != MODE_CREATE) {
             startLockoutIfNeeded();
             if (pinManager.isBiometricEnabled() && canUseBiometric() && inputEnabled) {
                 showBiometricPrompt();
@@ -70,7 +79,7 @@ public class LockPinActivity extends AppCompatActivity {
         if (lockoutTimer != null) lockoutTimer.cancel();
     }
 
-    // ---------------------------------------------------------------- setup
+    //  setup
 
     private void bindViews() {
         tvTitle = findViewById(R.id.tv_title);
@@ -108,9 +117,8 @@ public class LockPinActivity extends AppCompatActivity {
         } else {
             boolean showBio = pinManager.isBiometricEnabled() && canUseBiometric();
             keyBiometric.setVisibility(showBio ? View.VISIBLE : View.INVISIBLE);
-            forgot.setOnClickListener(v -> {
-                // TODO (bước 5): xác nhận -> pinManager.clear() -> đăng xuất -> WelcomeActivity
-            });
+            forgot.setOnClickListener(v -> confirmForgotPin());
+            if (mode == MODE_VERIFY) forgot.setVisibility(View.GONE);
         }
     }
 
@@ -129,7 +137,7 @@ public class LockPinActivity extends AppCompatActivity {
         });
     }
 
-    // ---------------------------------------------------------------- input
+    //  input
 
     private void onDigit(String digit) {
         if (!inputEnabled || input.length() >= PinManager.PIN_LENGTH) return;
@@ -167,7 +175,7 @@ public class LockPinActivity extends AppCompatActivity {
         }
     }
 
-    // ---------------------------------------------------------------- unlock
+    //  unlock
 
     private void handleUnlock(String pin) {
         if (pinManager.verifyPin(pin)) {
@@ -184,6 +192,7 @@ public class LockPinActivity extends AppCompatActivity {
     }
 
     private void onUnlocked() {
+        if (mode == MODE_UNLOCK) AppLockManager.markUnlocked();
         setResult(RESULT_OK);
         finish();
     }
@@ -209,7 +218,7 @@ public class LockPinActivity extends AppCompatActivity {
         }.start();
     }
 
-    // ---------------------------------------------------------------- create
+    //  create
 
     private void handleCreate(String pin) {
         if (firstPin == null) {
@@ -232,7 +241,7 @@ public class LockPinActivity extends AppCompatActivity {
         }
     }
 
-    // ---------------------------------------------------------------- biometric
+    //  biometric
 
     private boolean canUseBiometric() {
         return BiometricManager.from(this)
@@ -262,7 +271,29 @@ public class LockPinActivity extends AppCompatActivity {
         prompt.authenticate(info);
     }
 
-    // ---------------------------------------------------------------- UI helpers
+    // forgot PIN
+
+    private void confirmForgotPin() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.lock_pin_forgot_title)
+                .setMessage(R.string.lock_pin_forgot_message)
+                .setPositiveButton(R.string.lock_pin_forgot_confirm, (d, w) -> logoutAndReset())
+                .setNegativeButton(R.string.lock_pin_forgot_cancel, null)
+                .show();
+    }
+
+    /** Quên PIN: tắt khóa, đăng xuất, về màn Welcome. Đăng nhập lại là dùng app bình thường. */
+    private void logoutAndReset() {
+        pinManager.clear();
+        AppLockManager.reset();
+        new ViewModelProvider(this).get(ProfileViewModel.class).logout();
+
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    // UI helpers
 
     private void showError(String message) {
         tvSubtitle.setText(message);

@@ -113,7 +113,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".ui.profile.PrivacyActivity"
+            android:name=".ui.profile.PrivacySecurityActivity"
             android:exported="false"
             android:theme="@style/Theme.Chatly.Register" />
 

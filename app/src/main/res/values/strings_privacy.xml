@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="privacy_title">Keep it private.</string>
+    <string name="privacy_subtitle">Your conversations. Your rules.</string>
+
+    <string name="privacy_section_app_security">App security</string>
+    <string name="privacy_app_lock">App lock</string>
+    <string name="privacy_app_lock_desc">Require a PIN to open Chatly</string>
+    <string name="privacy_fingerprint">Fingerprint</string>
+    <string name="privacy_fingerprint_desc">Unlock with your fingerprint</string>
+    <string name="privacy_change_pin">Change PIN</string>
+    <string name="privacy_change_pin_desc">Update your 6-digit security PIN</string>
+
+    <string name="privacy_section_chat_privacy">Chat privacy</string>
+    <string name="privacy_locked_chats">Locked chats</string>
+    <string name="privacy_locked_chats_desc">2 conversations protected</string>
+
+    <string name="privacy_note_title">A little extra peace of mind.</string>
+    <string name="privacy_note_body">App lock and locked chats keep your conversations just between you and your people.</string>
+
+    <string name="privacy_need_app_lock">Turn on App lock first</string>
+    <string name="privacy_no_biometric">No fingerprint set up on this device</string>
+    <string name="privacy_lock_off">App lock turned off</string>
+    <string name="privacy_pin_updated">PIN updated</string>
+</resources>

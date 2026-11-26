@@ -33,6 +33,8 @@ import com.group12.chatly.data.model.User;
 import com.group12.chatly.data.repository.AuthCallback;
 import com.group12.chatly.multimedia.MediaPickerHelper;
 import com.group12.chatly.ui.welcome.WelcomeActivity;
+import com.group12.chatly.utils.AppLockManager;
+import com.group12.chatly.utils.PinManager;
 import com.group12.chatly.viewmodel.ProfileViewModel;
 
 import java.util.Locale;
@@ -152,7 +154,7 @@ public class ProfileFragment extends Fragment {
             // TODO: đổi số điện thoại
         });
         root.findViewById(R.id.row_privacy).setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), PrivacyActivity.class)));
+                startActivity(new Intent(requireContext(), PrivacySecurityActivity.class)));
         root.findViewById(R.id.row_logout).setOnClickListener(v -> showLogoutDialog());
     }
 
@@ -223,6 +225,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void logout() {
+        PinManager.getInstance(requireContext()).clear();
+        AppLockManager.reset();
         profileViewModel.logout();
 
         Intent intent = new Intent(requireContext(), WelcomeActivity.class);
