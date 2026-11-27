@@ -20,6 +20,7 @@
     <string name="add_friend_found">found them! send a little hello.</string>
     <string name="add_friend_requested_status">requested · waiting for a hello</string>
     <string name="add_friend_already_status">already in your people. say hey instead.</string>
+    <string name="add_friend_already">already in your people. say hey instead.</string>
     <string name="add_friend_send">add friend</string>
     <string name="add_friend_message">message</string>
     <string name="add_friend_cancel_request">cancel request</string>
@@ -32,4 +33,11 @@
     <string name="add_friend_sample_initials">AV</string>
     <string name="add_friend_sample_name">An Võ</string>
     <string name="add_friend_sample_email">an.vo@email.com</string>
+
+    <string name="add_friend_self_title">that\'s you</string>
+    <string name="add_friend_self_note">your friends can find you with this email.</string>
+    <string name="add_friend_self_button">this is your account</string>
+
+    <string name="add_friend_empty_title">no one here just yet</string>
+    <string name="add_friend_empty_body">check the email for a little typo, or try their phone number.</string>
 </resources>
